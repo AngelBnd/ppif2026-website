@@ -1,3 +1,92 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body,
+#app {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background: grey;
+}
+
+.navbar-video-mask {
+    width: 100vw;
+    aspect-ratio: 1920 / 180;
+
+    mask-image: url('/masks/NavbarSVG-White.svg');
+    mask-repeat: no-repeat;
+    mask-position: top center;
+    mask-size: 100% auto;
+
+    -webkit-mask-image: url('/masks/NavbarSVG-White.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: top center;
+    -webkit-mask-size: 100% auto;
+}
+
+.bottomFrame-video-mask {
+    width: 100vw;
+    aspect-ratio: 1920 / 180;
+    overflow: hidden;
+
+    mask-image: url('/masks/BottomSVG.svg');
+    mask-repeat: no-repeat;
+    mask-position: bottom center;
+    mask-size: 100% 100%;
+
+    -webkit-mask-image: url('/masks/BottomSVG.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: bottom center;
+    -webkit-mask-size: 100% 100%;
+}
+
+.landscape-content {
+    min-height: 100vh;
+}
+
+.portrait-warning {
+    display: none;
+}
+
+@media screen and (orientation: portrait) {
+    .landscape-content {
+        display: none;
+    }
+
+    .portrait-warning {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #0f0f0f;
+        color: white;
+        text-align: center;
+        padding: 24px;
+    }
+
+    .portrait-warning-card {
+        max-width: 320px;
+    }
+
+    .portrait-warning-card h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 16px;
+    }
+
+    .portrait-warning-card p {
+        margin-top: 8px;
+        opacity: 0.7;
+    }
+
+    .phone-icon {
+        font-size: 48px;
+    }
+}
