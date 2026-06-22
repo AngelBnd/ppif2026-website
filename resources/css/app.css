@@ -12,6 +12,20 @@ body,
     background: grey;
 }
 
+@font-face {
+  font-family: "NotoCustom";
+  src: url("/fonts/Noto-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Arsenal";
+  src: url("/fonts/Arsenal-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
 .navbar-video-mask {
     width: 100vw;
     aspect-ratio: 1920 / 180;
