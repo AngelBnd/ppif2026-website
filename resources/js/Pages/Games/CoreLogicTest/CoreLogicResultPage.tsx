@@ -1,0 +1,31 @@
+type Props = {
+    onRetrieveFragments: () => void;
+};
+
+export default function CoreLogicResultPage({ onRetrieveFragments }: Props) {
+    return (
+        <main className="flex min-h-screen items-center justify-center bg-black text-white">
+            <section className="w-[90%] max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-12 text-center">
+                <p className="text-sm uppercase tracking-[0.3em] text-white/50">
+                    Core Logic Test Result
+                </p>
+
+                <h1 className="mt-4 text-5xl font-bold">
+                    nanti di sini ditampilin berapa persen benarnya
+                </h1>
+
+                <p className="mt-6 text-xl text-white/60">
+                    You completed the Core Logic Test. A fragment has been
+                    recovered.
+                </p>
+
+                <button
+                    onClick={onRetrieveFragments}
+                    className="mt-10 rounded-xl bg-white px-8 py-4 font-semibold text-black transition hover:scale-105 active:scale-95"
+                >
+                    Retrieve Fragment
+                </button>
+            </section>
+        </main>
+    );
+}

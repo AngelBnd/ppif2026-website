@@ -5,7 +5,7 @@ export default function About() {
         <div className="bg h-screen w-screen">
             <div className="transition-300 absolute z-0 h-full w-full bg-[#7C131E] opacity-70 ease-in"></div>
             <div className="flex flex-col gap-2">
-                <div className="font-noto relative z-20 pt-32">
+                <div className="relative z-20 pt-32 font-noto">
                     Font noto nanti dipakai buat heading, kalau ada
                     {/* cara pakai component button */}
                     <Button
@@ -15,7 +15,7 @@ export default function About() {
                         ariaLabel="test"
                     />
                 </div>
-                <div className="font-arsenal relative z-20 pt-4 text-white">
+                <div className="relative z-20 pt-4 font-arsenal text-white">
                     Font arsenal nanti dipakai buat body
                 </div>
             </div>

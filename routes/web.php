@@ -33,10 +33,20 @@ Route::get('/archive', function () {
     return Inertia::render('Archive');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/games', function () {
+    return Inertia::render('GameHub/GameHubPage');
+});
+
+Route::get('/games/{gameSlug}', function ($gameSlug) {
+    return Inertia::render('Games/GamePage', [
+        'gameSlug' => $gameSlug,
+    ]);
+});
+
+Route::get('/games/core-logic-test/reveal', function () {
+    return Inertia::render('Games/ReconstructIdentity/FragmentRevealPage', [
+        'gameSlug' => 'reconstruct-identity',
+    ]);
 });
 
 require __DIR__.'/auth.php';
