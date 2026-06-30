@@ -30,7 +30,15 @@ Route::get('/contact', function () {
 });
 
 Route::get('/archive', function () {
-    return Inertia::render('Archive');
+    return Inertia::render('Archive/ArchivePage');
+});
+
+Route::get('/archive/dday', function () {
+    return Inertia::render('Archive/DDayPage');
+});
+
+Route::get('/archive/briefingday', function () {
+    return Inertia::render('Archive/BriefingDayPage');
 });
 
 Route::get('/games', function () {
