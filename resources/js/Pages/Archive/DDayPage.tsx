@@ -250,7 +250,6 @@ export default function DDayPage() {
                                 <div className="absolute inset-0 w-full h-full pointer-events-none group-hover:scale-105 transition-transform duration-200">
 
                                     {/* 2. UKURAN SVG SEKARANG OTOMATIS MENGIKUTI PARENT (w-full h-full) */}
-<rect x="4.65503" y="15.9277" width="51.2047" height="51.2047" rx="25.6023" fill="black"/>
                                     <svg className="w-full h-full" width="224" height="85" viewBox="0 0 224 85" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g clip-path="url(#clip0_129_676)">
                                     <rect x="4.65503" y="15.9277" width="51.2047" height="51.2047" rx="25.6023" fill="black"/>
