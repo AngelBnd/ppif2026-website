@@ -173,7 +173,7 @@ export default function Contact() {
                     className="absolute bottom-10 w-full"
                     style={{ height: `calc(var(--vu)*42.708)` }}
                 >
-                    <div className="absolute -bottom-10 z-10" style={{ right: `calc(var(--vu)*(-4.8 + ${SHIFT_VU}))` }}>
+                    <div className="absolute -bottom-10 z-10" style={{ width: `calc(var(--vu)*39.846)`, right: `calc(var(--vu)*(-4.8 + ${SHIFT_VU}))` }}>
                         <img src={PhoneBottom} alt="Phone Bottom" />
                     </div>
                     <div className="absolute z-0 origin-bottom" style={{ right: `calc(var(--vu)*(-2.5 + ${SHIFT_VU}))` }}>
@@ -216,7 +216,7 @@ export default function Contact() {
                             style={{ width: `calc(var(--vu)*28)`, top: '45%', left: `calc(var(--vu)*5)`, transform: 'translateY(-50%)', opacity: 0 }} />
                         <img src={Whatsapp} className="h-auto relative" style={{ width: `calc(var(--vu)*13.021)` }} />
                         <div style={{ width: `calc(var(--vu)*1)` }} />
-                        <img src={WhatsAppText} className="h-auto relative" style={{ marginTop: `calc(var(--vu)*0.5)`, marginLeft: `calc(var(--vu)*-0.5)` }} />
+                        <img src={WhatsAppText} className="h-auto relative" style={{ width: `calc(var(--vu)*18)`, marginTop: `calc(var(--vu)*0.5)`, marginLeft: `calc(var(--vu)*-0.5)` }} />
                     </div>
 
                     {/* Discord */}
@@ -225,7 +225,7 @@ export default function Contact() {
                             style={{ width: `calc(var(--vu)*35)`, top: '45%', left: `calc(var(--vu)*5)`, transform: 'translateY(-50%)', opacity: 0 }} />
                         <img src={Discord} className="h-auto relative" style={{ width: `calc(var(--vu)*13.021)` }} />
                         <div style={{ width: `calc(var(--vu)*1)` }} />
-                        <img src={DiscordText} className="h-auto relative" style={{ marginTop: `calc(var(--vu)*0.5)`, marginLeft: `calc(var(--vu)*-0.5)` }} />
+                        <img src={DiscordText} className="h-auto relative" style={{ width: `calc(var(--vu)*14)`, marginTop: `calc(var(--vu)*0.5)`, marginLeft: `calc(var(--vu)*-0.5)` }} />
                     </div>
 
                     {/* Instagram */}
@@ -234,7 +234,7 @@ export default function Contact() {
                             style={{ width: `calc(var(--vu)*27.5)`, top: '45%', left: `calc(var(--vu)*6.5)`, transform: 'translateY(-50%)', opacity: 0 }} />
                         <img src={Instagram} className="h-auto relative" style={{ width: `calc(var(--vu)*13.021)` }} />
                         <div style={{ width: `calc(var(--vu)*1)` }} />
-                        <img src={InstagramText} className="h-auto relative" style={{ marginTop: `calc(var(--vu)*0.7)`, marginLeft: `calc(var(--vu)*-0.5)` }} />
+                        <img src={InstagramText} className="h-auto relative" style={{ width: `calc(var(--vu)*19)`, marginTop: `calc(var(--vu)*0.7)`, marginLeft: `calc(var(--vu)*-0.5)` }} />
                     </div>
 
                     <img data-arrow src={ArrowLeft} className="absolute scale-x-[0.8] scale-y-[0.8] -z-10"
@@ -242,12 +242,22 @@ export default function Contact() {
                 </div>
 
                 {/* Bubble Chat */}
-                <div ref={bubbleRef} className="absolute" style={{ bottom: `calc(var(--vu)*9.375)`, left: `calc(var(--vu)*0.167)` }}>
-                    <div ref={bubbleTextRef} className="w-auto h-full">
-                        <img src={ContactText} className="absolute z-10" style={{ top: `calc(var(--vu)*13.021)`, left: `calc(var(--vu)*7.812)` }} />
-                        <img src={UsText}      className="absolute z-20" style={{ top: `calc(var(--vu)*24.479)`, left: `calc(var(--vu)*23.438)` }} />
+                <div ref={bubbleRef} className="absolute" style={{ width:  `calc(var(--vu)*57)`, bottom: `calc(var(--vu)*9.375)`, left: `calc(var(--vu)*0.167)` }}>
+                    <div ref={bubbleTextRef} className="absolute inset-0">
+                        <img src={ContactText} className="absolute z-10" style={{ 
+                            width: `calc(var(--vu)*41)`, 
+                            top: `calc(var(--vu)*14.021)`, 
+                            left: `calc(var(--vu)*7.812)` }} 
+                            />
+
+                        <img src={UsText} className="absolute z-20" style={{ 
+                            width: `calc(var(--vu)*15)`, 
+                            top: `calc(var(--vu)*24.479)`, 
+                            left: `calc(var(--vu)*23.438)` }} 
+                            />
+
                     </div>
-                    <img src={BubbleChat} className="w-full h-full -z-10" />
+                    <img src={BubbleChat} className="w-full h-auto block" />
                 </div>
 
             </div>
