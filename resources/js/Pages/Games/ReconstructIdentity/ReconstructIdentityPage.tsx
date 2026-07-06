@@ -5,7 +5,7 @@ import titleID from '../../../assets/games/reconstructIdentity/titleID.webp';
 
 const WORD_LENGTH = 6;
 
-const TARGET_WORD = 'STELLA'; // INI PASSWORDNYA / KEYWORD
+export const TARGET_WORD = 'STELLA'; // INI PASSWORDNYA / KEYWORD
 
 const REVEALED_INDICES = [2, 4];
 
