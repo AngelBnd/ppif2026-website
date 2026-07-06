@@ -1,21 +1,21 @@
 import type { GameSlug } from '@/data/games';
 import {
+    groupMockData,
     mockCompletedGames,
     mockFragments,
-    mockTeams,
 } from '@/data/mockBackend';
 
 export async function mockJoinTeam(uniqueCode: string) {
-    const team = mockTeams.find(
-        (team) => team.uniqueCode.toLowerCase() === uniqueCode.toLowerCase(),
+    const team = groupMockData.find(
+        (team) => team.code.toLowerCase() === uniqueCode.toLowerCase(),
     );
 
     if (!team) {
         throw new Error('Invalid team name or unique code.');
     }
 
-    sessionStorage.setItem('teamId', String(team.id));
-    sessionStorage.setItem('uniqueCode', team.uniqueCode);
+    sessionStorage.setItem('teamId', String(team.no));
+    sessionStorage.setItem('uniqueCode', team.code);
 
     return team;
 }
