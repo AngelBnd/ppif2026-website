@@ -170,7 +170,7 @@ export default function UniqueCodeForm({ onJoined }: Props) {
             <RedStreakGame className="absolute h-auto" />
             <div
                 ref={formRef}
-                className="absolute -ml-6 mt-9 flex -rotate-[9deg] items-center space-x-16"
+                className="absolute -ml-6 mt-16 flex -rotate-[9deg] items-center space-x-16"
             >
                 <InputUniqueCodeSVG className="auto h-auto w-[35rem]" />
                 <CodeInput

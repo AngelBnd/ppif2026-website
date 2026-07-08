@@ -1,14 +1,14 @@
 import { games, type GameSlug } from '@/data/games';
 import { mockGetCompletedGames } from '@/services/mockGameApi';
-import { router } from '@inertiajs/react';
 import { gsap } from 'gsap';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import CoreLogicPage from '../Games/CoreLogicTest/CoreLogicTestPage';
 import DataTracePage from '../Games/DataTrace/DataTracePage';
 import ReconstructIdentityPage from '../Games/ReconstructIdentity/ReconstructIdentityPage';
 import SignalDecoderPage from '../Games/SignalDecoder/SignalDecoderPage';
 
+import CodieLoading from '@/assets/games/hub/codieLoading.svg?react';
 import CoreLogic from '@/assets/games/hub/CoreLogic.svg?react';
 import CoreLogicL from '@/assets/games/hub/CoreLogicLocked.svg?react';
 import DataTrace from '@/assets/games/hub/DataTrace.svg?react';
@@ -23,16 +23,18 @@ import SignalDecoder from '@/assets/games/hub/SignalDecoder.svg?react';
 import SignalDecoderL from '@/assets/games/hub/SignalDecoderLocked.svg?react';
 import Thumb from '@/assets/games/hub/thumb.svg?react';
 import Button from '@/Components/global/Button';
+import { router } from '@inertiajs/react';
 
 export default function GameList() {
     const [completedGames, setCompletedGames] = useState<GameSlug[]>([]);
-    const [isLeaving, setIsLeaving] = useState(false);
     const [selectedGame, setSelectedGame] = useState<GameSlug | null>(null);
     const handPhoneWrapperRef = useRef<HTMLDivElement | null>(null);
     const phoneRef = useRef<HTMLDivElement | null>(null);
-    const thumbRef = useRef<HTMLDivElement | null>(null);
-    const fingersRef = useRef<HTMLDivElement | null>(null);
-    const fingerRef = useRef<HTMLDivElement | null>(null);
+    const handGroupRef = useRef<HTMLDivElement | null>(null);
+    const gameButtonsRef = useRef<HTMLDivElement | null>(null);
+    const [loadingGameTitle, setLoadingGameTitle] = useState<string | null>(
+        null,
+    );
 
     const gamePreviewPages: Record<GameSlug, React.ComponentType<any>> = {
         'signal-decoder': SignalDecoderPage,
@@ -96,80 +98,85 @@ export default function GameList() {
     const handleOpenGame = (game: (typeof games)[number]) => {
         const unlocked = isUnlocked(game.unlocksAfter);
         setSelectedGame(game.slug);
-
         if (!unlocked) return;
-
+        setLoadingGameTitle(game.title);
         const wrapper = handPhoneWrapperRef.current;
 
-        setIsLeaving(true);
-
-        if (wrapper) {
-            gsap.to(wrapper, {
-                scale: 2.4,
-                rotate: -8,
-                x: '-18vw',
-                y: '-8vh',
-                opacity: 0,
-                duration: 0.7,
-                ease: 'power3.inOut',
-                transformOrigin: 'center center',
-                onComplete: () => {
-                    router.visit(game.path);
-                },
-            });
-
+        if (!wrapper) {
+            router.visit(game.path);
             return;
         }
+        const tl = gsap.timeline();
 
-        router.visit(game.path);
+        tl.to(wrapper, {
+            scale: 1.8,
+            x: '3vw',
+            y: '2vh',
+            rotation: -10,
+            duration: 1.95,
+            ease: 'power3.inOut',
+            transformOrigin: 'center center',
+            onComplete: () => {
+                router.visit(game.path);
+            },
+        });
+        tl.to(
+            wrapper,
+            {
+                opacity: 0,
+                duration: 1,
+            },
+            '-=1.05',
+        );
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const ctx = gsap.context(() => {
             const phone = phoneRef.current;
-            const thumb = thumbRef.current;
-            const fingers = fingersRef.current;
-            const finger = fingerRef.current;
+            const hand = handGroupRef.current;
+            const buttons =
+                gameButtonsRef.current?.querySelectorAll<HTMLElement>(
+                    '[data-game-button]',
+                );
 
-            if (!phone || !thumb || !fingers || !finger) return;
+            if (!phone || !hand || !buttons) return;
 
-            gsap.set([phone, thumb, fingers, finger], {
+            const startY = window.innerHeight + 120;
+
+            const masterTl = gsap.timeline();
+
+            masterTl.set(phone, {
+                y: startY,
+                rotation: 35,
                 transformOrigin: 'bottom center',
             });
 
-            gsap.set(phone, {
-                y: 260,
-                rotate: 18,
-                opacity: 0,
+            masterTl.set(hand, {
+                y: startY,
+                rotation: 35,
+                transformOrigin: 'bottom center',
             });
 
-            gsap.set([thumb, fingers, finger], {
-                y: 300,
-                rotate: 24,
-                opacity: 0,
-            });
-
-            const tl = gsap.timeline();
-
-            tl.to(phone, {
-                y: 0,
-                rotate: 0,
-                opacity: 1,
-                duration: 1.1,
-                ease: 'back.out(1.35)',
-            });
-
-            tl.to(
-                [thumb, fingers, finger],
+            masterTl.to(
+                phone,
                 {
                     y: 0,
-                    rotate: 0,
-                    opacity: 1,
-                    duration: 1.15,
-                    stagger: 0.04,
-                    ease: 'back.out(1.9)',
+                    rotation: 0,
+                    duration: 1,
+                    ease: 'power3.out',
                 },
-                '-=0.9',
+                0,
+            );
+
+            masterTl.to(
+                hand,
+                {
+                    y: 0,
+                    rotation: 0,
+                    duration: 1,
+                    ease: 'power3.out',
+                },
+                0.03,
             );
         });
 
@@ -179,14 +186,16 @@ export default function GameList() {
     return (
         <main className="relative flex min-h-screen items-center justify-center overflow-hidden overflow-y-hidden text-white">
             {SelectedPreview && (
-                <div className="absolute inset-0 !z-0">
-                    <SelectedPreview
-                        gameSlug={selectedGame}
-                        finishGame={() => {}}
-                        isPreview
-                    />
-                </div>
+                // <div className="absolute inset-0 !z-0">
+                //     <SelectedPreview
+                //         gameSlug={selectedGame}
+                //         finishGame={() => {}}
+                //         isPreview
+                //     />
+                // </div>
+                <div className="animate-in fade-in absolute !z-0 h-screen w-screen bg-[#BE202F] duration-500" />
             )}
+            {/* {RenderHandPhoneWrapper && ( */}
             <div className="relative z-20 flex min-h-screen w-screen items-center justify-center overflow-hidden">
                 <div
                     ref={handPhoneWrapperRef}
@@ -197,70 +206,89 @@ export default function GameList() {
                         ref={phoneRef}
                         className="absolute -top-8 right-10 z-20 w-[70rem]"
                     >
-                        <PhoneScreen className="absolute block h-auto w-full" />
+                        {loadingGameTitle ? (
+                            <></>
+                        ) : (
+                            <PhoneScreen className="absolute block h-auto w-full" />
+                        )}
+
                         <Phone className="block h-auto w-full" />
 
                         {/* Game buttons on top of phone */}
-                        <div className="absolute left-[15%] top-[25%] z-30 flex rotate-[8deg] flex-col items-center">
-                            <div className="grid grid-cols-3 place-items-center gap-x-4">
-                                {games.slice(0, 4).map((game, index) => {
-                                    const locked = !isUnlocked(
-                                        game.unlocksAfter,
-                                    );
+                        {loadingGameTitle ? (
+                            <div className="absolute left-[20%] top-[20%] z-30 flex h-[28rem] w-[42rem] rotate-[8deg] flex-col items-center justify-center">
+                                <CodieLoading />
 
-                                    const config = gameButtonConfig[game.slug];
-                                    const GameIcon = locked
-                                        ? config.LockedIcon
-                                        : config.Icon;
-
-                                    return (
-                                        <Button
-                                            key={game.id}
-                                            onClick={() => {
-                                                if (!locked)
-                                                    handleOpenGame(game);
-                                            }}
-                                            Icon={GameIcon}
-                                            iconClassName="block h-auto w-full"
-                                            className={`transition ${config.size} ${
-                                                index === 3
-                                                    ? 'col-start-2 -mt-12'
-                                                    : ''
-                                            } ${
-                                                locked
-                                                    ? 'pointer-events-none cursor-not-allowed'
-                                                    : 'hover:scale-105 active:scale-95'
-                                            }`}
-                                        />
-                                    );
-                                })}
+                                <p className="mt-2 text-center font-arsenal text-4xl font-bold tracking-widest text-white">
+                                    Loading {loadingGameTitle}
+                                </p>
                             </div>
-                        </div>
+                        ) : (
+                            <div className="absolute left-[15%] top-[25%] z-30 flex rotate-[8deg] flex-col items-center">
+                                <div
+                                    ref={gameButtonsRef}
+                                    className="grid grid-cols-3 place-items-center gap-x-4"
+                                >
+                                    {games.slice(0, 4).map((game, index) => {
+                                        const locked = !isUnlocked(
+                                            game.unlocksAfter,
+                                        );
+
+                                        const config =
+                                            gameButtonConfig[game.slug];
+                                        const GameIcon = locked
+                                            ? config.LockedIcon
+                                            : config.Icon;
+
+                                        return (
+                                            <div
+                                                key={game.id}
+                                                data-game-button
+                                                className={`${index === 3 ? 'col-start-2 -mt-12' : ''}`}
+                                            >
+                                                <Button
+                                                    onClick={() => {
+                                                        if (!locked)
+                                                            handleOpenGame(
+                                                                game,
+                                                            );
+                                                    }}
+                                                    Icon={GameIcon}
+                                                    iconClassName="block h-auto w-full"
+                                                    className={`transition ${config.size} ${
+                                                        locked
+                                                            ? 'pointer-events-none scale-90 cursor-not-allowed'
+                                                            : 'hover:scale-105 active:scale-95'
+                                                    }`}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Hand pieces */}
                     <div
-                        ref={thumbRef}
-                        className="pointer-events-none absolute -bottom-[7rem] right-[2.5rem] z-30 w-[53rem]"
+                        ref={handGroupRef}
+                        className="pointer-events-none absolute inset-0 z-40"
                     >
-                        <Thumb className="block h-auto w-full" />
-                    </div>
+                        <div className="absolute -bottom-[7.2rem] right-[2.5rem] z-30 w-[53rem]">
+                            <Thumb className="block h-auto w-full" />
+                        </div>
 
-                    <div
-                        ref={fingersRef}
-                        className="pointer-events-none absolute right-[12rem] top-[-0.5rem] z-40 w-[24.8rem]"
-                    >
-                        <Fingers className="block h-auto w-full" />
-                    </div>
+                        <div className="absolute right-[12rem] top-[-0.5rem] z-40 w-[24.5rem]">
+                            <Fingers className="block h-auto w-full" />
+                        </div>
 
-                    <div
-                        ref={fingerRef}
-                        className="pointer-events-none absolute -top-[1rem] left-[18rem] z-10 w-[9rem]"
-                    >
-                        <Finger className="block h-auto w-full" />
+                        <div className="absolute -top-[2rem] left-[18rem] z-10 w-[9rem]">
+                            <Finger className="block h-auto w-full" />
+                        </div>
                     </div>
                 </div>
             </div>
+            {/* )} */}
         </main>
     );
 }
