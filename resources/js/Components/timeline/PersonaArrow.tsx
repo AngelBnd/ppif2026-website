@@ -22,12 +22,12 @@ export default function PersonaArrow({
             type="button"
             onClick={onClick}
             aria-label={ariaLabel}
-            className={`group transition duration-200 hover:scale-110 active:scale-95 flex items-center justify-center ${className}`}
+            className={`group flex items-center justify-center transition duration-200 hover:scale-110 active:scale-95 ${className}`}
         >
             <img
                 src={direction === 'left' ? leftArrow : rightArrow}
                 alt={`${direction} arrow`}
-                className="h-full w-full object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.45)]"
+                className="h-full w-full object-contain"
             />
         </button>
     );

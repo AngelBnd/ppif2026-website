@@ -1,6 +1,7 @@
-import knife from '@/assets/timeline/knife.svg';
 import sat15Img from '@/assets/timeline/15-saturday.svg';
 import tue18Img from '@/assets/timeline/18-tuesday.svg';
+
+import { forwardRef } from 'react';
 
 type DateStickerProps = {
     /** The day-of-month number, e.g. "15". */
@@ -16,41 +17,29 @@ type DateStickerProps = {
     className?: string;
 };
 
-export default function DateSticker({
-    day,
-    weekday,
-    color,
-    withLogo = false,
-    style,
-    className = '',
-}: DateStickerProps) {
+const DateSticker = forwardRef<HTMLDivElement, DateStickerProps>(
+    ({ day, weekday, color, withLogo = false, className = '', style }, ref) => {
+        // Determine which image to show based on the 'day' prop
+        const stickerImg = day === '15' ? sat15Img : tue18Img;
 
-    // Determine which image to show based on the 'day' prop
-    const stickerImg = day === '15' ? sat15Img : tue18Img;
-
-    return (
-        <div
-            className={`pointer-events-none absolute select-none ${className}`}
-            style={style}
-        >
-            <div className="relative -rotate-3 flex flex-col items-center">
-                {/* Keep the knife/logo logic exactly the same */}
-                {withLogo && (
+        return (
+            <div
+                className={`pointer-events-none absolute select-none ${className}`}
+                style={style}
+            >
+                <div
+                    ref={ref}
+                    className="relative flex -rotate-3 flex-col items-center"
+                >
                     <img
-                        src={knife}
-                        alt=""
-                        className="absolute -top-[45%] left-[105%] w-[70%] -translate-x-1/2 drop-shadow-[0_8px_10px_rgba(0,0,0,0.5)] z-10"
+                        src={stickerImg}
+                        alt={`${day} ${weekday}`}
+                        className="h-auto w-[27vmin] object-contain"
                     />
-                )}
-
-                {/* Render the selected SVG file instead of the hardcoded text spans */}
-                <img
-                    src={stickerImg}
-                    alt={`${day} ${weekday}`}
-                    // Width uses vmin to keep it responsive and similar in scale to your old font size
-                    className="w-[25vmin] h-auto object-contain"
-                />
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    },
+);
+
+export default DateSticker;

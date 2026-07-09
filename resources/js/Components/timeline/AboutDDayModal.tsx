@@ -1,45 +1,171 @@
-import greyknife from '@/assets/timeline/grey-knife.svg';
-import bgPage1 from '@/assets/timeline/aboutdday1.png';
-import bgPage2 from '@/assets/timeline/aboutdday2.png';
-import page1Text from '@/assets/timeline/page1.svg';
-import page2Text from '@/assets/timeline/page2.svg';
+import backButtonImg from '@/assets/icons/BackButtonSVG.svg';
 import leftArrow from '@/assets/timeline/about-left-arrow.svg';
 import rightArrow from '@/assets/timeline/about-right-arrow.svg';
-import backButtonImg from '@/assets/icons/BackButtonSVG.svg';
-import { useEffect, useState } from 'react';
+import aboutmodal from '@/assets/timeline/aboutmodal.svg';
+import greyknife from '@/assets/timeline/grey-knife.svg';
+import page1Text from '@/assets/timeline/page1.svg';
+import page2Text from '@/assets/timeline/page2.svg';
+import gsap from 'gsap';
+import type { ComponentType, SVGProps } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+type SVGComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
 type AboutDDayModalProps = {
     open: boolean;
     onClose: () => void;
+    name: 'D-Day' | 'BriefingDay';
+    AboutTitle: SVGComponent;
+    modalDescription: string;
+    images: string[];
 };
-
-export default function AboutDDayModal({ open, onClose }: AboutDDayModalProps) {
+export default function AboutDDayModal({
+    open,
+    onClose,
+    name,
+    AboutTitle,
+    modalDescription,
+    images,
+}: AboutDDayModalProps) {
     const [page, setPage] = useState<1 | 2>(1);
+    const [shouldRender, setShouldRender] = useState(open);
 
-    // Always re-open on the first page.
+    const modalWrapperRef = useRef<HTMLDivElement | null>(null);
+    const modalCardRef = useRef<HTMLDivElement | null>(null);
+    const knifeRef = useRef<HTMLImageElement | null>(null);
+
     useEffect(() => {
-        if (open) setPage(1);
+        if (open) {
+            setShouldRender(true);
+            setPage(1);
+        }
     }, [open]);
 
-    // Allow Escape to close.
+    const handleClose = () => {
+        if (!modalWrapperRef.current) {
+            onClose();
+            return;
+        }
+
+        gsap.killTweensOf(modalWrapperRef.current);
+
+        gsap.to(modalWrapperRef.current, {
+            autoAlpha: 0,
+            duration: 0.1,
+            ease: 'power2.out',
+            onComplete: () => {
+                setShouldRender(false);
+                onClose();
+            },
+        });
+    };
+
     useEffect(() => {
         if (!open) return;
-        const onKey = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
+
+        const onKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
         };
+
         window.addEventListener('keydown', onKey);
-        return () => window.removeEventListener('keydown', onKey);
+
+        return () => {
+            window.removeEventListener('keydown', onKey);
+        };
     }, [open, onClose]);
 
-    if (!open) return null;
+    useEffect(() => {
+        if (
+            !open ||
+            !modalWrapperRef.current ||
+            !modalCardRef.current ||
+            !knifeRef.current
+        ) {
+            return;
+        }
+
+        const ctx = gsap.context(() => {
+            gsap.killTweensOf([modalCardRef.current, knifeRef.current]);
+
+            const modalTimeline = gsap.timeline();
+
+            modalTimeline
+                .fromTo(
+                    modalCardRef.current,
+                    {
+                        x: -880,
+                        y: 880,
+                        rotate: -6,
+                        transformOrigin: 'bottom left',
+                    },
+                    {
+                        x: 0,
+                        y: 0,
+                        rotate: 0,
+                        duration: 0.35,
+                        ease: 'power3.out',
+                    },
+                )
+                .to(modalCardRef.current, {
+                    x: -20,
+                    y: 20,
+                    duration: 0.1,
+                    ease: 'power2.out',
+                })
+                .to(modalCardRef.current, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.08,
+                    ease: 'power2.out',
+                });
+
+            const knifeTimeline = gsap.timeline({
+                delay: 0.25,
+            });
+
+            knifeTimeline.fromTo(
+                knifeRef.current,
+                {
+                    x: 260,
+                    y: -260,
+                    rotate: 8,
+                    autoAlpha: 0,
+                    transformOrigin: 'bottom left',
+                },
+                {
+                    x: 0,
+                    y: 0,
+                    rotate: 0,
+                    autoAlpha: 1,
+                    duration: 0.1,
+                    ease: 'power3.out',
+                },
+            );
+        }, modalWrapperRef);
+
+        return () => {
+            ctx.revert();
+        };
+    }, [open, shouldRender]);
+
+    if (!shouldRender) return null;
+
+    const displayName = name === 'BriefingDay' ? 'Briefing Day' : 'D-Day';
 
     return (
         <div
+            ref={modalWrapperRef}
             className="fixed inset-0 z-[60] flex items-center justify-center"
             role="dialog"
             aria-modal="true"
-            aria-label="About D-Day"
+            aria-label={`About ${displayName}`}
         >
+            {/*
+             * Positioning wrapper stays static.
+             * Modal card and knife are animated independently inside it.
+             */}
             {/* Backdrop */}
             <button
                 type="button"
@@ -47,112 +173,126 @@ export default function AboutDDayModal({ open, onClose }: AboutDDayModalProps) {
                 onClick={onClose}
                 className="absolute inset-0 cursor-default bg-black/75"
             />
-
-            {/* Card Wrapper */}
-            <div className="relative z-10 w-[85%] max-w-[1350px] -translate-y-[-6%]">
-                
-                {/* THE SVG BACKGROUNDS */}
+            <div className="relative z-10 w-[85%] max-w-[1150px] translate-y-[6%]">
+                {/* Independently animated knife */}
                 <img
-                    src={page === 1 ? bgPage1 : bgPage2}
+                    ref={knifeRef}
+                    src={greyknife}
                     alt=""
-                    className="w-full h-auto drop-shadow-2xl"
+                    className="pointer-events-none absolute -top-[27%] right-[10%] z-30 w-[25%]"
                 />
 
-                {/* THE ABSOLUTE OVERLAYS */}
-                {/* Everything inside here floats on top of the SVG background */}
-                <div className="absolute inset-0">
-                    
-                    {/* Grey knife */}
+                {/* Modal card and all regular content */}
+                <div ref={modalCardRef} className="relative w-full">
                     <img
-                        src={greyknife}
+                        src={aboutmodal}
                         alt=""
-                        className="absolute -top-[27%] right-[10%] w-[25%] rotate-[0deg]]"
+                        className="h-auto w-full drop-shadow-2xl"
                     />
 
-                    {/* Page 1 Body Text */}
-                    {page === 1 && (
-                        <div className="absolute left-[18%] top-[45%] w-[67%] -rotate-[0deg] text-white">
-                            <p className="font-arsenal text-[2.5vmin] leading-relaxed">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing
-                                elit, sed do eiusmod tempor Lorem ipsum dolor sit
-                                amet, consectetur adipiscing elit, sed do eiusmod
-                                tempor eiusmod tempor eiusmod tempor eiusmod tempor
-                                eiusmod tempor eiusmod tempor por eiusmod tempor
-                                por eiusmod tempor por eiusmod tempor por eiusmod
-                                tempor por eiusmod tempor.
-                            </p>
+                    <div className="absolute inset-0">
+                        {/* Dynamic About title */}
+                        <div className="absolute left-[17%] top-[22%] w-[25%]">
+                            <AboutTitle className="block h-auto w-full" />
                         </div>
-                    )}
 
-                    {/* Footer / Pagination Controls */}
-                    <div className="absolute bottom-[5%] left-[14%] flex items-end gap-6 text-white -rotate-2">
-                        {page === 1 ? (
-                            // 1. The outer wrapper is now just a static flex div
-                            <div className="flex items-center gap-0">
-                                
-                                {/* 2. The text is just a static image now */}
-                                <img src={page1Text} alt="1/2 Page" className="h-[20vmin] w-auto object-contain" />
-                                
-                                {/* 3. The button ONLY wraps the arrow */}
-                                <button
-                                    type="button"
-                                    onClick={() => setPage(2)}
-                                    aria-label="Next page"
-                                    // Moved the hover animations here (bumped to scale-110 so the arrow really pops)
-                                    className="transition duration-200 hover:scale-110 active:scale-95"
-                                >
-                                    <img 
-                                        src={rightArrow} 
-                                        alt="Next" 
-                                        className="h-[7vmin] w-auto object-contain -translate-x-[3vmin] translate-y-[0.5vmin]" 
-                                    />
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-0">
-                                
-                                {/* The button ONLY wraps the arrow */}
-                                <button
-                                    type="button"
-                                    onClick={() => setPage(1)}
-                                    aria-label="Previous page"
-                                    // Added relative z-10 so the clickable area stays on top if the arrow overlaps the text
-                                    className="relative z-10 transition duration-200 hover:scale-110 active:scale-95"
-                                >
-                                    <img 
-                                        src={leftArrow} 
-                                        alt="Previous" 
-                                        // Make sure you mirror the translation for the left arrow if needed
-                                        className="h-[7vmin] w-auto object-contain translate-x-[-1vmin] translate-y-[4.5vmin]" 
-                                    />
-                                </button>
+                        {/* Page 1 */}
+                        {page === 1 && (
+                            <div className="absolute left-[18%] top-[39%] h-[13.4rem] w-[67%] text-[#F2F2F2]">
+                                <h2 className="absolute -top-[27%] left-[35%] mb-[3vmin] -rotate-3 font-arsenal text-3xl font-bold text-[#282829]">
+                                    Apa itu {displayName}?
+                                </h2>
 
-                                {/* The text is just a static image now */}
-                                <img src={page2Text} alt="2/2 Page" className="h-[20vmin] w-auto object-contain" />
+                                <p className="font-arsenal text-lg leading-relaxed">
+                                    {modalDescription}
+                                </p>
                             </div>
                         )}
-                        
+
+                        {/* Page 2 */}
                         {page === 2 && (
-                            <span className="font-noto text-[2vmin] italic">
-                                
-                            </span>
-                        )}
-                    </div>
+                            <div className="absolute left-[18%] top-[37%] h-[8rem] w-[67%] text-[#F2F2F2]">
+                                <h2 className="absolute -top-[35%] left-[15%] mb-[3vmin] -rotate-3 font-arsenal text-3xl font-bold text-[#282829]">
+                                    Apa yang harus saya bawa atau pakai?
+                                </h2>
 
-                    {/* Back button (closes the modal) */}
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        // Removed the flex and gap since it is just one image now
-                        className="absolute bottom-[-3%] right-[-15%] transition duration-200 hover:scale-105 active:scale-95 -rotate-2"
-                    >
-                        <img 
-                            src={backButtonImg} 
-                            alt="Back" 
-                            // Set the height using vmin so it scales perfectly with your pagination
-                            className="h-[13vmin] w-auto object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.5)]" 
-                        />
-                    </button>
+                                <div className="grid grid-cols-3 gap-[3vmin]">
+                                    {images.map((image, index) => (
+                                        <div
+                                            key={`${image}-${index}`}
+                                            className="flex items-center justify-center"
+                                        >
+                                            <img
+                                                src={image}
+                                                alt={`Perlengkapan ${index + 1}`}
+                                                className="h-[30vmin] w-[30vmin] object-contain"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Pagination */}
+                        <div className="absolute bottom-[5%] left-[14%] flex -rotate-2 items-end gap-6 text-white">
+                            {page === 1 ? (
+                                <div className="flex items-center gap-0">
+                                    <img
+                                        src={page1Text}
+                                        alt="1/2 Page"
+                                        className="h-[20vmin] w-auto object-contain"
+                                    />
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setPage(2)}
+                                        aria-label="Next page"
+                                        className="transition duration-200 hover:scale-110 active:scale-95"
+                                    >
+                                        <img
+                                            src={rightArrow}
+                                            alt="Next"
+                                            className="h-[7vmin] w-auto -translate-x-[3vmin] translate-y-[0.5vmin] object-contain"
+                                        />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-0">
+                                    <button
+                                        type="button"
+                                        onClick={() => setPage(1)}
+                                        aria-label="Previous page"
+                                        className="relative z-10 transition duration-200 hover:scale-110 active:scale-95"
+                                    >
+                                        <img
+                                            src={leftArrow}
+                                            alt="Previous"
+                                            className="h-[7vmin] w-auto -translate-x-[1vmin] translate-y-[4.5vmin] object-contain"
+                                        />
+                                    </button>
+
+                                    <img
+                                        src={page2Text}
+                                        alt="2/2 Page"
+                                        className="h-[20vmin] w-auto object-contain"
+                                    />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Back button */}
+                        <button
+                            type="button"
+                            onClick={handleClose}
+                            className="absolute bottom-[-1%] right-[-14%] -rotate-2 transition duration-200 hover:scale-105 active:scale-95"
+                        >
+                            <img
+                                src={backButtonImg}
+                                alt="Back"
+                                className="h-[13vmin] w-auto object-contain"
+                            />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
