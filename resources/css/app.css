@@ -104,3 +104,19 @@ body,
         font-size: 48px;
     }
 }
+
+img,
+svg {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+img,
+svg {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}

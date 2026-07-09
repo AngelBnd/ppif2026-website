@@ -5,6 +5,7 @@ import { Head, Link } from '@inertiajs/react';
 import ArchiveShape from '@/assets/archive/ArchiveShape.svg?react';
 import BriefingDayButton from '@/assets/archive/BriefingDayButton.svg?react';
 import DDayButton from '@/assets/archive/DDayButton.svg?react';
+import GalleryScroll from '@/Components/about/GalleryScroll';
 import ArchiveBackground from './ArchiveBackground';
 
 export default function ArchivePage() {
@@ -95,7 +96,7 @@ export default function ArchivePage() {
                 <ArchiveBackground />
 
                 {/* AUTOMATED CAROUSEL FOTO (Slide In dari Kanan Atas) */}
-                <div className="perspective-wrapper animate-entrance-right absolute right-[0px] top-[-20px] z-0 ml-auto flex h-screen w-1/2 items-center justify-center overflow-hidden px-0 py-0 opacity-0">
+                {/* <div className="perspective-wrapper animate-entrance-right absolute right-[0px] top-[-20px] z-0 ml-auto flex h-screen w-1/2 items-center justify-center overflow-hidden px-0 py-0 opacity-0">
                     <div className="skew-container marquee-container relative -bottom-[0%] flex h-full max-h-[100vh] w-[340px] flex-col overflow-hidden">
                         <div className="marquee-vertical py-2">
                             {doublePhotos.map((src, index) => (
@@ -113,6 +114,14 @@ export default function ArchivePage() {
                             ))}
                         </div>
                     </div>
+                </div> */}
+                <div className="absolute right-12">
+                    <GalleryScroll
+                        images={dummyPhotos}
+                        clickable={false}
+                        faceDirection="left"
+                        pictureSize="large"
+                    />
                 </div>
 
                 {/* SHAPE BACKGROUND (Slide In dari Kiri Bawah barengan dengan Menu) */}
