@@ -1,16 +1,12 @@
-import * as React from 'react';
-
 export default function ArchiveBackground() {
     return (
-        <div className="absolute inset-0 w-full h-full bg-[#08080a] overflow-hidden select-none pointer-events-none z-0">
-            
+        <div className="pointer-events-none absolute inset-0 z-0 h-full w-full select-none overflow-hidden bg-[#08080a]">
             {/* BACKGROUND IMAGE DUMMY */}
-            <img 
-                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920" 
-                alt="Archive Background Dummy" 
-                className="w-full h-full object-cover opacity-20 grayscale brightness-75"
+            <img
+                src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920"
+                alt="Archive Background Dummy"
+                className="h-full w-full object-cover opacity-20 brightness-75 grayscale"
             />
-
         </div>
     );
 }
