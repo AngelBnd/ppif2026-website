@@ -28,9 +28,8 @@ export default function AppLayout({
                     <Navbar />
 
                     <main className="min-h-screen">{children}</main>
-
-                    <BottomFrame />
                 </div>
+                <BottomFrame />
             </div>
         </OrientationLayout>
     );
