@@ -3,11 +3,14 @@ import leftArrow from '@/assets/timeline/about-left-arrow.svg';
 import rightArrow from '@/assets/timeline/about-right-arrow.svg';
 import aboutmodal from '@/assets/timeline/aboutmodal.svg';
 import greyknife from '@/assets/timeline/grey-knife.svg';
-import page1Text from '@/assets/timeline/page1.svg';
-import page2Text from '@/assets/timeline/page2.svg';
+import One from '@/assets/timeline/one.svg?react';
+import Page from '@/assets/timeline/Page.svg?react';
+import Perhatiakn from '@/assets/timeline/Perhatikan.svg?react';
+import Two from '@/assets/timeline/two.svg?react';
 import gsap from 'gsap';
 import type { ComponentType, SVGProps } from 'react';
 import { useEffect, useRef, useState } from 'react';
+import CustomScrollBox from '../global/CustomScrollBox';
 
 type SVGComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -203,9 +206,9 @@ export default function AboutDDayModal({
                                     Apa itu {displayName}?
                                 </h2>
 
-                                <p className="font-arsenal text-lg leading-relaxed">
-                                    {modalDescription}
-                                </p>
+                                <div className="h-[13rem] pt-4">
+                                    <CustomScrollBox text={modalDescription} />
+                                </div>
                             </div>
                         )}
 
@@ -230,24 +233,29 @@ export default function AboutDDayModal({
                                         </div>
                                     ))}
                                 </div>
+
+                                <Perhatiakn className="absolute -bottom-[11rem] -right-[5rem] block h-auto w-[22rem]" />
                             </div>
                         )}
 
-                        {/* Pagination */}
-                        <div className="absolute bottom-[5%] left-[14%] flex -rotate-2 items-end gap-6 text-white">
-                            {page === 1 ? (
-                                <div className="flex items-center gap-0">
-                                    <img
-                                        src={page1Text}
-                                        alt="1/2 Page"
-                                        className="h-[20vmin] w-auto object-contain"
-                                    />
+                        <div className="absolute bottom-[5%] left-[14%] h-24 w-[13rem]">
+                            <Page className="absolute bottom-0 right-0 h-auto w-[10rem]" />
 
+                            <div className="absolute bottom-1 w-[4rem]">
+                                {page === 1 ? (
+                                    <One className="block h-auto w-[2.5rem]" />
+                                ) : (
+                                    <Two className="block h-auto w-[3rem]" />
+                                )}
+                            </div>
+
+                            <div className="absolute h-[5rem] w-[16.5rem]">
+                                {page === 1 ? (
                                     <button
                                         type="button"
                                         onClick={() => setPage(2)}
                                         aria-label="Next page"
-                                        className="transition duration-200 hover:scale-110 active:scale-95"
+                                        className="absolute right-0 top-2 transition duration-200 hover:scale-110 active:scale-95"
                                     >
                                         <img
                                             src={rightArrow}
@@ -255,14 +263,12 @@ export default function AboutDDayModal({
                                             className="h-[7vmin] w-auto -translate-x-[3vmin] translate-y-[0.5vmin] object-contain"
                                         />
                                     </button>
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-0">
+                                ) : (
                                     <button
                                         type="button"
                                         onClick={() => setPage(1)}
                                         aria-label="Previous page"
-                                        className="relative z-10 transition duration-200 hover:scale-110 active:scale-95"
+                                        className="absolute -left-10 -top-5 bottom-0 z-10 transition duration-200 hover:scale-110 active:scale-95"
                                     >
                                         <img
                                             src={leftArrow}
@@ -270,14 +276,8 @@ export default function AboutDDayModal({
                                             className="h-[7vmin] w-auto -translate-x-[1vmin] translate-y-[4.5vmin] object-contain"
                                         />
                                     </button>
-
-                                    <img
-                                        src={page2Text}
-                                        alt="2/2 Page"
-                                        className="h-[20vmin] w-auto object-contain"
-                                    />
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
 
                         {/* Back button */}

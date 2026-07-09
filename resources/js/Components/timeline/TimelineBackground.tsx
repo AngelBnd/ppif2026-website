@@ -11,7 +11,7 @@ export default function TimelineBackground() {
         <img
             src={timelineBg}
             alt=""
-            className="absolute inset-0 z-0 h-full w-[-10] object-contain object-bottom brightness-50"
+            className="absolute inset-0 z-0 h-full w-[-10] object-contain object-bottom"
         />
     );
 }

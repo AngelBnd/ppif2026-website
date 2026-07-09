@@ -30,7 +30,7 @@ export const timelineInformation: Record<TimelineView, TimelineInformation> = {
     1: {
         name: 'D-Day',
         header: DdayHeader,
-        headerClassName: '!w-[28vmin]',
+        headerClassName: '!w-[20vmin]',
         aboutTitle: DdayTitle,
         modalTitle: 'About D-Day',
         informationDisplayed:

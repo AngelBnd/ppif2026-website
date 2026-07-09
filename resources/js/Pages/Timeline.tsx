@@ -7,7 +7,13 @@ import PersonaArrow from '@/Components/timeline/PersonaArrow';
 import TimelineBackground from '@/Components/timeline/TimelineBackground';
 import AppLayout from '@/Layouts/AppLayout';
 import { Head } from '@inertiajs/react';
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import {
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+    type CSSProperties,
+} from 'react';
 
 import { timelineInformation } from '@/data/timeline';
 import gsap from 'gsap';
@@ -61,35 +67,154 @@ export default function Timeline() {
     const knifeRef = useRef<HTMLImageElement | null>(null);
     const satStickerRef = useRef<HTMLDivElement | null>(null);
     const tueStickerRef = useRef<HTMLDivElement | null>(null);
-    const [view, setView] = useState<TimelineView>(1);
+    const satAnimationRef = useRef<HTMLDivElement | null>(null);
+    const tueAnimationRef = useRef<HTMLDivElement | null>(null);
+    const backgroundRef = useRef<HTMLDivElement | null>(null);
+    const layoutRef = useRef<HTMLDivElement | null>(null);
+
+    const [view, setView] = useState<TimelineView>(2);
     const [modalOpen, setModalOpen] = useState(false);
 
     const pos = stickerPos[view];
 
     const currentInfo = timelineInformation[view];
     const HeaderSVG = currentInfo.header;
+    const hasMountedRef = useRef(false);
 
-    useEffect(() => {
-        const target =
-            pos.logo === 'sat'
-                ? satStickerRef.current
-                : pos.logo === 'tue'
-                  ? tueStickerRef.current
-                  : null;
+    useLayoutEffect(() => {
+        const stickers = [
+            satAnimationRef.current,
+            tueAnimationRef.current,
+        ].filter((sticker): sticker is HTMLDivElement => sticker !== null);
 
-        if (!knifeRef.current || !target) return;
+        const knife = knifeRef.current;
+        const layout = layoutRef.current;
+
+        if (stickers.length === 0 || !knife || !layout) return;
 
         const ctx = gsap.context(() => {
             const timeline = gsap.timeline();
 
+            stickers.forEach((sticker, index) => {
+                timeline.fromTo(
+                    sticker,
+                    {
+                        y: -500,
+                    },
+                    {
+                        y: 0,
+                        duration: 0.6,
+                        ease: 'power4.in',
+                    },
+                    index === 0 ? 0 : '>-0.5',
+                );
+
+                if (index === 1) {
+                    timeline
+                        .to(layout, {
+                            x: -12,
+                            y: 10,
+                            duration: 0.035,
+                            ease: 'power1.inOut',
+                        })
+                        .to(layout, {
+                            x: 10,
+                            y: -8,
+                            duration: 0.035,
+                            ease: 'power1.inOut',
+                        })
+                        .to(layout, {
+                            x: -6,
+                            y: 5,
+                            duration: 0.035,
+                            ease: 'power1.inOut',
+                        })
+                        .to(layout, {
+                            x: 0,
+                            y: 0,
+                            duration: 0.04,
+                            ease: 'power1.out',
+                        });
+                }
+            });
+
             timeline
                 .fromTo(
-                    knifeRef.current,
+                    knife,
                     {
                         x: 300,
                         y: -300,
                         rotate: 8,
+                        transformOrigin: 'bottom left',
+                    },
+                    {
+                        x: 0,
+                        y: 0,
+                        rotate: 0,
 
+                        duration: 0.07,
+                        ease: 'power3.out',
+                    },
+                    '+=0.1',
+                )
+                .to(knife, {
+                    rotate: 3,
+                    duration: 0.04,
+                })
+                .to(knife, {
+                    rotate: -2.4,
+                    duration: 0.04,
+                })
+                .to(knife, {
+                    rotate: 1,
+                    duration: 0.04,
+                })
+                .to(knife, {
+                    rotate: -1,
+                    duration: 0.04,
+                })
+                .to(knife, {
+                    rotate: 0,
+                    duration: 0.04,
+                });
+        });
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key.toLowerCase() === 'c') {
+                setModalOpen(true);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            ctx.revert();
+        };
+    }, []);
+
+    useEffect(() => {
+        if (!hasMountedRef.current) {
+            hasMountedRef.current = true;
+            return;
+        }
+
+        const knife = knifeRef.current;
+
+        if (!knife) return;
+
+        const ctx = gsap.context(() => {
+            gsap.killTweensOf(knife);
+
+            const timeline = gsap.timeline();
+
+            timeline
+                .fromTo(
+                    knife,
+                    {
+                        x: 300,
+                        y: -300,
+                        rotate: 8,
                         transformOrigin: 'bottom left',
                     },
                     {
@@ -98,31 +223,30 @@ export default function Timeline() {
                         rotate: 0,
                         delay: 0.3,
                         duration: 0.07,
-
                         ease: 'power3.out',
                     },
                 )
-                .to(knifeRef.current, {
+                .to(knife, {
                     rotate: 3,
                     duration: 0.04,
                     ease: 'power1.inOut',
                 })
-                .to(knifeRef.current, {
+                .to(knife, {
                     rotate: -2.4,
                     duration: 0.04,
                     ease: 'power1.inOut',
                 })
-                .to(knifeRef.current, {
+                .to(knife, {
                     rotate: 1,
                     duration: 0.04,
                     ease: 'power1.inOut',
                 })
-                .to(knifeRef.current, {
+                .to(knife, {
                     rotate: -1,
                     duration: 0.04,
                     ease: 'power1.inOut',
                 })
-                .to(knifeRef.current, {
+                .to(knife, {
                     rotate: 0,
                     duration: 0.04,
                     ease: 'power1.out',
@@ -190,16 +314,48 @@ export default function Timeline() {
             <Head title="Timeline" />
 
             <div className="relative z-40 h-screen w-full overflow-hidden">
-                <TimelineBackground />
+                {/* Background + stickers shake together */}
+                <div
+                    ref={layoutRef}
+                    className="pointer-events-none absolute inset-0"
+                >
+                    <TimelineBackground />
 
-                {/* Timeline title sticker */}
+                    <div
+                        ref={satAnimationRef}
+                        className="absolute inset-0 z-10"
+                    >
+                        <DateSticker
+                            ref={satStickerRef}
+                            day="15"
+                            weekday="SAT"
+                            color="blue"
+                            withLogo={pos.logo === 'sat'}
+                            style={{ ...pos.sat, transition }}
+                        />
+                    </div>
+
+                    <div
+                        ref={tueAnimationRef}
+                        className="absolute inset-0 z-10"
+                    >
+                        <DateSticker
+                            ref={tueStickerRef}
+                            day="18"
+                            weekday="TUE"
+                            color="white"
+                            withLogo={pos.logo === 'tue'}
+                            style={{ ...pos.tue, transition }}
+                        />
+                    </div>
+                </div>
+
+                {/* These stay outside the shaking group */}
                 <img
                     src={titleTimeline}
                     alt="Timeline"
                     className="absolute left-[0%] top-[14%] z-20 w-[34%]"
                 />
-
-                {/* Date stickers (animate between the two views) */}
 
                 <img
                     ref={knifeRef}
@@ -207,25 +363,7 @@ export default function Timeline() {
                     alt=""
                     className="absolute left-[36%] top-[26%] z-50 w-[11.5%] -translate-x-1/2"
                 />
-                <DateSticker
-                    ref={satStickerRef}
-                    day="15"
-                    weekday="SAT"
-                    color="blue"
-                    withLogo={pos.logo === 'sat'}
-                    style={{ ...pos.sat, transition }}
-                />
 
-                <DateSticker
-                    ref={tueStickerRef}
-                    day="18"
-                    weekday="TUE"
-                    color="white"
-                    withLogo={pos.logo === 'tue'}
-                    style={{ ...pos.tue, transition }}
-                />
-
-                {/* State-switching arrow: left in view 1, right in view 2 */}
                 {view === 1 ? (
                     <PersonaArrow
                         direction="left"
@@ -242,7 +380,14 @@ export default function Timeline() {
                     />
                 )}
 
-                {/* Right-hand D-Day information panel */}
+                <AboutDDayModal
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    name={currentInfo.name}
+                    AboutTitle={currentInfo.aboutTitle}
+                    modalDescription={currentInfo.modalDescription}
+                    images={currentInfo.images}
+                />
                 <DDayPanel
                     currentInfo={currentInfo.name}
                     informationDisplayed={currentInfo.informationDisplayed}
@@ -251,16 +396,6 @@ export default function Timeline() {
                     headerClassName={currentInfo.headerClassName}
                 />
             </div>
-
-            {/* About D-Day overlay (shared by both views) */}
-            <AboutDDayModal
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                name={currentInfo.name}
-                AboutTitle={currentInfo.aboutTitle}
-                modalDescription={currentInfo.modalDescription}
-                images={currentInfo.images}
-            />
         </AppLayout>
     );
 }
