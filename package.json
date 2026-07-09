@@ -38,6 +38,7 @@
         "vite-plugin-svgr": "^5.2.0"
     },
     "dependencies": {
+        "@gsap/react": "^2.1.2",
         "gsap": "^3.15.0",
         "three": "^0.184.0"
     }
