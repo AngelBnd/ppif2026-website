@@ -2,13 +2,13 @@ import { useState, FormEvent } from 'react';
 import type { GamePageChildProps } from '../GamePage';
 import { IMG_QS } from '@/data/gameQuestions/dataTraceQuestions'; 
 
-// assets - Menggunakan import string URL standar
+// assets
 import CurrentQuestionBanner from '@/assets/games/dataTrace/svgs/CurrentQuestionBanner.svg'
 import ExclamationShape from '@/assets/games/dataTrace/svgs/ExclamationShape.svg'
 import InputFieldShape from '@/assets/games/dataTrace/svgs/InputFieldShape.svg'
 import OkButton from '@/assets/games/dataTrace/svgs/OkButton.svg'
 import okButtonHover from '@/assets/games/dataTrace/svgs/OkButtonHover.svg'
-import QuestionRemainingBanner from '@/assets/games/dataTrace/svgs/CurrentQuestionBanner.svg'
+import QuestionRemainingBanner from '@/assets/games/dataTrace/svgs/QuestionRemainingBanner.svg'
 import Shape1 from '@/assets/games/dataTrace/svgs/Shape1.svg'
 import QuestionBackground from '@/assets/games/dataTrace/svgs/QuestionBackground.svg'
 
@@ -45,44 +45,91 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
     return (
         <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-4 font-mono text-zinc-300 selection:bg-zinc-800 selection:text-white">
 
-            {/* =========================================================
-                MAIN WRAPPER CONTAINER (MENAMPUNG SEMUA KONTEN DI ATAS KERTAS)
-               ========================================================= */}
-            <div className="relative z-10 flex h-[620px] w-full max-w-[440px] flex-col items-center justify-between p-8 sm:p-10">
+            {/* MAIN WRAPPER CONTAINER */}
+            <div className="absolute z-10 flex h-[620px] w-full max-w-[1440px] flex-col items-center justify-between p-8 sm:p-10   border-dashed border-yellow-400">
                 
-                {/* =========================================================
-                    SINGLE CONSOLIDATED CONTAINER: BANNER, DESKRIPSI, DAN GAMBAR FRAGMENT
-                   ========================================================= */}
-                <div className="relative z-10 flex w-full flex-col items-center">
+                {/* QUESTION CONTAINER */}
+                <div className="absolute z-10 flex w-full flex-col items-center">
 
-                    {/* BACKGROUND ASSET: QuestionBackground */}
-                    <div className="absolute inset-0 z-0 select-none pointer-events-none">
-                        <img src={QuestionBackground} alt="Background Card" className="h-full w-full object-stretch drop-shadow-[0_25px_30px_rgba(0,0,0,0.6)]" />
+                    {/* paper asset*/}
+                    <div className="absolute bottom-[-620px] left-[220px] h-[800px] w-[920px] z-0 select-none pointer-events-none">
+                        <img src={QuestionBackground} alt="Background Card" className="h-full w-full object-stretch" />
                     </div>
                 
-                    {/* DECORATIVE BACKGROUND INNER SHAPES (Aksen Ornamen Luar) */}
-                    <div className="absolute -left-3 top-1/3 z-10 pointer-events-none">
-                        <img src={ExclamationShape} alt="Exclamation Shape" className="h-10 w-auto opacity-80" />
+                    {/* shape dekorasi*/}
+                    <div className="absolute -left-[-1050px] -top-[-130px] w-30 h-44 z-10 pointer-events-none   border-yellow-400">
+                        <img src={ExclamationShape} alt="Exclamation Shape" className="h-full w-full opacity-80" />
                     </div>
-                    <div className="absolute -right-4 bottom-1/4 z-10 pointer-events-none">
-                        <img src={Shape1} alt="Shape Decoration" className="h-12 w-auto opacity-80" />
+                    <div className="absolute -right-[-1090px] -bottom-[480px] w-40 h-40 z-10 pointer-events-none   border-yellow-400">
+                        <img src={Shape1} alt="Shape Decoration" className="h-full w-full opacity-80" />
                     </div>
                 
-                    {/* Header Informasi Progress Soal (Menggunakan Banner SVG) */}
-                    <div className="relative z-10 flex w-full items-center justify-center h-12 mt-6">
-                        <img src={CurrentQuestionBanner} alt="Current Question Banner" className="absolute inset-0 h-full w-full object-contain" />
-                        <div className="relative z-10 flex items-center gap-2 text-[11px] font-black tracking-[0.2em] text-zinc-900">
-                            <span>STAGE:</span>
-                            <span className="bg-zinc-950 px-1.5 py-0.5 rounded text-white text-xs">
-                                {String(currentIndex + 1).padStart(2, '0')}
-                            </span>
-                            <span className="text-zinc-500">/</span>
-                            <span className="text-zinc-700">{String(IMG_QS.length).padStart(2, '0')}</span>
+                    {/* Header progress soal */}
+                    <div className="absolute top-[-40px] left-[50%] -translate-x-1/2 z-10 flex h-44 w-full max-w-[1200px] items-center justify-between gap-4   border-yellow-400">
+
+                        {/* 1. Current Question Banner */}
+                        <div 
+                            className="relative flex flex-1 items-center justify-center h-full w-full"
+                            style={{
+                                width: '120px',
+                                height: '190px',
+                                top: '20px',
+                                left: '-130px',
+                                transform: 'rotate(-8deg)' 
+                            }}
+                        >
+                            <img src={CurrentQuestionBanner} alt="Current Question Banner" className="absolute inset-0 h-full w-full object-fill" />
+
+                            <div 
+                                className="relative z-10 text-[28px] font-black tracking-[0.2em] text-white uppercase select-none whitespace-nowrap pl-4 inline-block"
+                                style={{
+                                    top:"-10px",
+                                    left:"5px",
+                                    transform: 'rotate(-3deg)'
+                                }}
+                            >
+                                SOAL {currentIndex + 1}
+                            </div>
                         </div>
+                            
+                        {/* 2. Question Progress Banner */}
+                        <div 
+                            className="relative flex flex-1 items-center justify-center h-full w-full"
+                            style={{
+                                width: '120px',
+                                height: '120px',
+                                top: '-43px',
+                                left: '-400px',
+                                transform: 'rotate(-8deg)' 
+                            }}
+                        >
+                            <img src={QuestionRemainingBanner} alt="Question Remaining Banner" className="absolute inset-0 h-full w-full object-fill" />
+
+                            <div className="relative z-10 flex items-center justify-center gap-1.5 text-[28px] font-black tracking-[0.2em] text-zinc-900 select-none whitespace-nowrap"
+                                style={{
+                                    top:"2px",
+                                    left:"50px",
+                                    transform: 'rotate(-5deg)'
+                                }}
+                            >
+                                <span className="text-white text-center">
+                                    {String(currentIndex + 1).padStart(2, '0')}
+                                </span>
+                                <span className="text-zinc-500 font-normal">/</span>
+                                <span className="text-zinc-700">
+                                    {String(IMG_QS.length).padStart(2, '0')}
+                                </span>
+                            </div>
+                        </div>
+                            
                     </div>
 
-                    {/* Container Display Gambar Fragment Soal */}
-                    <div className="relative z-10 mt-4 mb-6 flex flex-wrap items-center justify-center gap-3 min-h-[150px] w-[calc(100%-4rem)] shadow-inner">
+                    {/* Display Gambar Soal */}
+                    <div className="absolute -bottom-[330px] -right-[-250px] z-10 flex flex-wrap items-center justify-center gap-3 min-h-[150px] w-[calc(100%-4rem)] "
+                        style={{
+                            transform: "rotate(-6deg)"
+                        }}
+                    >
                         {currentQuestion.imgs.map((imgSrc, index) => (
                             <div 
                                 key={index} 
@@ -102,71 +149,69 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                         ))}
                     </div>
                 
-                    {/* Deskripsi Teks Pertanyaan */}
-                    <div className="relative z-10 mt-4 min-h-[40px] text-center px-8">
-                        <p className="text-xs font-bold leading-relaxed text-zinc-800">
+                    {/* Teks Pertanyaan */}
+                    <div className="absolute top-[150px] left-[680px] z-10 text-left   border-yellow-400"
+                        style={{
+                            width: '350px',
+                            minHeight: '140px',
+                            transform: 'rotate(-6deg)'
+                        }}
+                    >
+                        <p className="text-xs font-bold text-[22px] leading-relaxed text-zinc-800">
                             {currentQuestion.desc}
                         </p>
                     </div>
 
                 </div>
                     
-                {/* =========================================================
-                    DIV UTAMA 2: ACTION CONTROLS (INPUT FIELD & SUBMIT CONFIRMATION)
-                   ========================================================= */}
-                <form onSubmit={handleSubmit} className="relative z-10 flex w-full flex-col items-center gap-4 pb-4">
+                {/* ACTION CONTROLS CONTAINER */}
+                <form onSubmit={handleSubmit} className="absolute -bottom-[0px] -right-[0px] z-10 gap-5 flex w-full h-[140px] flex-row items-center justify-center   border-dashed border-yellow-400">
                     
-                    {/* Input Field Section with Absolute Layout Shape */}
-                    <div className="relative flex w-full items-center justify-center h-14 max-w-[320px]">
+                    {/* Input Field */}
+                    <div 
+                        className="relative flex w-full items-center justify-center h-32 max-w-[420px] transition-all duration-300 hover:scale-[1.03] group/input   border-dashed border-yellow-400"
+                    >
                         <img src={InputFieldShape} alt="Input Wrapper Shape" className="absolute inset-0 h-full w-full object-contain" />
-                        
+
                         <input
                             type="text"
                             value={userInput}
                             onChange={(e) => setUserInput(e.target.value)}
-                            placeholder="INPUT_PASSWORD_KEY..."
-                            className={`relative z-10 w-full bg-transparent px-6 text-center text-xs font-black tracking-[0.25em] uppercase placeholder:text-zinc-400 focus:outline-none transition-all ${
-                                isWrong ? 'animate-shake text-red-600' : 'text-zinc-950'
+                            placeholder="INPUT HERE"
+                            className={`relative z-10 w-[334px] bg-transparent px-6 text-center text-24px font-black tracking-[0.25em] uppercase placeholder:text-zinc-400 outline-none border-none focus:outline-none focus:ring-0 focus:border-none cursor-text transition-all ${
+                                isWrong ? 'animate-shake text-red-600' : 'text-white'
                             }`}
                             autoFocus
                         />
                     </div>
 
-                    {/* Interactive Button Section (OkButton & Hover state injection) */}
+                    {/* Button Section */}
                     <button
                         type="submit"
-                        className="group relative flex h-12 w-full max-w-[160px] items-center justify-center overflow-hidden transition-transform active:scale-[0.97]"
+                        className="group relative flex h-28 w-full max-w-[240px] items-center justify-center overflow-hidden transition-transform active:scale-[0.97]   border-dashed border-yellow-400"
                     >
-                        {/* Default Asset State */}
+                        {/* Idle State */}
                         <img src={OkButton} alt="Action Confirm" className="absolute inset-0 h-full w-full object-contain transition-opacity duration-200 group-hover:opacity-0" />
                         
-                        {/* Hover Asset State */}
+                        {/* Hover State */}
                         <div className="absolute inset-0 h-full w-full opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                             <img src={okButtonHover} alt="Action Confirm Hover" className="h-full w-full object-contain" />
                         </div>
 
-                        {/* Button Interactive Invisible Foreground Text Trigger */}
-                        <span className="relative z-10 text-[10px] font-black tracking-widest text-zinc-950 uppercase hidden">
-                            DECODE
-                        </span>
                     </button>
 
-                    {/* Error Notification Alert */}
-                    <div className="absolute -bottom-4 left-0 right-0 h-4 text-center">
+                    {/* Alert wrong answer */}
+                    <div className="absolute -bottom-4 left-0 right-0 h-4 text-center   border-dashed border-yellow-400">
                         {isWrong && (
-                            <span className="text-[9px] font-black tracking-widest text-red-600 animate-pulse">
-                                [ALERT: ACCESS_DENIED]
+                            <span className="text-[18px] font-black tracking-widest text-red-600 animate-pulse">
+                                [ALERT: WRONG INPUT]
                             </span>
                         )}
                     </div>
                 </form>
 
             </div>
-
-            {/* PERSISTENT FOOTER NOTATION */}
-            <footer className="absolute bottom-4 z-20 text-center text-[9px] tracking-[0.3em] text-zinc-700 select-none">
-                SECURE INTERFACE // PROTOCOL_ACT_I_2026
-            </footer>
+            
         </main>
     );
 }
