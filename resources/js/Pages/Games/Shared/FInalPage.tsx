@@ -13,7 +13,7 @@ export default function FinalPage() {
                     PPIF 2026,
                 </h1>
                 
-                <h1 className="-mt-2 text-end font-['Noto_Sans'] uppercase mt-4 text-6xl font-bold">
+                <h1 className="-mt-2 text-end font-['Noto_Sans'] uppercase mt-4 text-8xl font-bold">
                     {TARGET_WORD}
                 </h1>
             </section>
