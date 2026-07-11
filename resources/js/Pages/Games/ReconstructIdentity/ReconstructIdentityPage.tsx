@@ -1,7 +1,14 @@
-import { useEffect, useRef, useState, type KeyboardEvent, type ClipboardEvent } from 'react';
-import type { GamePageChildProps } from '../GamePage';
+import gsap from 'gsap';
+import {
+    useEffect,
+    useRef,
+    useState,
+    type ClipboardEvent,
+    type KeyboardEvent,
+} from 'react';
 import stripID from '../../../assets/games/reconstructIdentity/stripID.webp';
 import titleID from '../../../assets/games/reconstructIdentity/titleID.webp';
+import type { GamePageChildProps } from '../GamePage';
 
 const WORD_LENGTH = 6;
 
@@ -10,19 +17,25 @@ export const TARGET_WORD = 'STELLA'; // INI PASSWORDNYA / KEYWORD
 const REVEALED_INDICES = [2, 4];
 
 const INPUT_CLASSES =
-    "w-36 bg-transparent pt-20 border-0 text-center text-9xl text-white caret-white font-['Noto_Sans'] " +
+    "w-36 bg-transparent pt-3 border-0 text-center text-9xl text-white caret-white font-['Noto_Sans'] mt-12 " +
     'font-bold outline-none ring-0 shadow-none appearance-none focus:outline-none focus:ring-0 ' +
-    "focus:border-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none [-webkit-tap-highlight-color:transparent]";
+    'focus:border-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none [-webkit-tap-highlight-color:transparent]';
 
 type GuessStatus = 'playing' | 'wrong' | 'correct';
 
-export default function ReconstructIdentityPage({ finishGame }: GamePageChildProps) {
+export default function ReconstructIdentityPage({
+    finishGame,
+}: GamePageChildProps) {
     const [letters, setLetters] = useState<string[]>(() =>
-        Array.from({ length: WORD_LENGTH }, (_, i) => (REVEALED_INDICES.includes(i) ? TARGET_WORD[i] : ''))
+        Array.from({ length: WORD_LENGTH }, (_, i) =>
+            REVEALED_INDICES.includes(i) ? TARGET_WORD[i] : '',
+        ),
     );
     const [isVisible, setIsVisible] = useState(false);
     const [status, setStatus] = useState<GuessStatus>('playing');
     const inputsRef = useRef<HTMLInputElement[]>([]);
+    const inputAreaRef = useRef<HTMLDivElement | null>(null);
+    const isFinishingRef = useRef(false);
 
     function findNextEditable(from: number, direction: 1 | -1) {
         let i = from + direction;
@@ -50,12 +63,112 @@ export default function ReconstructIdentityPage({ finishGame }: GamePageChildPro
             return;
         }
 
-        if (letters.join('') === TARGET_WORD) {
-            setStatus('correct');
-            finishGame();
-        } else {
+        if (letters.join('') !== TARGET_WORD) {
             setStatus('wrong');
+
+            if (inputAreaRef.current) {
+                const target = inputAreaRef.current;
+
+                gsap.killTweensOf(target);
+
+                gsap.timeline()
+                    .set(target, {
+                        x: 0,
+                    })
+                    .to(target, {
+                        x: -12,
+                        duration: 0.05,
+                        ease: 'power1.inOut',
+                    })
+                    .to(target, {
+                        x: 12,
+                        duration: 0.05,
+                        ease: 'power1.inOut',
+                    })
+                    .to(target, {
+                        x: -8,
+                        duration: 0.05,
+                        ease: 'power1.inOut',
+                    })
+                    .to(target, {
+                        x: 8,
+                        duration: 0.05,
+                        ease: 'power1.inOut',
+                    })
+                    .to(target, {
+                        x: -4,
+                        duration: 0.04,
+                        ease: 'power1.inOut',
+                    })
+                    .to(target, {
+                        x: 4,
+                        duration: 0.04,
+                        ease: 'power1.inOut',
+                    })
+                    .to(target, {
+                        x: 0,
+                        duration: 0.04,
+                        ease: 'power1.out',
+                    });
+            }
+
+            return;
         }
+
+        setStatus('correct');
+
+        if (isFinishingRef.current) return;
+
+        const inputElements = inputsRef.current.filter(Boolean);
+
+        if (inputElements.length === 0) {
+            finishGame();
+            return;
+        }
+
+        isFinishingRef.current = true;
+
+        inputElements.forEach((input) => {
+            input.blur();
+            input.disabled = true;
+        });
+
+        const timeline = gsap.timeline({
+            delay: 0.2,
+            onComplete: finishGame,
+        });
+
+        timeline
+            .to(inputElements, {
+                backgroundColor: '#12C898',
+                duration: 0.12,
+                ease: 'power1.inOut',
+            })
+            .to(inputElements, {
+                backgroundColor: 'transparent',
+                duration: 0.12,
+                ease: 'power1.inOut',
+            })
+            .to(inputElements, {
+                backgroundColor: '#12C898',
+                duration: 0.12,
+                ease: 'power1.inOut',
+            })
+            .to(inputElements, {
+                backgroundColor: 'transparent',
+                duration: 0.12,
+                ease: 'power1.inOut',
+            })
+            .to(
+                {},
+                {
+                    duration: 0.35,
+                },
+            );
+
+        return () => {
+            timeline.kill();
+        };
     }, [letters, finishGame]);
 
     const setLetterAt = (index: number, char: string) => {
@@ -67,7 +180,10 @@ export default function ReconstructIdentityPage({ finishGame }: GamePageChildPro
     };
 
     const handleChange = (index: number, value: string) => {
-        const char = value.slice(-1).toUpperCase().replace(/[^A-Z0-9]/g, '');
+        const char = value
+            .slice(-1)
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, '');
         setLetterAt(index, char);
 
         if (char) {
@@ -76,22 +192,32 @@ export default function ReconstructIdentityPage({ finishGame }: GamePageChildPro
         }
     };
 
-    const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = (
+        index: number,
+        e: KeyboardEvent<HTMLInputElement>,
+    ) => {
         if (e.key === 'Backspace' && !letters[index] && index > 0) {
             const prev = findNextEditable(index, -1);
             if (prev !== -1) inputsRef.current[prev]?.focus();
         }
     };
 
-    const handlePaste = (index: number, e: ClipboardEvent<HTMLInputElement>) => {
-        const pasted = e.clipboardData.getData('text').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    const handlePaste = (
+        index: number,
+        e: ClipboardEvent<HTMLInputElement>,
+    ) => {
+        const pasted = e.clipboardData
+            .getData('text')
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, '');
         if (!pasted) return;
         e.preventDefault();
 
         let cursor = index;
         let lastFilled = index;
         for (const char of pasted) {
-            while (cursor < WORD_LENGTH && REVEALED_INDICES.includes(cursor)) cursor++;
+            while (cursor < WORD_LENGTH && REVEALED_INDICES.includes(cursor))
+                cursor++;
             if (cursor >= WORD_LENGTH) break;
             setLetterAt(cursor, char);
             lastFilled = cursor;
@@ -106,7 +232,9 @@ export default function ReconstructIdentityPage({ finishGame }: GamePageChildPro
             <section className="relative flex flex-col items-center justify-center pb-20 text-center">
                 <div
                     className={`flex items-center justify-center transition-all duration-700 ease-out ${
-                        isVisible ? 'scale-100 opacity-100' : 'scale-75 opacity-0'
+                        isVisible
+                            ? 'scale-100 opacity-100'
+                            : 'scale-75 opacity-0'
                     }`}
                 >
                     <img
@@ -118,7 +246,9 @@ export default function ReconstructIdentityPage({ finishGame }: GamePageChildPro
 
                 <div
                     className={`relative flex items-center justify-center transition-all duration-700 ease-out ${
-                        isVisible ? 'translate-x-0 opacity-100' : '-translate-x-12 opacity-0'
+                        isVisible
+                            ? 'translate-x-0 opacity-100'
+                            : '-translate-x-12 opacity-0'
                     }`}
                 >
                     <img
@@ -128,30 +258,45 @@ export default function ReconstructIdentityPage({ finishGame }: GamePageChildPro
                     />
 
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                        <div className="flex items-center justify-center -rotate-6">
+                        <div
+                            ref={inputAreaRef}
+                            className="flex -rotate-6 items-center justify-center"
+                        >
                             {letters.map((letter, index) => {
-                                const revealed = REVEALED_INDICES.includes(index);
+                                const revealed =
+                                    REVEALED_INDICES.includes(index);
                                 return (
                                     <input
                                         key={index}
                                         ref={(el) => {
-                                            if (el) inputsRef.current[index] = el;
+                                            if (el)
+                                                inputsRef.current[index] = el;
                                         }}
                                         type="text"
                                         inputMode="text"
                                         maxLength={1}
                                         value={letter}
-                                        placeholder={revealed ? undefined : '__'}
+                                        placeholder={
+                                            revealed ? undefined : '__'
+                                        }
                                         readOnly={revealed}
                                         tabIndex={revealed ? -1 : 0}
                                         autoComplete="off"
                                         autoCorrect="off"
                                         spellCheck={false}
-                                        onChange={(e) => handleChange(index, e.target.value)}
-                                        onKeyDown={(e) => handleKeyDown(index, e)}
+                                        onChange={(e) =>
+                                            handleChange(index, e.target.value)
+                                        }
+                                        onKeyDown={(e) =>
+                                            handleKeyDown(index, e)
+                                        }
                                         onPaste={(e) => handlePaste(index, e)}
-                                        className={`${INPUT_CLASSES} ${revealed ? 'pointer-events-none' : 'pointer-events-auto'}`}
-                                        aria-label={revealed ? `Strip letter ${index + 1} (revealed)` : `Strip letter ${index + 1}`}
+                                        className={`${INPUT_CLASSES} ${revealed ? 'pointer-events-none' : 'pointer-events-auto'} mx-2`}
+                                        aria-label={
+                                            revealed
+                                                ? `Strip letter ${index + 1} (revealed)`
+                                                : `Strip letter ${index + 1}`
+                                        }
                                     />
                                 );
                             })}
