@@ -1,6 +1,6 @@
 export const CW_ROWS = 13,
     CW_COLS = 20;
-export const CW = {
+export const CWdata = {
     across: [
         {
             num: 1,

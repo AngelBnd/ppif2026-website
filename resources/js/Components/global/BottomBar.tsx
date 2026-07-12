@@ -1,6 +1,13 @@
+import { usePage } from '@inertiajs/react';
+
 export default function BottomFrame() {
+    const { url } = usePage();
+    const isGamePage = url.startsWith('/games');
+
     return (
-        <div className="-z-1 pointer-events-none fixed -bottom-8 left-0 block w-full overflow-hidden">
+        <div
+            className={`pointer-events-none fixed -bottom-8 left-0 block w-full overflow-hidden ${isGamePage ? 'invisible' : ''}`}
+        >
             <div className="bottomFrame-video-mask bg-[#0A0C0F]">
                 <video
                     autoPlay

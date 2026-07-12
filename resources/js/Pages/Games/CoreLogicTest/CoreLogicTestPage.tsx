@@ -4,11 +4,13 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
     return (
         <main className="flex min-h-screen items-center justify-center bg-black text-white">
             <section className="text-center">
-                <h1 className="text-5xl font-bold">Core Logic (Placeholder)</h1>
+                <div className="bg-slate-300"></div>
 
+                <h1 className="text-5xl font-bold">Core Logic (Placeholder)</h1>
+                {/* 
                 <p className="mt-4 text-white/60">
                     Put Core Logic puzzle here.
-                </p>
+                </p> */}
 
                 <button
                     onClick={finishGame}
