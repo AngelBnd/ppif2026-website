@@ -1,26 +1,21 @@
 import { router } from '@inertiajs/react';
+import { TARGET_WORD } from '../ReconstructIdentity/ReconstructIdentityPage';
+
 export default function FinalPage() {
     return (
-        <main className="flex min-h-screen items-center justify-center bg-black text-white">
-            <section className="text-center">
-                <p className="text-sm uppercase tracking-[0.3em] text-white/50">
-                    Final Game Completed placeholder
-                </p>
-
-                <h1 className="mt-4 text-5xl font-bold">
-                    WELCAME TO PPIF2026!!!!
+        <main className="flex min-h-screen items-end justify-end bg-black text-white pb-48 pr-24">
+            <section className=" -rotate-12 ">
+                <h1 className="-mb-8 font-['Noto_Sans'] uppercase mt-4 text-5xl font-bold -rotate-6 -ml-32">
+                    WELCOME TO 
                 </h1>
 
-                <p className="mt-4 text-white/60">
-                    You have completed the final challenge.
-                </p>
-
-                <button
-                    onClick={() => router.visit('/home')}
-                    className="mt-10 rounded-xl bg-white px-6 py-3 font-semibold text-black"
-                >
-                    Back to Home
-                </button>
+                <h1 className="text-end font-['Noto_Sans'] uppercase mt-4 text-[11rem] font-bold pr-32">
+                    PPIF 2026,
+                </h1>
+                
+                <h1 className="-mt-2 text-end font-['Noto_Sans'] uppercase mt-4 text-8xl font-bold">
+                    {TARGET_WORD}
+                </h1>
             </section>
         </main>
     );
