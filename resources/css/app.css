@@ -26,6 +26,16 @@ body,
     font-style: normal;
 }
 
+input::placeholder {
+  color: white;
+  opacity: 1;
+}
+
+input::-webkit-input-placeholder {
+  color: white;
+  opacity: 1;
+}
+
 .navbar-video-mask {
     width: 100vw;
     aspect-ratio: 1920 / 180;
