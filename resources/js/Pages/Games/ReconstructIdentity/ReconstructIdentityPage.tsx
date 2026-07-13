@@ -10,14 +10,12 @@ import stripID from '../../../assets/games/reconstructIdentity/stripID.webp';
 import titleID from '../../../assets/games/reconstructIdentity/titleID.webp';
 import type { GamePageChildProps } from '../GamePage';
 
-const WORD_LENGTH = 6;
+export const TARGET_WORD = 'STELLA'; // PASSWORDNYA SEKARANG DAH BISA 5-7 huruf
 
-export const TARGET_WORD = 'STELLA'; // INI PASSWORDNYA / KEYWORD
-
-const REVEALED_INDICES = [2, 4];
+const WORD_LENGTH = TARGET_WORD.length;
 
 const INPUT_CLASSES =
-    "w-36 bg-transparent pt-3 border-0 text-center text-9xl text-white caret-white font-['Noto_Sans'] mt-12 " +
+    "w-24 bg-transparent pt-3 border-0 text-center text-7xl text-white caret-white font-['Noto_Sans'] mt-12 " +
     'font-bold outline-none ring-0 shadow-none appearance-none focus:outline-none focus:ring-0 ' +
     'focus:border-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none [-webkit-tap-highlight-color:transparent]';
 
@@ -26,10 +24,9 @@ type GuessStatus = 'playing' | 'wrong' | 'correct';
 export default function ReconstructIdentityPage({
     finishGame,
 }: GamePageChildProps) {
-    const [letters, setLetters] = useState<string[]>(() =>
-        Array.from({ length: WORD_LENGTH }, (_, i) =>
-            REVEALED_INDICES.includes(i) ? TARGET_WORD[i] : '',
-        ),
+    const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
+    const [letters, setLetters] = useState<string[]>(() => 
+        Array.from({ length: WORD_LENGTH }, () => '')
     );
     const [isVisible, setIsVisible] = useState(false);
     const [status, setStatus] = useState<GuessStatus>('playing');
@@ -37,10 +34,28 @@ export default function ReconstructIdentityPage({
     const inputAreaRef = useRef<HTMLDivElement | null>(null);
     const isFinishingRef = useRef(false);
 
+    useEffect(() => {
+        const countToReveal = 2; 
+        const indices: number[] = [];
+        
+        while (indices.length < countToReveal && indices.length < WORD_LENGTH) {
+            const randomIndex = Math.floor(Math.random() * WORD_LENGTH);
+            if (!indices.includes(randomIndex)) {
+                indices.push(randomIndex);
+            }
+        }
+        
+        setRevealedIndices(indices);
+
+        setLetters(Array.from({ length: WORD_LENGTH }, (_, i) =>
+            indices.includes(i) ? TARGET_WORD[i] : '',
+        ));
+    }, []);
+
     function findNextEditable(from: number, direction: 1 | -1) {
         let i = from + direction;
         while (i >= 0 && i < WORD_LENGTH) {
-            if (!REVEALED_INDICES.includes(i)) return i;
+            if (!revealedIndices.includes(i)) return i;
             i += direction;
         }
         return -1;
@@ -52,12 +67,16 @@ export default function ReconstructIdentityPage({
     }, []);
 
     useEffect(() => {
-        if (!isVisible) return;
+        if (!isVisible || revealedIndices.length === 0) return;
         const firstEditable = findNextEditable(-1, 1);
-        inputsRef.current[firstEditable]?.focus();
-    }, [isVisible]);
+        if (firstEditable !== -1) {
+            inputsRef.current[firstEditable]?.focus();
+        }
+    }, [isVisible, revealedIndices]);
 
     useEffect(() => {
+        if (revealedIndices.length === 0) return;
+
         if (letters.some((letter) => letter === '')) {
             setStatus('playing');
             return;
@@ -68,50 +87,17 @@ export default function ReconstructIdentityPage({
 
             if (inputAreaRef.current) {
                 const target = inputAreaRef.current;
-
                 gsap.killTweensOf(target);
-
                 gsap.timeline()
-                    .set(target, {
-                        x: 0,
-                    })
-                    .to(target, {
-                        x: -12,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 12,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: -8,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 8,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: -4,
-                        duration: 0.04,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 4,
-                        duration: 0.04,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 0,
-                        duration: 0.04,
-                        ease: 'power1.out',
-                    });
+                    .set(target, { x: 0 })
+                    .to(target, { x: -12, duration: 0.05, ease: 'power1.inOut' })
+                    .to(target, { x: 12, duration: 0.05, ease: 'power1.inOut' })
+                    .to(target, { x: -8, duration: 0.05, ease: 'power1.inOut' })
+                    .to(target, { x: 8, duration: 0.05, ease: 'power1.inOut' })
+                    .to(target, { x: -4, duration: 0.04, ease: 'power1.inOut' })
+                    .to(target, { x: 4, duration: 0.04, ease: 'power1.inOut' })
+                    .to(target, { x: 0, duration: 0.04, ease: 'power1.out' });
             }
-
             return;
         }
 
@@ -139,37 +125,16 @@ export default function ReconstructIdentityPage({
         });
 
         timeline
-            .to(inputElements, {
-                backgroundColor: '#12C898',
-                duration: 0.12,
-                ease: 'power1.inOut',
-            })
-            .to(inputElements, {
-                backgroundColor: 'transparent',
-                duration: 0.12,
-                ease: 'power1.inOut',
-            })
-            .to(inputElements, {
-                backgroundColor: '#12C898',
-                duration: 0.12,
-                ease: 'power1.inOut',
-            })
-            .to(inputElements, {
-                backgroundColor: 'transparent',
-                duration: 0.12,
-                ease: 'power1.inOut',
-            })
-            .to(
-                {},
-                {
-                    duration: 0.35,
-                },
-            );
+            .to(inputElements, { backgroundColor: '#12C898', duration: 0.12, ease: 'power1.inOut' })
+            .to(inputElements, { backgroundColor: 'transparent', duration: 0.12, ease: 'power1.inOut' })
+            .to(inputElements, { backgroundColor: '#12C898', duration: 0.12, ease: 'power1.inOut' })
+            .to(inputElements, { backgroundColor: 'transparent', duration: 0.12, ease: 'power1.inOut' })
+            .to({}, { duration: 0.35 });
 
         return () => {
             timeline.kill();
         };
-    }, [letters, finishGame]);
+    }, [letters, finishGame, revealedIndices]);
 
     const setLetterAt = (index: number, char: string) => {
         setLetters((prev) => {
@@ -216,7 +181,7 @@ export default function ReconstructIdentityPage({
         let cursor = index;
         let lastFilled = index;
         for (const char of pasted) {
-            while (cursor < WORD_LENGTH && REVEALED_INDICES.includes(cursor))
+            while (cursor < WORD_LENGTH && revealedIndices.includes(cursor))
                 cursor++;
             if (cursor >= WORD_LENGTH) break;
             setLetterAt(cursor, char);
@@ -263,14 +228,12 @@ export default function ReconstructIdentityPage({
                             className="flex -rotate-6 items-center justify-center"
                         >
                             {letters.map((letter, index) => {
-                                const revealed =
-                                    REVEALED_INDICES.includes(index);
+                                const revealed = revealedIndices.includes(index);
                                 return (
                                     <input
                                         key={index}
                                         ref={(el) => {
-                                            if (el)
-                                                inputsRef.current[index] = el;
+                                            if (el) inputsRef.current[index] = el;
                                         }}
                                         type="text"
                                         inputMode="text"

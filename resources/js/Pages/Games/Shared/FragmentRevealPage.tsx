@@ -125,11 +125,11 @@ export default function FragmentRevealPage({ letters, countdownSeconds = 3 }: Pr
                     <Sparkle className="right-[8%] top-[6%] h-6 w-6 z-20" delay="0.9s" duration="2s" />
                     <Sparkle className="right-[2%] top-[42%] h-4 w-4 z-20" delay="1.3s" duration="1.7s" />
 
-                    <div className="left-[30%] top-[5%] z-20 absolute bottom-[20%] flex justify-center">
+                    <div className="absolute top-[50%] inset-0 z-20 flex items-center justify-center">
                         {letters.map((letter, index) => (
                             <div
                                 key={`${letter}-${index}`}
-                                className="z-20 w-[210px] font-['Arsenal'] text-bold text-[20rem] text-[#F8FB70] [-webkit-text-stroke:12px_#000]"
+                                className="z-20 w-[210px] text-center font-['Arsenal'] font-bold text-[20rem] text-[#F8FB70] [-webkit-text-stroke:12px_#000]"
                             >
                                 {letter}
                             </div>
