@@ -1,3 +1,5 @@
+import { GroupMockData } from '@/data/mockBackend';
+import { findTeam } from '@/services/mockGameApi';
 import gsap from 'gsap';
 import {
     useEffect,
@@ -10,11 +12,9 @@ import stripID from '../../../assets/games/reconstructIdentity/stripID.webp';
 import titleID from '../../../assets/games/reconstructIdentity/titleID.webp';
 import type { GamePageChildProps } from '../GamePage';
 
-const WORD_LENGTH = 6;
+// const WORD_LENGTH = 6;
 
-export const TARGET_WORD = 'STELLA'; // INI PASSWORDNYA / KEYWORD
-
-const REVEALED_INDICES = [2, 4];
+// const REVEALED_INDICES = [2, 4];
 
 const INPUT_CLASSES =
     "w-36 bg-transparent pt-3 border-0 text-center text-9xl text-white caret-white font-['Noto_Sans'] mt-12 " +
@@ -26,21 +26,38 @@ type GuessStatus = 'playing' | 'wrong' | 'correct';
 export default function ReconstructIdentityPage({
     finishGame,
 }: GamePageChildProps) {
-    const [letters, setLetters] = useState<string[]>(() =>
-        Array.from({ length: WORD_LENGTH }, (_, i) =>
-            REVEALED_INDICES.includes(i) ? TARGET_WORD[i] : '',
-        ),
-    );
+    const [letters, setLetters] = useState<string[]>([]);
+    const [targetWord, setTargetWord] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+    const [teamData, setTeamData] = useState<GroupMockData | null>(null);
     const [status, setStatus] = useState<GuessStatus>('playing');
     const inputsRef = useRef<HTMLInputElement[]>([]);
     const inputAreaRef = useRef<HTMLDivElement | null>(null);
     const isFinishingRef = useRef(false);
 
+    useEffect(() => {
+        async function loadTargetWord() {
+            const teamId = Number(sessionStorage.getItem('teamId'));
+            if (!teamId) return;
+            const team = await findTeam(teamId);
+            setTeamData(team ?? null);
+            setTargetWord(team?.name.toUpperCase() ?? '');
+            setLetters(
+                Array.from({ length: team?.name.length ?? 0 }, (_, i) =>
+                    team?.revealed_indices.includes(i)
+                        ? team.name[i].toUpperCase()
+                        : '',
+                ),
+            );
+        }
+
+        loadTargetWord();
+    }, []);
+
     function findNextEditable(from: number, direction: 1 | -1) {
         let i = from + direction;
-        while (i >= 0 && i < WORD_LENGTH) {
-            if (!REVEALED_INDICES.includes(i)) return i;
+        while (i >= 0 && i < targetWord.length) {
+            if (!teamData?.revealed_indices.includes(i)) return i;
             i += direction;
         }
         return -1;
@@ -58,12 +75,14 @@ export default function ReconstructIdentityPage({
     }, [isVisible]);
 
     useEffect(() => {
+        if (!teamData || !targetWord) return;
+
         if (letters.some((letter) => letter === '')) {
             setStatus('playing');
             return;
         }
 
-        if (letters.join('') !== TARGET_WORD) {
+        if (letters.join('') !== targetWord) {
             setStatus('wrong');
 
             if (inputAreaRef.current) {
@@ -169,7 +188,7 @@ export default function ReconstructIdentityPage({
         return () => {
             timeline.kill();
         };
-    }, [letters, finishGame]);
+    }, [letters, targetWord, teamData, finishGame]);
 
     const setLetterAt = (index: number, char: string) => {
         setLetters((prev) => {
@@ -216,9 +235,12 @@ export default function ReconstructIdentityPage({
         let cursor = index;
         let lastFilled = index;
         for (const char of pasted) {
-            while (cursor < WORD_LENGTH && REVEALED_INDICES.includes(cursor))
+            while (
+                cursor < targetWord.length &&
+                teamData?.revealed_indices.includes(cursor)
+            )
                 cursor++;
-            if (cursor >= WORD_LENGTH) break;
+            if (cursor >= targetWord.length) break;
             setLetterAt(cursor, char);
             lastFilled = cursor;
             cursor++;
@@ -264,7 +286,7 @@ export default function ReconstructIdentityPage({
                         >
                             {letters.map((letter, index) => {
                                 const revealed =
-                                    REVEALED_INDICES.includes(index);
+                                    teamData?.revealed_indices.includes(index);
                                 return (
                                     <input
                                         key={index}

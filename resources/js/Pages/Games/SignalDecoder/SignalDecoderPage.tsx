@@ -1,4 +1,5 @@
 import CrissCross from '@/Components/SignalDecoder/CrissCross';
+import { router } from '@inertiajs/react';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
@@ -12,6 +13,7 @@ import PaperMain from '@/assets/games/signalDecoder/PaperMain.svg?react';
 import SwitchHorizontalVertical1 from '@/assets/games/signalDecoder/SwitchHoriVerti1.svg?react';
 import SideBarBG from '@/assets/games/signalDecoder/thethingthingy.svg?react';
 import VerticalTitle from '@/assets/games/signalDecoder/Vertical.svg?react';
+import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
 
 export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
     const paperWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -27,6 +29,17 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
 
     const [isSwitching, setIsSwitching] = useState(false);
     const switchingRef = useRef(false);
+    const wipeRef = useRef<CircleWipeHandle>(null);
+
+    useEffect(() => {
+        wipeRef.current?.enter();
+    }, []);
+
+    function goToNextPage() {
+        wipeRef.current?.leave(() => {
+            router.visit('/games');
+        });
+    }
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -286,6 +299,8 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
     const currentClues = isVertical ? CWdata.down : CWdata.across;
     return (
         <main className="flex h-screen w-screen items-center justify-start bg-[#BE202F] text-white">
+            <CircleWipe ref={wipeRef} duration={1} />
+
             {/* testing button */}
             {/* <button
                 type="button"

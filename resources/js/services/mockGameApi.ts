@@ -1,9 +1,5 @@
 import type { GameSlug } from '@/data/games';
-import {
-    groupMockData,
-    mockCompletedGames,
-    mockFragments,
-} from '@/data/mockBackend';
+import { groupMockData, mockCompletedGames } from '@/data/mockBackend';
 
 export async function mockJoinTeam(uniqueCode: string) {
     const team = groupMockData.find(
@@ -14,10 +10,14 @@ export async function mockJoinTeam(uniqueCode: string) {
         throw new Error('Invalid team name or unique code.');
     }
 
-    sessionStorage.setItem('teamId', String(team.no));
+    sessionStorage.setItem('teamId', String(team.teamId));
     sessionStorage.setItem('uniqueCode', team.code);
 
     return team;
+}
+
+export async function findTeam(teamId: number) {
+    return groupMockData.find((item) => item.teamId === teamId);
 }
 
 export async function mockGetCompletedGames(teamId: number) {
@@ -37,7 +37,7 @@ export async function mockCompleteGame(teamId: number, gameSlug: GameSlug) {
 }
 
 export async function mockGetFragment(teamId: number, gameSlug: GameSlug) {
-    const fragmentSet = mockFragments.find((item) => item.teamId === teamId);
+    const fragmentSet = groupMockData.find((item) => item.teamId === teamId);
 
     if (!fragmentSet) {
         throw new Error('Fragment not found.');
@@ -45,6 +45,6 @@ export async function mockGetFragment(teamId: number, gameSlug: GameSlug) {
 
     return {
         letters: fragmentSet.fragments[gameSlug],
-        finalAnswer: fragmentSet.finalAnswer,
+        finalAnswer: fragmentSet.name,
     };
 }

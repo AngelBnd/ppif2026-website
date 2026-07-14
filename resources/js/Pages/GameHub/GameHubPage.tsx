@@ -12,6 +12,8 @@ export default function GameHubPage() {
     const [screen, setScreen] = useState<GameHubScreen>(() => {
         const teamId = sessionStorage.getItem('teamId');
 
+        if (teamId) return 'games';
+
         return 'story';
     });
 

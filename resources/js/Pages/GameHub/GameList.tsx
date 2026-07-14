@@ -3,11 +3,6 @@ import { mockGetCompletedGames } from '@/services/mockGameApi';
 import { gsap } from 'gsap';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import CoreLogicPage from '../Games/CoreLogicTest/CoreLogicTestPage';
-import DataTracePage from '../Games/DataTrace/DataTracePage';
-import ReconstructIdentityPage from '../Games/ReconstructIdentity/ReconstructIdentityPage';
-import SignalDecoderPage from '../Games/SignalDecoder/SignalDecoderPage';
-
 import CodieLoading from '@/assets/games/hub/codieLoading.svg?react';
 import CoreLogic from '@/assets/games/hub/CoreLogic.svg?react';
 import CoreLogicL from '@/assets/games/hub/CoreLogicLocked.svg?react';
@@ -23,25 +18,21 @@ import SignalDecoder from '@/assets/games/hub/SignalDecoder.svg?react';
 import SignalDecoderL from '@/assets/games/hub/SignalDecoderLocked.svg?react';
 import Thumb from '@/assets/games/hub/thumb.svg?react';
 import Button from '@/Components/global/Button';
+import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
 import { router } from '@inertiajs/react';
 
 export default function GameList() {
     const [completedGames, setCompletedGames] = useState<GameSlug[]>([]);
     const [selectedGame, setSelectedGame] = useState<GameSlug | null>(null);
+    const [dots, setDots] = useState('.');
     const handPhoneWrapperRef = useRef<HTMLDivElement | null>(null);
     const phoneRef = useRef<HTMLDivElement | null>(null);
     const handGroupRef = useRef<HTMLDivElement | null>(null);
     const gameButtonsRef = useRef<HTMLDivElement | null>(null);
+    const wipeRef = useRef<CircleWipeHandle>(null);
     const [loadingGameTitle, setLoadingGameTitle] = useState<string | null>(
         null,
     );
-
-    const gamePreviewPages: Record<GameSlug, React.ComponentType<any>> = {
-        'signal-decoder': SignalDecoderPage,
-        'data-trace': DataTracePage,
-        'core-logic-test': CoreLogicPage,
-        'reconstruct-identity': ReconstructIdentityPage,
-    };
 
     const gameButtonConfig: Record<
         GameSlug,
@@ -73,10 +64,6 @@ export default function GameList() {
         },
     };
 
-    const SelectedPreview = selectedGame
-        ? gamePreviewPages[selectedGame]
-        : null;
-
     useEffect(() => {
         async function loadProgress() {
             const teamId = Number(sessionStorage.getItem('teamId'));
@@ -100,34 +87,10 @@ export default function GameList() {
         setSelectedGame(game.slug);
         if (!unlocked) return;
         setLoadingGameTitle(game.title);
-        const wrapper = handPhoneWrapperRef.current;
 
-        if (!wrapper) {
+        wipeRef.current?.leave(() => {
             router.visit(game.path);
-            return;
-        }
-        const tl = gsap.timeline();
-
-        tl.to(wrapper, {
-            scale: 1.8,
-            x: '3vw',
-            y: '2vh',
-            rotation: -10,
-            duration: 1.95,
-            ease: 'power3.inOut',
-            transformOrigin: 'center center',
-            onComplete: () => {
-                router.visit(game.path);
-            },
         });
-        tl.to(
-            wrapper,
-            {
-                opacity: 0,
-                duration: 1,
-            },
-            '-=1.05',
-        );
     };
 
     useLayoutEffect(() => {
@@ -183,19 +146,19 @@ export default function GameList() {
         return () => ctx.revert();
     }, []);
 
+    useEffect(() => {
+        if (!loadingGameTitle) return;
+
+        const interval = setInterval(() => {
+            setDots((prev) => (prev.length >= 3 ? '.' : prev + '.'));
+        }, 400);
+
+        return () => clearInterval(interval);
+    }, [loadingGameTitle]);
+
     return (
         <main className="relative flex min-h-screen items-center justify-center overflow-hidden overflow-y-hidden text-white">
-            {SelectedPreview && (
-                // <div className="absolute inset-0 !z-0">
-                //     <SelectedPreview
-                //         gameSlug={selectedGame}
-                //         finishGame={() => {}}
-                //         isPreview
-                //     />
-                // </div>
-                <div className="animate-in fade-in absolute !z-0 h-screen w-screen bg-[#BE202F] duration-500" />
-            )}
-            {/* {RenderHandPhoneWrapper && ( */}
+            <CircleWipe ref={wipeRef} duration={1.5} initialScale={20} />
             <div className="relative z-20 flex min-h-screen w-screen items-center justify-center overflow-hidden">
                 <div
                     ref={handPhoneWrapperRef}
@@ -220,7 +183,7 @@ export default function GameList() {
                                 <CodieLoading />
 
                                 <p className="mt-2 text-center font-arsenal text-4xl font-bold tracking-widest text-white">
-                                    Loading {loadingGameTitle}
+                                    Loading {loadingGameTitle} {dots}
                                 </p>
                             </div>
                         ) : (
