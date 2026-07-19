@@ -1,3 +1,6 @@
+import Button from '@/Components/global/Button';
+import BackButton from '@/assets/icons/BackButtonSVG.svg?react';
+import { router } from '@inertiajs/react';
 type Props = {
     onReady: () => void;
 };
@@ -5,6 +8,14 @@ type Props = {
 export default function GameHubStoryline({ onReady }: Props) {
     return (
         <main className="flex min-h-screen items-center justify-center bg-black px-6 text-white">
+            <Button
+                onClick={() => {
+                    router.visit('/');
+                }}
+                Icon={BackButton}
+                className="absolute bottom-4 left-6 z-20 w-[12rem]"
+                iconClassName="w-full"
+            />
             <section className="w-full max-w-4xl rounded-3xl border border-white/10 bg-white/5 p-10 text-center">
                 <p className="text-sm uppercase tracking-[0.3em] text-white/50">
                     Storyline
