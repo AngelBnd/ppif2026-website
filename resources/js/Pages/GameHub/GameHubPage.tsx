@@ -1,29 +1,41 @@
+import BackButton from '@/assets/icons/BackButtonSVG.svg?react';
+import Button from '@/Components/global/Button';
 import { useState } from 'react';
+import ErrorGimmick from './ErrorGimmick';
 import GameHubStoryline from './GameHubStoryline';
 import GameList from './GameList';
 import InputUniqueCode from './UniqueCodeForm';
 
-type GameHubScreen = 'story' | 'join' | 'games';
+type GameHubScreen = 'story' | 'join' | 'games' | 'errorGimmick';
 
 export default function GameHubPage() {
     const [screen, setScreen] = useState<GameHubScreen>(() => {
         const teamId = sessionStorage.getItem('teamId');
 
-        if (teamId) {
-            return 'games';
-        }
+        if (teamId) return 'games';
 
         return 'story';
     });
 
     return (
-        <main>
+        <main className="h-screen w-screen overflow-hidden">
+            <Button
+                onClick={() => {}}
+                Icon={BackButton}
+                className="absolute bottom-4 left-6 z-20 w-[12rem]"
+                iconClassName="w-full"
+            />
+
             {screen === 'story' && (
                 <GameHubStoryline onReady={() => setScreen('join')} />
             )}
 
             {screen === 'join' && (
-                <InputUniqueCode onJoined={() => setScreen('games')} />
+                <InputUniqueCode onJoined={() => setScreen('errorGimmick')} />
+            )}
+
+            {screen === 'errorGimmick' && (
+                <ErrorGimmick onJoined={() => setScreen('games')} />
             )}
 
             {screen === 'games' && <GameList />}

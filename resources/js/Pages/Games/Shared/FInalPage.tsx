@@ -1,26 +1,34 @@
-import { router } from '@inertiajs/react';
-export default function FinalPage() {
-    return (
-        <main className="flex min-h-screen items-center justify-center bg-black text-white">
-            <section className="text-center">
-                <p className="text-sm uppercase tracking-[0.3em] text-white/50">
-                    Final Game Completed placeholder
-                </p>
+import { findTeam } from '@/services/mockGameApi';
+import { useEffect, useState } from 'react';
 
-                <h1 className="mt-4 text-5xl font-bold">
-                    WELCAME TO PPIF2026!!!!
+export default function FinalPage() {
+    const [targetWord, setTargetWord] = useState('');
+    useEffect(() => {
+        async function loadTargetWord() {
+            const teamId = Number(sessionStorage.getItem('teamId'));
+            if (!teamId) return;
+            const team = await findTeam(teamId);
+
+            setTargetWord(team?.name.toUpperCase() ?? '');
+        }
+
+        loadTargetWord();
+    }, []);
+
+    return (
+        <main className="flex min-h-screen items-end justify-end bg-black pb-12 pr-24 text-white">
+            <section className="-rotate-12">
+                <h1 className="-mb-12 -ml-32 -rotate-1 font-['Noto_Sans'] text-5xl font-bold uppercase">
+                    WELCOME TO
                 </h1>
 
-                <p className="mt-4 text-white/60">
-                    You have completed the final challenge.
-                </p>
+                <h1 className="mt-4 pr-32 text-end font-['Noto_Sans'] text-[11rem] font-bold uppercase">
+                    PPIF 2026,
+                </h1>
 
-                <button
-                    onClick={() => router.visit('/home')}
-                    className="mt-10 rounded-xl bg-white px-6 py-3 font-semibold text-black"
-                >
-                    Back to Home
-                </button>
+                <h1 className="text-end font-['Noto_Sans'] text-8xl font-bold uppercase">
+                    {targetWord}
+                </h1>
             </section>
         </main>
     );

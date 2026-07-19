@@ -10,20 +10,31 @@ body,
     width: 100%;
     min-height: 100%;
     background: grey;
+    overflow: hidden;
 }
 
 @font-face {
-  font-family: "NotoCustom";
-  src: url("/fonts/Noto-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
+    font-family: 'NotoCustom';
+    src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
 }
 
 @font-face {
-  font-family: "Arsenal";
-  src: url("/fonts/Arsenal-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
+    font-family: 'Arsenal';
+    src: url('/fonts/Arsenal-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+input::placeholder {
+    color: white;
+    opacity: 1;
+}
+
+input::-webkit-input-placeholder {
+    color: white;
+    opacity: 1;
 }
 
 .navbar-video-mask {
@@ -103,4 +114,20 @@ body,
     .phone-icon {
         font-size: 48px;
     }
+}
+
+img,
+svg {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+img,
+svg {
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
