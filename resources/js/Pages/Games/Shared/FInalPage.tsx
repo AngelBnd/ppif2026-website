@@ -1,6 +1,10 @@
 import { findTeam } from '@/services/mockGameApi';
 import { useEffect, useState } from 'react';
 
+import BackButton from '@/assets/icons/BackButtonSVG.svg?react';
+import Button from '@/Components/global/Button';
+import { router } from '@inertiajs/react';
+
 export default function FinalPage() {
     const [targetWord, setTargetWord] = useState('');
     useEffect(() => {
@@ -17,6 +21,15 @@ export default function FinalPage() {
 
     return (
         <main className="flex min-h-screen items-end justify-end bg-black pb-12 pr-24 text-white">
+            <Button
+                onClick={() => {
+                    router.visit('/');
+                }}
+                Icon={BackButton}
+                className="absolute bottom-4 left-6 z-30 w-[12rem]"
+                iconClassName="w-full"
+            />
+
             <section className="-rotate-12">
                 <h1 className="-mb-12 -ml-32 -rotate-1 font-['Noto_Sans'] text-5xl font-bold uppercase">
                     WELCOME TO
