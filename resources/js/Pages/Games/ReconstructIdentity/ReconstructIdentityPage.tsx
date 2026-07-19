@@ -1,3 +1,4 @@
+import InputBorderBottom from '@/assets/games/hub/InputBorderBottomSVG.svg?react';
 import { GroupMockData } from '@/data/mockBackend';
 import { findTeam } from '@/services/mockGameApi';
 import gsap from 'gsap';
@@ -17,8 +18,8 @@ import type { GamePageChildProps } from '../GamePage';
 // const REVEALED_INDICES = [2, 4];
 
 const INPUT_CLASSES =
-    "w-36 bg-transparent pt-3 border-0 text-center text-9xl text-white caret-white font-['Noto_Sans'] mt-12 " +
-    'font-bold outline-none ring-0 shadow-none appearance-none focus:outline-none focus:ring-0 ' +
+    "relative z-10 h-full w-full appearance-none border-0 bg-transparent pt-3 text-center text-9xl text-white caret-white font-['Noto_Sans'] " +
+    'font-bold outline-none ring-0 shadow-none focus:outline-none focus:ring-0 ' +
     'focus:border-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none [-webkit-tap-highlight-color:transparent]';
 
 type GuessStatus = 'playing' | 'wrong' | 'correct';
@@ -250,10 +251,10 @@ export default function ReconstructIdentityPage({
     };
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-black text-white">
-            <section className="relative flex flex-col items-center justify-center pb-20 text-center">
+        <main className="flex min-h-screen items-center justify-center bg-[#0A0C0F] text-white">
+            <section className="relative flex flex-col items-center justify-center -space-y-40 text-center">
                 <div
-                    className={`flex items-center justify-center transition-all duration-700 ease-out ${
+                    className={`z-10 flex items-center justify-center transition-all duration-700 ease-out ${
                         isVisible
                             ? 'scale-100 opacity-100'
                             : 'scale-75 opacity-0'
@@ -262,7 +263,7 @@ export default function ReconstructIdentityPage({
                     <img
                         src={titleID}
                         alt="Reconstruct Identity title"
-                        className="h-auto max-w-[100vw] object-contain md:max-w-[1112.87px]"
+                        className="h-auto max-w-[100vw] object-contain md:max-w-[950px]"
                     />
                 </div>
 
@@ -276,7 +277,7 @@ export default function ReconstructIdentityPage({
                     <img
                         src={stripID}
                         alt="Reconstruct Identity strip"
-                        className="h-auto max-w-[80vw] object-contain md:max-w-[2003.5px]"
+                        className="h-auto max-w-[90vw] object-contain md:max-w-[2000px]"
                     />
 
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -288,38 +289,54 @@ export default function ReconstructIdentityPage({
                                 const revealed =
                                     teamData?.revealed_indices.includes(index);
                                 return (
-                                    <input
+                                    <div
                                         key={index}
-                                        ref={(el) => {
-                                            if (el)
-                                                inputsRef.current[index] = el;
-                                        }}
-                                        type="text"
-                                        inputMode="text"
-                                        maxLength={1}
-                                        value={letter}
-                                        placeholder={
-                                            revealed ? undefined : '__'
-                                        }
-                                        readOnly={revealed}
-                                        tabIndex={revealed ? -1 : 0}
-                                        autoComplete="off"
-                                        autoCorrect="off"
-                                        spellCheck={false}
-                                        onChange={(e) =>
-                                            handleChange(index, e.target.value)
-                                        }
-                                        onKeyDown={(e) =>
-                                            handleKeyDown(index, e)
-                                        }
-                                        onPaste={(e) => handlePaste(index, e)}
-                                        className={`${INPUT_CLASSES} ${revealed ? 'pointer-events-none' : 'pointer-events-auto'} mx-2`}
-                                        aria-label={
-                                            revealed
-                                                ? `Strip letter ${index + 1} (revealed)`
-                                                : `Strip letter ${index + 1}`
-                                        }
-                                    />
+                                        className="group relative mx-2 mt-12 h-40 w-36"
+                                    >
+                                        {/* Black focus background */}
+                                        <div className="pointer-events-none absolute inset-0 z-0 bg-[#0A0C0F] opacity-0 [clip-path:polygon(15%_0%,100%_0%,90%_100%,0%_100%)] group-focus-within:opacity-100" />
+
+                                        <input
+                                            ref={(el) => {
+                                                if (el)
+                                                    inputsRef.current[index] =
+                                                        el;
+                                            }}
+                                            type="text"
+                                            inputMode="text"
+                                            maxLength={1}
+                                            value={letter}
+                                            readOnly={revealed}
+                                            tabIndex={revealed ? -1 : 0}
+                                            autoComplete="off"
+                                            autoCorrect="off"
+                                            spellCheck={false}
+                                            onChange={(e) =>
+                                                handleChange(
+                                                    index,
+                                                    e.target.value,
+                                                )
+                                            }
+                                            onKeyDown={(e) =>
+                                                handleKeyDown(index, e)
+                                            }
+                                            onPaste={(e) =>
+                                                handlePaste(index, e)
+                                            }
+                                            className={`${INPUT_CLASSES} ${revealed ? 'pointer-events-none' : 'pointer-events-auto'}`}
+                                            aria-label={
+                                                revealed
+                                                    ? `Strip letter ${index + 1} (revealed)`
+                                                    : `Strip letter ${index + 1}`
+                                            }
+                                        />
+
+                                        {revealed ? (
+                                            <></>
+                                        ) : (
+                                            <InputBorderBottom className="pointer-events-none absolute -bottom-2 left-1/2 z-20 h-auto w-[60%] -translate-x-1/2" />
+                                        )}
+                                    </div>
                                 );
                             })}
                         </div>

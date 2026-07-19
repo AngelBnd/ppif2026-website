@@ -353,6 +353,14 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                 className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#BE202F] px-4 text-zinc-300 selection:bg-zinc-800 selection:text-white"
                 style={{ fontFamily: "'Arsenal', monospace" }}
             >
+                {import.meta.env.DEV && (
+                    <button
+                        onClick={() => finishGame()}
+                        className="fixed right-2 top-2 z-[9999] rounded bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-lg hover:bg-red-700"
+                    >
+                        Skip (development)
+                    </button>
+                )}
                 {/* MAIN WRAPPER CONTAINER */}
                 <div className="absolute z-10 flex h-[620px] w-full max-w-[1440px] flex-col items-center justify-between border-dashed border-yellow-400 p-8 sm:p-10">
                     {/* QUESTION CONTAINER */}

@@ -191,6 +191,11 @@ export default function FragmentRevealPage({
     };
 
     const SelectedGame = gameTitles[game];
+    const correctScore = Number(
+        sessionStorage.getItem('core_logic_score') || 0,
+    );
+    const totalQuestions = 10;
+    const percentage = Math.round((correctScore / totalQuestions) * 100);
 
     return (
         <main
@@ -224,6 +229,14 @@ export default function FragmentRevealPage({
 
                     {SelectedGame ? (
                         <SelectedGame className="z-20 block h-auto w-[50rem]" />
+                    ) : (
+                        <></>
+                    )}
+
+                    {SelectedGame === CLT ? (
+                        <div className="z-20 scale-y-125 font-noto text-4xl">
+                            With an accuracy of {percentage}%!
+                        </div>
                     ) : (
                         <></>
                     )}

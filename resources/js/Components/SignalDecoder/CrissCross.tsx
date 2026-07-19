@@ -400,13 +400,16 @@ export default function CrissCross({ finishGame }: Props) {
             }}
         >
             {/* testing button */}
-            <button
-                type="button"
-                onClick={fillAllCells}
-                className="absolute left-4 top-4 z-50 rounded bg-black px-4 py-2 text-white"
-            >
-                Fill All
-            </button>
+            {import.meta.env.DEV && (
+                <button
+                    type="button"
+                    onClick={fillAllCells}
+                    className="absolute left-4 top-4 z-50 rounded bg-black px-4 py-2 text-white"
+                >
+                    Fill All
+                </button>
+            )}
+
             <div
                 className="grid h-full w-full grid-cols-[repeat(20,minmax(0,1fr))] grid-rows-[repeat(13,minmax(0,1fr))] overflow-visible"
                 style={{

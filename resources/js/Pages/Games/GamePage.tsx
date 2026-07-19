@@ -96,19 +96,6 @@ export default function GamePage({ gameSlug }: Props) {
                 <SelectedGamePage gameSlug={gameSlug} finishGame={finishGame} />
             )}
 
-            {/* core logic punya result page sendiri */}
-            {/* {step === 'result' &&
-                (gameSlug === 'core-logic-test' ? (
-                    <CoreLogicResultPage
-                        onRetrieveFragments={retrieveFragments}
-                    />
-                ) : (
-                    <ResultPage
-                        game={game}
-                        retrieveFragments={retrieveFragments}
-                    />
-                ))} */}
-
             {step === 'fragment' && (
                 <FragmentRevealPage game={game.title} letters={letters} />
             )}
