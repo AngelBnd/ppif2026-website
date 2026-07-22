@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+﻿import { useRef, useState } from 'react';
 // @ts-ignore
 import { useGSAP } from '@gsap/react';
 import { Head, Link } from '@inertiajs/react';
@@ -13,11 +13,11 @@ import NextButton from '@/assets/archive/NextButton.svg?react';
 import PhotoInfoBanner from '@/assets/archive/PhotoInfoBanner.svg?react';
 import PrevButton from '@/assets/archive/PrevButton.svg?react';
 import Shape1 from '@/assets/archive/Shape1.svg?react';
-import ViewBackButton from '@/assets/archive/ViewBackButton.svg?react';
+import ViewBackButton from '@/assets/archive/ViewBackButton.svg';
 import ViewButton from '@/assets/archive/ViewButton.svg?react';
 import ActiveBitBlue from '@/assets/archive/blueBitActive.svg?react';
 import ActiveBitRed from '@/assets/archive/redBitActive.svg?react';
-import BackButtonSvg from '@/assets/icons/BackButtonSVG.svg?react';
+import BackButtonSvg from '@/assets/icons/BackButtonSVG.svg';
 
 interface CarouselItem {
     id: number;
@@ -450,15 +450,17 @@ export default function DDayPage() {
             <style>{`
                 @font-face {
                     font-family: 'Arsenal';
-                    src: url('/fonts/Arsenal-Bold.ttf') format('truetype');
+                    src: url('/fonts/Arsenal-Bold.woff2') format('woff2');
                     font-weight: bold;
                     font-style: normal;
+    font-display: swap;
                 }
                 @font-face {
                     font-family: 'NotoSans';
-                    src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+                    src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
                     font-weight: bold;
                     font-style: normal;
+    font-display: swap;
                 }
             `}</style>
 
@@ -678,7 +680,12 @@ export default function DDayPage() {
                         aria-label="Back to Archive"
                     >
                         <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
-                            <BackButtonSvg className="h-full w-full object-contain" />
+                            <img
+                                src={BackButtonSvg}
+                                alt=""
+                                draggable={false}
+                                className="h-full w-full select-none object-contain"
+                            />
                         </div>
                     </Link>
                 </div>

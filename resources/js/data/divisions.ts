@@ -1,25 +1,25 @@
-import AdminPlain from '@/assets/about/divisions/divLogos/AdminPlain.png';
-import BitmapPlain from '@/assets/about/divisions/divLogos/BitmapPlain.png';
-import ConsolePlain from '@/assets/about/divisions/divLogos/ConsolePlain.png';
-import DeveloperPlain from '@/assets/about/divisions/divLogos/DeveloperPlain.png';
-import EncryptorPlain from '@/assets/about/divisions/divLogos/EncryptorPlain.png';
-import ExtensionPlain from '@/assets/about/divisions/divLogos/ExtensionPlain.png';
-import InterfacePlain from '@/assets/about/divisions/divLogos/InterfacePlain.png';
-import ModulePlain from '@/assets/about/divisions/divLogos/ModulePlain.png';
-import PMPlain from '@/assets/about/divisions/divLogos/PMPlain.png';
-import SnapshotPlain from '@/assets/about/divisions/divLogos/SnapshotPlain.png';
-import Admin from '@/assets/about/divisions/divNames/ADMIN.svg?react';
-import Bitmap from '@/assets/about/divisions/divNames/BITMAP.svg?react';
-import Console from '@/assets/about/divisions/divNames/CONSOLE.svg?react';
-import Developer from '@/assets/about/divisions/divNames/DEVELOPER.svg?react';
-import Encryptor from '@/assets/about/divisions/divNames/ENCRYPTOR.svg?react';
-import Extension from '@/assets/about/divisions/divNames/EXTENSION.svg?react';
-import Interface from '@/assets/about/divisions/divNames/INTERFACE.svg?react';
-import Module from '@/assets/about/divisions/divNames/MODULE.svg?react';
-import PM from '@/assets/about/divisions/divNames/PM.svg?react';
-import Snapshot from '@/assets/about/divisions/divNames/SNAPSHOT.svg?react';
-import placeholderGuy1 from '@/assets/about/divisions/divPics/placeholderguy1.png';
-import placeholderGuy2 from '@/assets/about/divisions/divPics/placeholderguy2.png';
+﻿import AdminPlain from '@/assets/about/divisions/divLogos/AdminPlain.webp';
+import BitmapPlain from '@/assets/about/divisions/divLogos/BitmapPlain.webp';
+import ConsolePlain from '@/assets/about/divisions/divLogos/ConsolePlain.webp';
+import DeveloperPlain from '@/assets/about/divisions/divLogos/DeveloperPlain.webp';
+import EncryptorPlain from '@/assets/about/divisions/divLogos/EncryptorPlain.webp';
+import ExtensionPlain from '@/assets/about/divisions/divLogos/ExtensionPlain.webp';
+import InterfacePlain from '@/assets/about/divisions/divLogos/InterfacePlain.webp';
+import ModulePlain from '@/assets/about/divisions/divLogos/ModulePlain.webp';
+import PMPlain from '@/assets/about/divisions/divLogos/PMPlain.webp';
+import SnapshotPlain from '@/assets/about/divisions/divLogos/SnapshotPlain.webp';
+import Admin from '@/assets/about/divisions/divNames/ADMIN.svg';
+import Bitmap from '@/assets/about/divisions/divNames/BITMAP.svg';
+import Console from '@/assets/about/divisions/divNames/CONSOLE.svg';
+import Developer from '@/assets/about/divisions/divNames/DEVELOPER.svg';
+import Encryptor from '@/assets/about/divisions/divNames/ENCRYPTOR.svg';
+import Extension from '@/assets/about/divisions/divNames/EXTENSION.svg';
+import Interface from '@/assets/about/divisions/divNames/INTERFACE.svg';
+import Module from '@/assets/about/divisions/divNames/MODULE.svg';
+import PM from '@/assets/about/divisions/divNames/PM.svg';
+import Snapshot from '@/assets/about/divisions/divNames/SNAPSHOT.svg';
+import placeholderGuy1 from '@/assets/about/divisions/divPics/placeholderguy1.webp';
+import placeholderGuy2 from '@/assets/about/divisions/divPics/placeholderguy2.webp';
 
 type DivisionMember = {
     picture: string;
@@ -30,7 +30,7 @@ type DivisionMember = {
 export type DivisionData = {
     name: string;
     description: string;
-    NameSVG: React.ElementType;
+    nameSrc: string;
     image: string;
     members: DivisionMember[];
     direction: 'left' | 'right';
@@ -205,7 +205,7 @@ export const divisionData: DivisionData[] = [
         name: 'BPH',
         description:
             'Bertanggung jawab mengoordinasikan seluruh alur kerja kepanitiaan, menjaga komunikasi antar divisi, mengatur timeline, serta memastikan setiap kegiatan berjalan sesuai rencana.',
-        NameSVG: PM,
+        nameSrc: PM,
         image: PMPlain,
         members: [
             {
@@ -249,7 +249,7 @@ export const divisionData: DivisionData[] = [
         name: 'Acara',
         description:
             'Merancang konsep acara, menyusun rundown, mengatur jalannya kegiatan, serta memastikan setiap sesi acara dapat berjalan dengan tertib, menarik, dan sesuai tujuan.',
-        NameSVG: Developer,
+        nameSrc: Developer,
         image: DeveloperPlain,
         members: divisionMembers.Acara,
         direction: 'left',
@@ -272,7 +272,7 @@ export const divisionData: DivisionData[] = [
         name: 'Visual',
         description:
             'Membuat kebutuhan visual acara, mulai dari aset grafis, ilustrasi, hingga elemen desain yang memperkuat identitas dan suasana kegiatan.',
-        NameSVG: Bitmap,
+        nameSrc: Bitmap,
         image: BitmapPlain,
         members: divisionMembers.Visual,
         direction: 'right',
@@ -295,7 +295,7 @@ export const divisionData: DivisionData[] = [
         name: 'Person in Charge',
         description:
             'Menjadi penghubung dan penanggung jawab teknis untuk pihak atau kelompok tertentu, memastikan kebutuhan terkoordinasi dengan baik selama kegiatan berlangsung.',
-        NameSVG: Module,
+        nameSrc: Module,
         image: ModulePlain,
         members: divisionMembers['Person in Charge'],
         direction: 'left',
@@ -318,7 +318,7 @@ export const divisionData: DivisionData[] = [
         name: 'Keamanan',
         description:
             'Menjaga ketertiban dan keamanan selama kegiatan, mengatur alur peserta, serta membantu memastikan lingkungan acara tetap aman dan kondusif.',
-        NameSVG: Encryptor,
+        nameSrc: Encryptor,
         image: EncryptorPlain,
         members: divisionMembers.Keamanan,
         direction: 'right',
@@ -341,7 +341,7 @@ export const divisionData: DivisionData[] = [
         name: 'Website',
         description:
             'Mengembangkan dan mengelola kebutuhan website acara, mulai dari tampilan, fitur, hingga pengalaman pengguna agar informasi dapat diakses dengan jelas.',
-        NameSVG: Interface,
+        nameSrc: Interface,
         image: InterfacePlain,
         members: divisionMembers.Website,
         direction: 'left',
@@ -364,7 +364,7 @@ export const divisionData: DivisionData[] = [
         name: 'Perlengkapan',
         description:
             'Menyiapkan, mengatur, dan memastikan seluruh perlengkapan yang dibutuhkan acara tersedia, tertata, serta siap digunakan sesuai kebutuhan.',
-        NameSVG: Extension,
+        nameSrc: Extension,
         image: ExtensionPlain,
         members: divisionMembers.Perlengkapan,
         direction: 'right',
@@ -387,7 +387,7 @@ export const divisionData: DivisionData[] = [
         name: 'Administrator',
         description:
             'Mengelola kebutuhan administrasi acara, menyusun data penting, mencatat informasi, serta membantu kelancaran koordinasi internal kepanitiaan.',
-        NameSVG: Admin,
+        nameSrc: Admin,
         image: AdminPlain,
         members: divisionMembers.Administrator,
         direction: 'left',
@@ -410,7 +410,7 @@ export const divisionData: DivisionData[] = [
         name: 'Public Relation',
         description:
             'Menjalin komunikasi dengan pihak eksternal, menyampaikan informasi acara, membangun relasi, serta membantu menjaga citra kegiatan di hadapan publik.',
-        NameSVG: Console,
+        nameSrc: Console,
         image: ConsolePlain,
         members: divisionMembers['Public Relation'],
         direction: 'right',
@@ -433,7 +433,7 @@ export const divisionData: DivisionData[] = [
         name: 'Dokumentasi',
         description:
             'Mendokumentasikan momen penting selama kegiatan melalui foto dan video, serta menyimpan hasil dokumentasi sebagai arsip dan publikasi acara.',
-        NameSVG: Snapshot,
+        nameSrc: Snapshot,
         image: SnapshotPlain,
         members: divisionMembers.Dokumentasi,
         direction: 'left',

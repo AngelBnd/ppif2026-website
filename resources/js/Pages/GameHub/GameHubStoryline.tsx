@@ -1,5 +1,5 @@
-import Button from '@/Components/global/Button';
-import BackButton from '@/assets/icons/BackButtonSVG.svg?react';
+﻿import Button from '@/Components/global/Button';
+import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import { router } from '@inertiajs/react';
 type Props = {
     onReady: () => void;

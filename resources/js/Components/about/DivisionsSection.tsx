@@ -1,6 +1,6 @@
-import DivisionStreak from '@/assets/about/divisions/DivisionsStreak.svg?react';
+﻿import DivisionStreak from '@/assets/about/divisions/DivisionsStreak.svg?react';
 
-import BackButtonSVG2 from '@/assets/icons/BackButtonSVG2.svg?react';
+import BackButtonSVG2 from '@/assets/icons/BackButtonSVG2.svg';
 import DivisionCard from '@/Components/about/DivisionCard';
 import Button from '../global/Button';
 
@@ -216,7 +216,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                                         <DivisionCard
                                             key={division.name}
                                             imageSrc={division.image}
-                                            TitleSVG={division.NameSVG}
+                                            titleSrc={division.nameSrc}
                                             direction={division.direction}
                                             namePosition={division.namePosition}
                                         />

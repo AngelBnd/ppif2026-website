@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -15,16 +15,18 @@ body,
 
 @font-face {
     font-family: 'NotoCustom';
-    src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+    src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 
 @font-face {
     font-family: 'Arsenal';
-    src: url('/fonts/Arsenal-Bold.ttf') format('truetype');
+    src: url('/fonts/Arsenal-Bold.woff2') format('woff2');
     font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 
 input::placeholder {

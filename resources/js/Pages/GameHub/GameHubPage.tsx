@@ -1,4 +1,4 @@
-import BackButton from '@/assets/icons/BackButtonSVG.svg?react';
+﻿import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import Button from '@/Components/global/Button';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';

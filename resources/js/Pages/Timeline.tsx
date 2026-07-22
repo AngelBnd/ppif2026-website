@@ -1,5 +1,5 @@
-import knife from '@/assets/timeline/knife.svg';
-import titleTimeline from '@/assets/timeline/title-timeline.png';
+﻿import knife from '@/assets/timeline/knife.svg';
+import titleTimeline from '@/assets/timeline/title-timeline.webp';
 import AboutDDayModal from '@/Components/timeline/AboutDDayModal';
 import DateSticker from '@/Components/timeline/DateSticker';
 import DDayPanel from '@/Components/timeline/DDayPanel';
@@ -69,7 +69,6 @@ export default function Timeline() {
     const tueStickerRef = useRef<HTMLDivElement | null>(null);
     const satAnimationRef = useRef<HTMLDivElement | null>(null);
     const tueAnimationRef = useRef<HTMLDivElement | null>(null);
-    const backgroundRef = useRef<HTMLDivElement | null>(null);
     const layoutRef = useRef<HTMLDivElement | null>(null);
 
     const [view, setView] = useState<TimelineView>(2);
@@ -329,8 +328,6 @@ export default function Timeline() {
                             ref={satStickerRef}
                             day="15"
                             weekday="SAT"
-                            color="blue"
-                            withLogo={pos.logo === 'sat'}
                             style={{ ...pos.sat, transition }}
                         />
                     </div>
@@ -343,8 +340,6 @@ export default function Timeline() {
                             ref={tueStickerRef}
                             day="18"
                             weekday="TUE"
-                            color="white"
-                            withLogo={pos.logo === 'tue'}
                             style={{ ...pos.tue, transition }}
                         />
                     </div>

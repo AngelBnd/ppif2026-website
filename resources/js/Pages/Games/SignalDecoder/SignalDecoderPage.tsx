@@ -1,5 +1,4 @@
-import CrissCross from '@/Components/SignalDecoder/CrissCross';
-import { router } from '@inertiajs/react';
+﻿import CrissCross from '@/Components/SignalDecoder/CrissCross';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
@@ -26,20 +25,12 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
     const titleRef = useRef<HTMLDivElement | null>(null);
     const cluesRef = useRef<HTMLDivElement | null>(null);
     const sideBarBGRef = useRef<HTMLDivElement | null>(null);
-
-    const [isSwitching, setIsSwitching] = useState(false);
     const switchingRef = useRef(false);
     const wipeRef = useRef<CircleWipeHandle>(null);
 
     useEffect(() => {
         wipeRef.current?.enter();
     }, []);
-
-    function goToNextPage() {
-        wipeRef.current?.leave(() => {
-            router.visit('/games');
-        });
-    }
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -135,7 +126,6 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
         }
 
         switchingRef.current = true;
-        setIsSwitching(true);
 
         gsap.killTweensOf([button, title, clues, main, back1, back2]);
 
@@ -217,7 +207,6 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
                     !newBack2
                 ) {
                     switchingRef.current = false;
-                    setIsSwitching(false);
                     return;
                 }
 
@@ -233,7 +222,6 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
                         });
 
                         switchingRef.current = false;
-                        setIsSwitching(false);
                     },
                 });
 
@@ -358,7 +346,7 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
                             ref={cluesRef}
                             className="absolute left-16 top-[10.8rem] z-30 w-[22.5rem] -rotate-[8deg]"
                         >
-                            <div className="ont-noto flex max-h-[30rem] flex-col gap-2 overflow-y-auto pr-2 font-noto text-3xl font-bold text-[#050607]">
+                            <div className="flex max-h-[30rem] flex-col gap-2 overflow-y-auto pr-2 font-noto text-3xl font-bold text-[#050607]">
                                 {currentClues.map((item) => (
                                     <div
                                         key={`${isVertical ? 'down' : 'across'}-${item.num}`}

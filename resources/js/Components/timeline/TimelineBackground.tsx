@@ -1,4 +1,4 @@
-import timelineBg from '@/assets/timeline/timeline-bg.png';
+﻿import timelineBg from '@/assets/timeline/timeline-bg.webp';
 
 /**
  * Flat, hand-drawn comic-style backdrop for the Timeline page. Swapped in

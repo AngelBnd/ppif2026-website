@@ -1,4 +1,4 @@
-import { IMG_QS } from '@/data/gameQuestions/dataTraceQuestions';
+﻿import { IMG_QS } from '@/data/gameQuestions/dataTraceQuestions';
 import { gsap } from 'gsap';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
@@ -338,15 +338,17 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
             <style>{`
             @font-face {
                 font-family: 'Arsenal';
-                src: url('/fonts/Arsenal-Bold.ttf') format('truetype');
+                src: url('/fonts/Arsenal-Bold.woff2') format('woff2');
                 font-weight: bold;
                 font-style: normal;
+    font-display: swap;
             }
             @font-face {
                 font-family: 'NotoSans';
-                src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+                src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
                 font-weight: bold;
                 font-style: normal;
+    font-display: swap;
             }
         `}</style>
             <main

@@ -18,7 +18,7 @@ import type { GamePageChildProps } from '../GamePage';
 // const REVEALED_INDICES = [2, 4];
 
 const INPUT_CLASSES =
-    "relative z-10 h-full w-full appearance-none border-0 bg-transparent pt-3 text-center text-9xl text-white caret-white font-['Noto_Sans'] " +
+    "relative z-10 h-full w-full appearance-none border-0 bg-transparent pt-3 text-center text-9xl text-white caret-white font-noto " +
     'font-bold outline-none ring-0 shadow-none focus:outline-none focus:ring-0 ' +
     'focus:border-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none [-webkit-tap-highlight-color:transparent]';
 
@@ -346,7 +346,7 @@ export default function ReconstructIdentityPage({
 
             <div className="pointer-events-none fixed inset-x-0 bottom-24 z-50 flex justify-center">
                 <p
-                    className={`font-['Noto_Sans'] text-2xl font-bold text-red-500 transition-opacity duration-200 ${
+                    className={`font-noto text-2xl font-bold text-red-500 transition-opacity duration-200 ${
                         status === 'wrong' ? 'opacity-100' : 'opacity-0'
                     }`}
                 >

@@ -1,4 +1,4 @@
-import DivisionButtonSVG from '@/assets/icons/DivisionsButtonSVG.svg?react';
+﻿import DivisionButtonSVG from '@/assets/icons/DivisionsButtonSVG.svg?react';
 import GalleryPopup from '@/Components/about/GalleryPopup';
 import Heading from '@/Components/about/Heading';
 import InfoSwitcher from '@/Components/about/InfoSwitcher';
@@ -314,7 +314,6 @@ export default function About() {
                                     currentInfo={currentInfo}
                                 />
                                 <InfoTabs
-                                    topicChosen={currentInfo}
                                     className={` ${activeTab === 'divisions' ? 'pointer-events-none' : 'pointer-events-auto'} absolute -top-[30%] right-0`}
                                     activeTab={activeTab}
                                     setActiveTab={setActiveTab}

@@ -1,13 +1,13 @@
-import type { ComponentType, SVGProps } from 'react';
+﻿import type { ComponentType, SVGProps } from 'react';
 
 import BriefingDayHeader from '@/assets/timeline/briefingdayheadersvg.svg?react';
 import BriefingDayAboutTitle from '@/assets/timeline/briefingdaysvg.svg?react';
 import DdayTitle from '@/assets/timeline/ddaysvg.svg?react';
 import DdayHeader from '@/assets/timeline/ddaysvgheader.svg?react';
 
-import baju from '@/assets/timeline/baju.png';
-import buku from '@/assets/timeline/book.png';
-import tas from '@/assets/timeline/tas.png';
+import baju from '@/assets/timeline/baju.webp';
+import buku from '@/assets/timeline/book.webp';
+import tas from '@/assets/timeline/tas.webp';
 
 type TimelineView = 1 | 2;
 

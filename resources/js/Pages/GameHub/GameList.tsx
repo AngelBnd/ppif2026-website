@@ -1,29 +1,28 @@
-import { games, type GameSlug } from '@/data/games';
+﻿import { games, type GameSlug } from '@/data/games';
 import { mockGetCompletedGames } from '@/services/mockGameApi';
 import { gsap } from 'gsap';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import CodieLoading from '@/assets/games/hub/codieLoading.svg?react';
-import CoreLogic from '@/assets/games/hub/CoreLogic.svg?react';
-import CoreLogicL from '@/assets/games/hub/CoreLogicLocked.svg?react';
-import DataTrace from '@/assets/games/hub/DataTrace.svg?react';
-import DataTraceL from '@/assets/games/hub/DataTraceLocked.svg?react';
-import Finger from '@/assets/games/hub/Finger.svg?react';
-import Fingers from '@/assets/games/hub/Fingers.svg?react';
-import Phone from '@/assets/games/hub/GamesPhone.svg?react';
-import PhoneScreen from '@/assets/games/hub/PhoneScreen.svg?react';
-import ReconstructIdentity from '@/assets/games/hub/ReconstructIdentity.svg?react';
-import ReconstructIdentityL from '@/assets/games/hub/ReconstructIdentityLocked.svg?react';
-import SignalDecoder from '@/assets/games/hub/SignalDecoder.svg?react';
-import SignalDecoderL from '@/assets/games/hub/SignalDecoderLocked.svg?react';
-import Thumb from '@/assets/games/hub/thumb.svg?react';
+import CodieLoading from '@/assets/games/hub/codieLoading.svg';
+import CoreLogic from '@/assets/games/hub/CoreLogic.svg';
+import CoreLogicL from '@/assets/games/hub/CoreLogicLocked.svg';
+import DataTrace from '@/assets/games/hub/DataTrace.svg';
+import DataTraceL from '@/assets/games/hub/DataTraceLocked.svg';
+import Finger from '@/assets/games/hub/Finger.svg';
+import Fingers from '@/assets/games/hub/Fingers.svg';
+import Phone from '@/assets/games/hub/GamesPhone.svg';
+import PhoneScreen from '@/assets/games/hub/PhoneScreen.svg';
+import ReconstructIdentity from '@/assets/games/hub/ReconstructIdentity.svg';
+import ReconstructIdentityL from '@/assets/games/hub/ReconstructIdentityLocked.svg';
+import SignalDecoder from '@/assets/games/hub/SignalDecoder.svg';
+import SignalDecoderL from '@/assets/games/hub/SignalDecoderLocked.svg';
+import Thumb from '@/assets/games/hub/thumb.svg';
 import Button from '@/Components/global/Button';
 import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
 import { router } from '@inertiajs/react';
 
 export default function GameList() {
     const [completedGames, setCompletedGames] = useState<GameSlug[]>([]);
-    const [selectedGame, setSelectedGame] = useState<GameSlug | null>(null);
     const [dots, setDots] = useState('.');
     const handPhoneWrapperRef = useRef<HTMLDivElement | null>(null);
     const phoneRef = useRef<HTMLDivElement | null>(null);
@@ -37,8 +36,8 @@ export default function GameList() {
     const gameButtonConfig: Record<
         GameSlug,
         {
-            Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-            LockedIcon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+            Icon: string;
+            LockedIcon: string;
             size: string;
         }
     > = {
@@ -84,7 +83,6 @@ export default function GameList() {
 
     const handleOpenGame = (game: (typeof games)[number]) => {
         const unlocked = isUnlocked(game.unlocksAfter);
-        setSelectedGame(game.slug);
         if (!unlocked) return;
         setLoadingGameTitle(game.title);
 
@@ -172,15 +170,15 @@ export default function GameList() {
                         {loadingGameTitle ? (
                             <></>
                         ) : (
-                            <PhoneScreen className="absolute block h-auto w-full" />
+                            <img src={PhoneScreen} alt="" draggable={false} className="absolute block h-auto w-full select-none" />
                         )}
 
-                        <Phone className="block h-auto w-full" />
+                        <img src={Phone} alt="" draggable={false} className="block h-auto w-full select-none" />
 
                         {/* Game buttons on top of phone */}
                         {loadingGameTitle ? (
                             <div className="absolute left-[20%] top-[20%] z-30 flex h-[28rem] w-[42rem] rotate-[8deg] flex-col items-center justify-center">
-                                <CodieLoading />
+                                <img src={CodieLoading} alt="" draggable={false} className="select-none" />
 
                                 <p className="mt-2 text-center font-arsenal text-4xl font-bold tracking-widest text-white">
                                     Loading {loadingGameTitle} {dots}
@@ -238,15 +236,15 @@ export default function GameList() {
                         className="pointer-events-none absolute inset-0 z-40"
                     >
                         <div className="absolute -bottom-[7.2rem] right-[2.5rem] z-30 w-[53rem]">
-                            <Thumb className="block h-auto w-full" />
+                            <img src={Thumb} alt="" draggable={false} className="block h-auto w-full select-none" />
                         </div>
 
                         <div className="absolute right-[12rem] top-[-0.5rem] z-40 w-[24.5rem]">
-                            <Fingers className="block h-auto w-full" />
+                            <img src={Fingers} alt="" draggable={false} className="block h-auto w-full select-none" />
                         </div>
 
                         <div className="absolute -top-[2rem] left-[18rem] z-10 w-[9rem]">
-                            <Finger className="block h-auto w-full" />
+                            <img src={Finger} alt="" draggable={false} className="block h-auto w-full select-none" />
                         </div>
                     </div>
                 </div>

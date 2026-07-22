@@ -1,4 +1,4 @@
-// @ts-ignore
+﻿// @ts-ignore
 import { Head, Link } from '@inertiajs/react';
 
 // assets
@@ -16,8 +16,6 @@ export default function ArchivePage() {
         'https://images.unsplash.com/photo-1505232458627-a72317fac728?q=80&w=400',
     ];
 
-    const doublePhotos = [...dummyPhotos, ...dummyPhotos];
-
     return (
         <>
             <Head title="Archive" />
@@ -25,15 +23,17 @@ export default function ArchivePage() {
             <style>{`
                 @font-face {
                     font-family: 'Arsenal';
-                    src: url('/fonts/Arsenal-Bold.ttf') format('truetype');
+                    src: url('/fonts/Arsenal-Bold.woff2') format('woff2');
                     font-weight: bold;
                     font-style: normal;
+    font-display: swap;
                 }
                 @font-face {
                     font-family: 'NotoSans';
-                    src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+                    src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
                     font-weight: bold;
                     font-style: normal;
+    font-display: swap;
                 }
 
                 /* ANIMASI ENTRANCE (Masing-masing disetel dengan Kurva P5 yang Snappy) */
