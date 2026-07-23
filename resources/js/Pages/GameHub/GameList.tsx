@@ -1,5 +1,5 @@
 ﻿import { games, type GameSlug } from '@/data/games';
-import { mockGetCompletedGames } from '@/services/mockGameApi';
+import { getCompletedGames } from '@/services/gameApi';
 import { gsap } from 'gsap';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
@@ -69,8 +69,16 @@ export default function GameList() {
 
             if (!teamId) return;
 
-            const completed = await mockGetCompletedGames(teamId);
-            setCompletedGames(completed);
+            try {
+                const completed = await getCompletedGames();
+                setCompletedGames(completed);
+            } catch {
+                // not joined / session expired — clear stale local state so the
+                // hub shows the join screen again instead of looping back here
+                sessionStorage.removeItem('teamId');
+                sessionStorage.removeItem('uniqueCode');
+                router.visit('/games');
+            }
         }
 
         loadProgress();

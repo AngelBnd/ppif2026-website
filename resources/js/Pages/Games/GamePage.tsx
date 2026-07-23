@@ -1,5 +1,5 @@
 import { games, type GameSlug } from '@/data/games';
-import { mockCompleteGame, mockGetFragment } from '@/services/mockGameApi';
+import { completeGame, startGame } from '@/services/gameApi';
 import { router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -49,6 +49,13 @@ export default function GamePage({ gameSlug }: Props) {
         wipeRef.current?.enter();
     }, []);
 
+    // Start the server-side timer for this game the moment its screen opens.
+    // Time spent choosing games on the hub is never inside a start/complete
+    // window, so it is excluded from the total completion time.
+    useEffect(() => {
+        startGame(gameSlug);
+    }, [gameSlug]);
+
     const retrieveFragments = async () => {
         const teamId = Number(sessionStorage.getItem('teamId'));
 
@@ -58,10 +65,17 @@ export default function GamePage({ gameSlug }: Props) {
             return;
         }
 
-        await mockCompleteGame(teamId, gameSlug);
+        const score =
+            gameSlug === 'core-logic-test'
+                ? Number(sessionStorage.getItem('core_logic_score')) || 0
+                : undefined;
 
-        const fragment = await mockGetFragment(teamId, gameSlug);
-        setLetters(fragment.letters);
+        const result = await completeGame(
+            gameSlug,
+            score !== undefined ? { score } : undefined,
+        );
+
+        setLetters(result.letters);
     };
 
     const finishGame = () => {

@@ -3,7 +3,7 @@ import InputUniqueCodeSVG from '@/assets/games/hub/InputUniqueCodeSVG.svg?react'
 import OKButton from '@/assets/games/hub/OkButtonSVG.svg?react';
 import RedStreakGame from '@/assets/games/hub/RedStreakGame.svg?react';
 import Button from '@/Components/global/Button';
-import { mockJoinTeam } from '@/services/mockGameApi';
+import { joinTeam } from '@/services/gameApi';
 import { gsap } from 'gsap';
 import { useRef, useState } from 'react';
 
@@ -120,7 +120,7 @@ export default function UniqueCodeForm({ onJoined }: Props) {
         try {
             setError('');
 
-            await mockJoinTeam(uniqueCode);
+            await joinTeam(uniqueCode);
 
             const inputBgs = inputBgRefs.current.filter(Boolean);
 

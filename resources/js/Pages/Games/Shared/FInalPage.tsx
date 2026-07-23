@@ -1,4 +1,4 @@
-﻿import { findTeam } from '@/services/mockGameApi';
+﻿import { getRevealedName } from '@/services/gameApi';
 import { useEffect, useState } from 'react';
 
 import BackButton from '@/assets/icons/BackButtonSVG.svg';
@@ -9,11 +9,12 @@ export default function FinalPage() {
     const [targetWord, setTargetWord] = useState('');
     useEffect(() => {
         async function loadTargetWord() {
-            const teamId = Number(sessionStorage.getItem('teamId'));
-            if (!teamId) return;
-            const team = await findTeam(teamId);
-
-            setTargetWord(team?.name.toUpperCase() ?? '');
+            try {
+                const name = await getRevealedName();
+                setTargetWord(name.toUpperCase());
+            } catch {
+                setTargetWord('');
+            }
         }
 
         loadTargetWord();

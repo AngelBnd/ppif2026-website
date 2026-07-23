@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -55,6 +57,20 @@ Route::get('/games/core-logic-test/reveal', function () {
     return Inertia::render('Games/ReconstructIdentity/FragmentRevealPage', [
         'gameSlug' => 'reconstruct-identity',
     ]);
+});
+
+Route::prefix('api')->group(function () {
+    Route::post('teams/join', [TeamController::class, 'join']);
+
+    Route::middleware('team')->group(function () {
+        Route::get('teams/me', [TeamController::class, 'me']);
+        Route::get('teams/me/reveal', [TeamController::class, 'reveal']);
+        Route::post('teams/logout', [TeamController::class, 'logout']);
+
+        Route::post('games/reconstruct-identity/guess', [GameController::class, 'guess']);
+        Route::post('games/{slug}/start', [GameController::class, 'start']);
+        Route::post('games/{slug}/complete', [GameController::class, 'complete']);
+    });
 });
 
 require __DIR__.'/auth.php';
