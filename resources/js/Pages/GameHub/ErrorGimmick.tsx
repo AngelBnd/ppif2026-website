@@ -13,6 +13,7 @@ export default function ErrorGimmick({ onJoined }: Props) {
                     <h1 className="font-arsenal text-7xl font-bold tracking-widest text-red-600">
                         DATA CORRUPTED RECOVERY REQUIRED
                     </h1>
+                    <div>masih placeholder</div>
                 </div>
 
                 <Button

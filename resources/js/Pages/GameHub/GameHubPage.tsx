@@ -1,5 +1,6 @@
-import BackButton from '@/assets/icons/BackButtonSVG.svg?react';
+﻿import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import Button from '@/Components/global/Button';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import ErrorGimmick from './ErrorGimmick';
 import GameHubStoryline from './GameHubStoryline';
@@ -17,12 +18,21 @@ export default function GameHubPage() {
         return 'story';
     });
 
+    const handleBack = () => {
+        if (screen === 'join') {
+            setScreen('story');
+            return;
+        }
+
+        router.visit('/');
+    };
+
     return (
         <main className="h-screen w-screen overflow-hidden">
             <Button
-                onClick={() => {}}
+                onClick={handleBack}
                 Icon={BackButton}
-                className="absolute bottom-4 left-6 z-20 w-[12rem]"
+                className="absolute bottom-4 left-6 z-30 w-[12rem]"
                 iconClassName="w-full"
             />
 

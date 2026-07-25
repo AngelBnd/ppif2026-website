@@ -309,28 +309,3 @@ export const mockCompletedGames: Record<number, GameSlug[]> = {
     1: [],
     2: [],
 };
-
-export const mockFragments: FragmentSet[] = [
-    {
-        teamId: 1,
-        uniqueCode: 'X7K9',
-        finalAnswer: 'UNITY',
-        fragments: {
-            'signal-decoder': ['U', 'N'],
-            'data-trace': ['I', 'T'],
-            'core-logic-test': ['Y'],
-            'reconstruct-identity': [],
-        },
-    },
-    {
-        teamId: 2,
-        uniqueCode: 'A2P5',
-        finalAnswer: 'HOPE',
-        fragments: {
-            'signal-decoder': ['H', 'O'],
-            'data-trace': ['P'],
-            'core-logic-test': ['E'],
-            'reconstruct-identity': [],
-        },
-    },
-];

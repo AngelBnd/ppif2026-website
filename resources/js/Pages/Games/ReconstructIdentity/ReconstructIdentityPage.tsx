@@ -1,6 +1,5 @@
 import InputBorderBottom from '@/assets/games/hub/InputBorderBottomSVG.svg?react';
-import { GroupMockData } from '@/data/mockBackend';
-import { findTeam } from '@/services/mockGameApi';
+import { getMyTeam, guessReconstruct } from '@/services/gameApi';
 import gsap from 'gsap';
 import {
     useEffect,
@@ -13,12 +12,8 @@ import stripID from '../../../assets/games/reconstructIdentity/stripID.webp';
 import titleID from '../../../assets/games/reconstructIdentity/titleID.webp';
 import type { GamePageChildProps } from '../GamePage';
 
-// const WORD_LENGTH = 6;
-
-// const REVEALED_INDICES = [2, 4];
-
 const INPUT_CLASSES =
-    "relative z-10 h-full w-full appearance-none border-0 bg-transparent pt-3 text-center text-9xl text-white caret-white font-['Noto_Sans'] " +
+    "relative z-10 h-full w-full appearance-none border-0 bg-transparent pt-3 text-center text-9xl text-white caret-white font-noto " +
     'font-bold outline-none ring-0 shadow-none focus:outline-none focus:ring-0 ' +
     'focus:border-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none [-webkit-tap-highlight-color:transparent]';
 
@@ -28,37 +23,41 @@ export default function ReconstructIdentityPage({
     finishGame,
 }: GamePageChildProps) {
     const [letters, setLetters] = useState<string[]>([]);
-    const [targetWord, setTargetWord] = useState('');
+    const [nameLength, setNameLength] = useState(0);
+    const [revealedIndices, setRevealedIndices] = useState<number[]>([]);
     const [isVisible, setIsVisible] = useState(false);
-    const [teamData, setTeamData] = useState<GroupMockData | null>(null);
     const [status, setStatus] = useState<GuessStatus>('playing');
     const inputsRef = useRef<HTMLInputElement[]>([]);
     const inputAreaRef = useRef<HTMLDivElement | null>(null);
     const isFinishingRef = useRef(false);
+    const isSubmittingRef = useRef(false);
+    const completionTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
+    // The answer word (its length + which letters are given for free) comes from
+    // the server. The full word is never sent — the guess is validated server-side.
     useEffect(() => {
-        async function loadTargetWord() {
-            const teamId = Number(sessionStorage.getItem('teamId'));
-            if (!teamId) return;
-            const team = await findTeam(teamId);
-            setTeamData(team ?? null);
-            setTargetWord(team?.name.toUpperCase() ?? '');
-            setLetters(
-                Array.from({ length: team?.name.length ?? 0 }, (_, i) =>
-                    team?.revealed_indices.includes(i)
-                        ? team.name[i].toUpperCase()
-                        : '',
-                ),
-            );
+        async function loadTarget() {
+            try {
+                const team = await getMyTeam();
+                setNameLength(team.name_length);
+                setRevealedIndices(team.revealed_indices);
+                setLetters(
+                    Array.from({ length: team.name_length }, (_, i) =>
+                        (team.revealed_letters[String(i)] ?? '').toUpperCase(),
+                    ),
+                );
+            } catch {
+                // not joined / session expired — leave the grid empty
+            }
         }
 
-        loadTargetWord();
+        loadTarget();
     }, []);
 
     function findNextEditable(from: number, direction: 1 | -1) {
         let i = from + direction;
-        while (i >= 0 && i < targetWord.length) {
-            if (!teamData?.revealed_indices.includes(i)) return i;
+        while (i >= 0 && i < nameLength) {
+            if (!revealedIndices.includes(i)) return i;
             i += direction;
         }
         return -1;
@@ -70,74 +69,41 @@ export default function ReconstructIdentityPage({
     }, []);
 
     useEffect(() => {
-        if (!isVisible) return;
+        if (!isVisible || nameLength === 0) return;
         const firstEditable = findNextEditable(-1, 1);
         inputsRef.current[firstEditable]?.focus();
-    }, [isVisible]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isVisible, nameLength, revealedIndices]);
 
     useEffect(() => {
-        if (!teamData || !targetWord) return;
+        return () => {
+            completionTimelineRef.current?.kill();
+        };
+    }, []);
 
-        if (letters.some((letter) => letter === '')) {
-            setStatus('playing');
-            return;
-        }
+    function shakeWrong() {
+        setStatus('wrong');
 
-        if (letters.join('') !== targetWord) {
-            setStatus('wrong');
+        if (!inputAreaRef.current) return;
+        const target = inputAreaRef.current;
+        gsap.killTweensOf(target);
 
-            if (inputAreaRef.current) {
-                const target = inputAreaRef.current;
+        gsap.timeline()
+            .set(target, { x: 0 })
+            .to(target, { x: -12, duration: 0.05, ease: 'power1.inOut' })
+            .to(target, { x: 12, duration: 0.05, ease: 'power1.inOut' })
+            .to(target, { x: -8, duration: 0.05, ease: 'power1.inOut' })
+            .to(target, { x: 8, duration: 0.05, ease: 'power1.inOut' })
+            .to(target, { x: -4, duration: 0.04, ease: 'power1.inOut' })
+            .to(target, { x: 4, duration: 0.04, ease: 'power1.inOut' })
+            .to(target, { x: 0, duration: 0.04, ease: 'power1.out' });
+    }
 
-                gsap.killTweensOf(target);
-
-                gsap.timeline()
-                    .set(target, {
-                        x: 0,
-                    })
-                    .to(target, {
-                        x: -12,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 12,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: -8,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 8,
-                        duration: 0.05,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: -4,
-                        duration: 0.04,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 4,
-                        duration: 0.04,
-                        ease: 'power1.inOut',
-                    })
-                    .to(target, {
-                        x: 0,
-                        duration: 0.04,
-                        ease: 'power1.out',
-                    });
-            }
-
-            return;
-        }
-
+    function celebrateCorrect() {
         setStatus('correct');
 
         if (isFinishingRef.current) return;
+        isFinishingRef.current = true;
 
         const inputElements = inputsRef.current.filter(Boolean);
 
@@ -145,8 +111,6 @@ export default function ReconstructIdentityPage({
             finishGame();
             return;
         }
-
-        isFinishingRef.current = true;
 
         inputElements.forEach((input) => {
             input.blur();
@@ -157,6 +121,7 @@ export default function ReconstructIdentityPage({
             delay: 0.2,
             onComplete: finishGame,
         });
+        completionTimelineRef.current = timeline;
 
         timeline
             .to(inputElements, {
@@ -179,17 +144,43 @@ export default function ReconstructIdentityPage({
                 duration: 0.12,
                 ease: 'power1.inOut',
             })
-            .to(
-                {},
-                {
-                    duration: 0.35,
-                },
-            );
+            .to({}, { duration: 0.35 });
+    }
+
+    // Submit the guess to the server once every cell is filled.
+    useEffect(() => {
+        if (nameLength === 0 || letters.length !== nameLength) return;
+
+        if (letters.some((letter) => letter === '')) {
+            setStatus('playing');
+            return;
+        }
+
+        if (isFinishingRef.current || isSubmittingRef.current) return;
+
+        let cancelled = false;
+        isSubmittingRef.current = true;
+
+        guessReconstruct(letters.join(''))
+            .then((result) => {
+                if (cancelled) return;
+                isSubmittingRef.current = false;
+
+                if (result.correct) {
+                    celebrateCorrect();
+                } else {
+                    shakeWrong();
+                }
+            })
+            .catch(() => {
+                isSubmittingRef.current = false;
+            });
 
         return () => {
-            timeline.kill();
+            cancelled = true;
         };
-    }, [letters, targetWord, teamData, finishGame]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [letters, nameLength]);
 
     const setLetterAt = (index: number, char: string) => {
         setLetters((prev) => {
@@ -236,12 +227,9 @@ export default function ReconstructIdentityPage({
         let cursor = index;
         let lastFilled = index;
         for (const char of pasted) {
-            while (
-                cursor < targetWord.length &&
-                teamData?.revealed_indices.includes(cursor)
-            )
+            while (cursor < nameLength && revealedIndices.includes(cursor))
                 cursor++;
-            if (cursor >= targetWord.length) break;
+            if (cursor >= nameLength) break;
             setLetterAt(cursor, char);
             lastFilled = cursor;
             cursor++;
@@ -286,8 +274,7 @@ export default function ReconstructIdentityPage({
                             className="flex -rotate-6 items-center justify-center"
                         >
                             {letters.map((letter, index) => {
-                                const revealed =
-                                    teamData?.revealed_indices.includes(index);
+                                const revealed = revealedIndices.includes(index);
                                 return (
                                     <div
                                         key={index}
@@ -346,7 +333,7 @@ export default function ReconstructIdentityPage({
 
             <div className="pointer-events-none fixed inset-x-0 bottom-24 z-50 flex justify-center">
                 <p
-                    className={`font-['Noto_Sans'] text-2xl font-bold text-red-500 transition-opacity duration-200 ${
+                    className={`font-noto text-2xl font-bold text-red-500 transition-opacity duration-200 ${
                         status === 'wrong' ? 'opacity-100' : 'opacity-0'
                     }`}
                 >

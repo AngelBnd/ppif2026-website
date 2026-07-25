@@ -1,4 +1,4 @@
-import {
+﻿import {
     CW_COLS,
     CW_ROWS,
     CWdata,
@@ -22,7 +22,7 @@ export default function CrissCross({ finishGame }: Props) {
     let j = 0;
     let indexWord = 0;
     let wordLengthAcross = 0;
-    let savedColDowns: {
+    const savedColDowns: {
         row: number;
         col: number;
         lengthLeft: number;
@@ -39,7 +39,6 @@ export default function CrissCross({ finishGame }: Props) {
     const inputRefs = useRef<(HTMLInputElement | null)[][]>([]);
     const cellRefs = useRef<Array<Array<HTMLDivElement | null>>>([]);
     const [values, setValues] = useState<Record<string, string>>({});
-    const [isFlashingCorrect, setIsFlashingCorrect] = useState(false);
 
     const hasCompletedAnimationRef = useRef(false);
     const completionTimelineRef = useRef<gsap.core.Timeline | null>(null);

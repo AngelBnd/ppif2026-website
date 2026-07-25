@@ -1,4 +1,4 @@
-import { MCQ } from '@/data/gameQuestions/coreLogicQuestions';
+﻿import { MCQ } from '@/data/gameQuestions/coreLogicQuestions';
 import { gsap } from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
@@ -853,15 +853,17 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
             <style>{`
             @font-face {
                 font-family: 'Arsenal';
-                src: url('/fonts/Arsenal-Bold.ttf') format('truetype');
+                src: url('/fonts/Arsenal-Bold.woff2') format('woff2');
                 font-weight: bold;
                 font-style: normal;
+    font-display: swap;
             }
             @font-face {
                 font-family: 'NotoSans';
-                src: url('/fonts/NotoSans-Bold.ttf') format('truetype');
+                src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
                 font-weight: bold;
                 font-style: normal;
+    font-display: swap;
             }
         `}</style>
             <style>{`

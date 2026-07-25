@@ -42,12 +42,13 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
 
     // Establish the starting transform via GSAP itself, not inline style,
     // so GSAP's internal tracked values match reality from the start.
+
     useEffect(() => {
         gsap.set(holeGroupRef.current, {
             scale: initialScale,
             transformOrigin: `${SHAPE_CENTER_X}px ${SHAPE_CENTER_Y}px`,
         });
-    }, [initialScale, size]);
+    }, [initialScale]);
 
     useImperativeHandle(ref, () => ({
         enter(onComplete) {

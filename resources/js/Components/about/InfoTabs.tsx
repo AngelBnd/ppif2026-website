@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import ChoiceSelected1 from '@/assets/about/ChoiceSelected1.svg?react';
 import ChoiceSelected1_1 from '@/assets/about/ChoiceSelected1_1.svg?react';
@@ -17,7 +17,6 @@ gsap.registerPlugin(MorphSVGPlugin);
 
 type InfoTabsProps = {
     className: string;
-    topicChosen: 'informatics' | 'ppif';
     activeTab: currentTab;
     setActiveTab: React.Dispatch<React.SetStateAction<currentTab>>;
 };
@@ -218,7 +217,6 @@ function TabButton({
 
 export default function InfoTabs({
     className,
-    topicChosen,
     setActiveTab,
     activeTab,
 }: InfoTabsProps) {

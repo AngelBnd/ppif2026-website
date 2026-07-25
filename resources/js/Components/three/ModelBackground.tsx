@@ -1,6 +1,16 @@
-import gsap from 'gsap';
+﻿import gsap from 'gsap';
 import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
+// Named imports (not `import * as THREE`) so Rolldown can tree-shake the
+// modules this component never touches.
+import {
+    AmbientLight,
+    DirectionalLight,
+    Mesh,
+    PerspectiveCamera,
+    Scene,
+    Vector3,
+    WebGLRenderer,
+} from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 type CameraPreset = 'home' | 'about' | 'timeline' | 'contact';
@@ -35,17 +45,17 @@ export default function ModelBackground({
     preset = 'home',
 }: ModelBackgroundProps) {
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-    const lookAtRef = useRef(new THREE.Vector3(0, 0, 0));
+    const cameraRef = useRef<PerspectiveCamera | null>(null);
+    const lookAtRef = useRef(new Vector3(0, 0, 0));
 
     useEffect(() => {
         if (!containerRef.current) return;
 
         const container = containerRef.current;
 
-        const scene = new THREE.Scene();
+        const scene = new Scene();
 
-        const camera = new THREE.PerspectiveCamera(
+        const camera = new PerspectiveCamera(
             50,
             window.innerWidth / window.innerHeight,
             0.2,
@@ -59,7 +69,7 @@ export default function ModelBackground({
         lookAtRef.current.set(...initialPreset.lookAt);
         camera.lookAt(lookAtRef.current);
 
-        const renderer = new THREE.WebGLRenderer({
+        const renderer = new WebGLRenderer({
             antialias: true,
             alpha: true,
         });
@@ -70,10 +80,10 @@ export default function ModelBackground({
 
         container.appendChild(renderer.domElement);
 
-        const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+        const ambientLight = new AmbientLight(0xffffff, 1.2);
         scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        const directionalLight = new DirectionalLight(0xffffff, 1.5);
         directionalLight.position.set(3, 5, 4);
         scene.add(directionalLight);
 
@@ -87,7 +97,7 @@ export default function ModelBackground({
             model.scale.set(1, 1, 1);
 
             model.traverse((child) => {
-                if (child instanceof THREE.Mesh) {
+                if (child instanceof Mesh) {
                     const materials = Array.isArray(child.material)
                         ? child.material
                         : [child.material];

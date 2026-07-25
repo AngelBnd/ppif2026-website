@@ -1,20 +1,13 @@
-import CLT from '@/assets/games/fragmentReveal/CLT.svg?react';
-import DT from '@/assets/games/fragmentReveal/DT.svg?react';
-import RIbbonBG from '@/assets/games/fragmentReveal/RibbonBG.svg?react';
-import SD from '@/assets/games/fragmentReveal/SD.svg?react';
-import YouveFinished from '@/assets/games/fragmentReveal/uvefinished.svg?react';
+import CLT from '@/assets/games/fragmentReveal/CLT.svg';
+import DT from '@/assets/games/fragmentReveal/DT.svg';
+import RIbbonBG from '@/assets/games/fragmentReveal/RibbonBG.svg';
+import SD from '@/assets/games/fragmentReveal/SD.svg';
+import YouveFinished from '@/assets/games/fragmentReveal/uvefinished.svg';
 import { router } from '@inertiajs/react';
 import gsap from 'gsap';
-import {
-    ComponentType,
-    SVGProps,
-    useEffect,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from 'react';
-import ClickANYHWHERE from '../../../assets/games/fragmentReveal/ClickAnywhere.svg?react';
-import Flag from '../../../assets/games/fragmentReveal/flag.svg?react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import ClickANYHWHERE from '../../../assets/games/fragmentReveal/ClickAnywhere.svg';
+import Flag from '../../../assets/games/fragmentReveal/flag.svg';
 import secondFR from '../../../assets/games/fragmentReveal/secondFR.webp';
 import silkFR from '../../../assets/games/fragmentReveal/silkFR.webp';
 import splashFR from '../../../assets/games/fragmentReveal/splashFR.webp';
@@ -58,7 +51,6 @@ export default function FragmentRevealPage({
 }: Props) {
     const [secondsLeft, setSecondsLeft] = useState(countdownSeconds);
     const [clicked, setClicked] = useState(false);
-    const [lightningLanded, setLightningLanded] = useState(true);
     const [timerStart, setTimerStart] = useState(false);
 
     const clickAnywhereRef = useRef<HTMLDivElement | null>(null);
@@ -184,7 +176,7 @@ export default function FragmentRevealPage({
         };
     }, []);
 
-    const gameTitles: Record<string, ComponentType<SVGProps<SVGSVGElement>>> = {
+    const gameTitles: Record<string, string> = {
         'Signal Decoder': SD,
         'Core Logic Test': CLT,
         'Data Trace': DT,
@@ -209,10 +201,6 @@ export default function FragmentRevealPage({
                         0%, 100% { opacity: 0.15; transform: scale(0.55) rotate(0deg); }
                         50% { opacity: 1; transform: scale(1.15) rotate(20deg); }
                     }
-                    @keyframes lightning-fade-down {
-                        0% { transform: translateY(-40px); opacity: 0; }
-                        100% { transform: translateY(0); pacity: 1; }
-                    }
                 `}</style>
 
             {/* <div className="scale-[0.5]"> */}
@@ -221,14 +209,22 @@ export default function FragmentRevealPage({
                 className="absolute left-1/2 top-0 h-auto w-[78rem] -translate-x-1/2"
                 style={{ clipPath: 'inset(0% 0% 100% 0%)' }}
             >
-                <RIbbonBG className="h-auto w-full" />
+                <img src={RIbbonBG} alt="" className="h-auto w-full" />
             </div>
             <div className="relative flex h-screen w-screen max-w-[20000px] flex-col items-center justify-center gap-28 overflow-hidden">
                 <div className="relative flex flex-col items-center justify-center gap-2">
-                    <YouveFinished className="z-20 block h-auto w-[40rem]" />
+                    <img
+                        src={YouveFinished}
+                        alt="You've finished"
+                        className="z-20 block h-auto w-[40rem]"
+                    />
 
                     {SelectedGame ? (
-                        <SelectedGame className="z-20 block h-auto w-[50rem]" />
+                        <img
+                            src={SelectedGame}
+                            alt={game}
+                            className="z-20 block h-auto w-[50rem]"
+                        />
                     ) : (
                         <></>
                     )}
@@ -241,7 +237,11 @@ export default function FragmentRevealPage({
                         <></>
                     )}
 
-                    <Flag className="absolute -bottom-36 right-3 z-0 h-auto w-[90%]" />
+                    <img
+                        src={Flag}
+                        alt=""
+                        className="absolute -bottom-36 right-3 z-0 h-auto w-[90%]"
+                    />
                     <Sparkle
                         className="right-[1%] top-[90%] z-30 h-6 w-8"
                         delay="0.9s"
@@ -265,7 +265,11 @@ export default function FragmentRevealPage({
                 </div>
 
                 <div className="w-[40rem]" ref={clickAnywhereRef}>
-                    <ClickANYHWHERE className="block h-auto w-full" />
+                    <img
+                        src={ClickANYHWHERE}
+                        alt="Click anywhere"
+                        className="block h-auto w-full"
+                    />
                 </div>
             </div>
 
