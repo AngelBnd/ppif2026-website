@@ -25,6 +25,43 @@ export type DivisionTrigger = {
     inset: number;
 };
 
+/** Passed to `initBeats` once, before any beat is built. */
+export type CameraSetupContext = {
+    /** Carries the clip-path. */
+    clip: HTMLElement;
+    /** The transformed node (position/scale). */
+    world: HTMLElement;
+    triggers: DivisionTrigger[];
+    cfg: CameraConfig;
+};
+
+/** Passed to `buildBeat` once per trigger. */
+export type CameraBeatContext = {
+    clip: HTMLElement;
+    world: HTMLElement;
+    /** This beat's trigger spec. */
+    trigger: DivisionTrigger;
+    /** Beat index, 0-based. */
+    index: number;
+    /** Total number of beats. */
+    total: number;
+    cfg: CameraConfig;
+};
+
+/** Sets the resting state before any beat plays. */
+export type InitBeats = (ctx: CameraSetupContext) => void;
+
+/**
+ * Appends one beat's tween(s) onto `tl`. The hook has ALREADY placed the
+ * `s{index}` label at the current playhead — append forward-moving tweens only.
+ * Do not add labels, seek, or use negative position offsets that reach back
+ * across the previous label, or the segment ratchet will misalign.
+ */
+export type BuildBeat = (
+    tl: gsap.core.Timeline,
+    ctx: CameraBeatContext,
+) => void;
+
 export type CameraConfig = {
     perspective: number;
     paths: CameraPaths;
@@ -40,6 +77,10 @@ export type CameraConfig = {
     segmentDuration: number;
     triggerAt: number;
     markers: boolean;
+    /** Resting state builder. Defaults to clipping to `restInset`. */
+    initBeats: InitBeats;
+    /** Per-beat tween builder. Defaults to a clip-path reveal to `trigger.inset`. */
+    buildBeat: BuildBeat;
 };
 
 const DEFAULTS: CameraConfig = {
@@ -57,15 +98,25 @@ const DEFAULTS: CameraConfig = {
     segmentDuration: 0.6,
     triggerAt: 0.6,
     markers: false,
+    initBeats: ({ clip, cfg }) => {
+        gsap.set(clip, { clipPath: `inset(0% ${cfg.restInset}% 0% 0%)` });
+    },
+    buildBeat: (tl, { clip, trigger, cfg }) => {
+        tl.to(clip, {
+            clipPath: `inset(0% ${trigger.inset}% 0% 0%)`,
+            duration: cfg.segmentDuration,
+            ease: 'power3.out',
+        });
+    },
 };
 
 export type DivisionCameraRefs = {
     scroller: ElRef;
-    panel: ElRef;
+    panel?: ElRef;
     camera: ElRef;
     world: ElRef;
-    clip: ElRef;
-    marks: ElListRef;
+    clip?: ElRef;
+    marks?: ElListRef;
 };
 
 /* ------------------------------------------------------------------ *
@@ -88,14 +139,15 @@ export function useDivisionCamera({
         if (!enabled) return;
 
         const scroller = refs.scroller.current;
-        const panel = refs.panel.current;
         const camera = refs.camera.current;
         const world = refs.world.current;
-        const clip = refs.clip.current;
-        if (!scroller || !panel || !camera || !world || !clip) return;
+        if (!scroller || !camera || !world) return;
 
-        const marks = refs.marks.current.filter(Boolean) as HTMLElement[];
-        if (marks.length !== triggers.length) {
+        const clip = refs.clip?.current ?? null;
+        const marks = (refs.marks?.current ?? []).filter(
+            Boolean,
+        ) as HTMLElement[];
+        if (clip && marks.length !== triggers.length) {
             console.warn(
                 `[camera] ${marks.length} marker nodes for ${triggers.length} triggers — beats will misalign.`,
             );
@@ -206,8 +258,6 @@ export function useDivisionCamera({
             if (!dragging) return;
             const dx = e.clientX - lastPointerX;
             lastPointerX = e.clientX;
-            /* Decayed average, so drifting to a stop still leaves a usable
-             * value — one frame's delta is often zero at the moment of release. */
             dragVel = dragVel * 0.7 + dx * 0.3;
             target = clampScroll(dragStartScroll - (e.clientX - dragStartX));
         };
@@ -253,71 +303,103 @@ export function useDivisionCamera({
         const onDragStart = (e: Event) => e.preventDefault();
 
         /* -------------------------------------------------------------- *
-         * Clip ratchet — forward only, one segment at a time
+         * Clip ratchet — forward only, one segment at a time.
+         *
+         * Optional subsystem: only built when a `clip` element is provided.
+         * The arm + teardown steps are exposed as closures so the rAF and
+         * cleanup below can drive it without knowing its internals; both stay
+         * null for a plain scroll-camera.
          * -------------------------------------------------------------- */
 
-        const clipTl = gsap.timeline({ paused: true });
-        gsap.set(clip, { clipPath: `inset(0% ${cfg.restInset}% 0% 0%)` });
+        let armBeats: (() => void) | null = null;
+        let killBeats: (() => void) | null = null;
 
-        triggers.forEach((trg, i) => {
-            clipTl.addLabel(`s${i}`).to(clip, {
-                clipPath: `inset(0% ${trg.inset}% 0% 0%)`,
-                duration: cfg.segmentDuration,
-                ease: 'power3.out',
+        if (clip) {
+            const clipTl = gsap.timeline({ paused: true });
+            cfg.initBeats({ clip, world, triggers, cfg });
+
+            triggers.forEach((trg, i) => {
+                // The hook owns the label the ratchet keys off; the consumer
+                // only supplies the tween(s) that play across this segment.
+                clipTl.addLabel(`s${i}`);
+                cfg.buildBeat(clipTl, {
+                    clip,
+                    world,
+                    trigger: trg,
+                    index: i,
+                    total: N,
+                    cfg,
+                });
             });
-        });
 
-        const at = (i: number) => clipTl.labels[`s${i}`] ?? clipTl.duration();
-        const endOf = (i: number) =>
-            i + 1 < N ? at(i + 1) : clipTl.duration();
+            const at = (i: number) =>
+                clipTl.labels[`s${i}`] ?? clipTl.duration();
+            const endOf = (i: number) =>
+                i + 1 < N ? at(i + 1) : clipTl.duration();
 
-        let queue: number[] = [];
-        let cursor = 0;
-        let active: gsap.core.Tween | null = null;
+            let queue: number[] = [];
+            let cursor = 0;
+            let active: gsap.core.Tween | null = null;
 
-        const runNext = () => {
-            const i = queue.shift();
-            if (i === undefined) {
-                active = null;
-                clipTl.timeScale(1);
-                return;
-            }
+            const runNext = () => {
+                const i = queue.shift();
+                if (i === undefined) {
+                    active = null;
+                    clipTl.timeScale(1);
+                    return;
+                }
 
-            clipTl.timeScale(Math.min(1 + queue.length * 0.35, 1.6));
-            active = clipTl.tweenFromTo(at(i), endOf(i), {
-                ease: 'none',
-                onComplete: runNext,
-            });
-        };
+                clipTl.timeScale(Math.min(1 + queue.length * 0.35, 1.6));
+                active = clipTl.tweenFromTo(at(i), endOf(i), {
+                    ease: 'none',
+                    onComplete: runNext,
+                });
+            };
 
-        let armed = false;
-        let pending = -1;
+            let armed = false;
+            let pending = -1;
 
-        const enqueue = (i: number) => {
-            /* Triggers can fire during the first refresh, before layout has
-             * settled. Record and snap on arm — don't animate a beat the user
-             * scrolled past before the page was ready. */
-            if (!armed) {
-                pending = Math.max(pending, i);
-                return;
-            }
-            /* Fill any gap, or a skipped beat stays in its start state forever. */
-            for (let k = cursor; k <= i; k++) queue.push(k);
-            cursor = Math.max(cursor, i + 1);
-            if (!active) runNext();
-        };
+            const enqueue = (i: number) => {
+                /* Triggers can fire during the first refresh, before layout has
+                 * settled. Record and snap on arm — don't animate a beat the
+                 * user scrolled past before the page was ready. */
+                if (!armed) {
+                    pending = Math.max(pending, i);
+                    return;
+                }
+                /* Fill any gap, or a skipped beat stays in its start state. */
+                for (let k = cursor; k <= i; k++) queue.push(k);
+                cursor = Math.max(cursor, i + 1);
+                if (!active) runNext();
+            };
 
-        const markTriggers = marks.map((mark, i) =>
-            ScrollTrigger.create({
-                scroller,
-                horizontal: true,
-                trigger: mark,
-                start: `left ${cfg.triggerAt * 100}%`,
-                once: true,
-                markers: cfg.markers ? { indent: i * 22 } : false,
-                onEnter: () => enqueue(i),
-            }),
-        );
+            const markTriggers = marks.map((mark, i) =>
+                ScrollTrigger.create({
+                    scroller,
+                    horizontal: true,
+                    trigger: mark,
+                    start: `left ${cfg.triggerAt * 100}%`,
+                    once: true,
+                    markers: cfg.markers ? { indent: i * 22 } : false,
+                    onEnter: () => enqueue(i),
+                }),
+            );
+
+            armBeats = () => {
+                armed = true;
+                if (pending >= 0) {
+                    clipTl.seek(endOf(pending));
+                    cursor = pending + 1;
+                    pending = -1;
+                }
+            };
+
+            killBeats = () => {
+                active?.kill();
+                clipTl.kill();
+                markTriggers.forEach((t) => t.kill());
+            };
+        }
 
         /* -------------------------------------------------------------- *
          * Render — the single writer
@@ -409,12 +491,7 @@ export function useDivisionCamera({
         const rafId = requestAnimationFrame(() => {
             measure();
             ScrollTrigger.refresh();
-            armed = true;
-            if (pending >= 0) {
-                clipTl.seek(endOf(pending));
-                cursor = pending + 1;
-                pending = -1;
-            }
+            armBeats?.();
         });
 
         let resizeTimer: number | undefined;
@@ -449,9 +526,7 @@ export function useDivisionCamera({
             scroller.removeEventListener('dragstart', onDragStart);
 
             gsap.ticker.remove(render);
-            active?.kill();
-            clipTl.kill();
-            markTriggers.forEach((t) => t.kill());
+            killBeats?.();
 
             scroller.style.cursor = '';
             scroller.style.userSelect = '';

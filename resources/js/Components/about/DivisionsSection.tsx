@@ -68,7 +68,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
         }));
 
         const TRIGGERS: DivisionTrigger[] = [
-            { left: 25, top: 20, inset: 64 },
+            { left: 29, top: 20, inset: 64 },
             { left: 45, top: 20, inset: 43 },
             { left: 63, top: 20, inset: 32 },
             { left: 77, top: 20, inset: 0 },
@@ -76,18 +76,21 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
 
         const CAMERA_CONFIG: Partial<CameraConfig> = {
             perspective: 900,
-            markers: true,
+            markers: false,
             paths: {
                 lift: {
-                    d: 'M2.75732 212.5C2.75732 212.5 400.757 6.00006 694.257 6C987.757 5.99994 1512.76 300.5 1789.76 300.5C2102.76 300.5 2430.26 -145.5 3711.76 257.5',
+                    d: 'M0,183.62 C0,183.62 451.83,183.62 808.52,183.62 C1165.2,183.62 1374.43,2.09 1735.62,7.59 C2096.82,13.09 2409.76,173.59 2729.48,138.59 C3049.18,103.59 3400,274.09 3400,274.09',
                     zero: 'mean',
 
-                    gain: 0.2,
+                    gain: 0.23,
                 },
-                scale: { d: CAMERA_PATHS.scale, gain: 0.01 },
+                scale: { d: CAMERA_PATHS.scale, gain: 0.03 },
                 sway: { d: CAMERA_PATHS.sway, zero: 'mean', gain: 0 },
             },
-            bankGain: 0.001,
+            bankGain: 0.0009,
+            bankSlopeGain: 0.008,
+            dollyGain: 0.0,
+            dollyMax: 0,
         };
 
         useDivisionCamera({
@@ -129,20 +132,22 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                             minHeight: '856px',
                         }}
                     >
-                        <div className="z-100 absolute left-12 top-40 w-full">
-                            <svg
-                                viewBox="0 0 3512 520"
-                                fill="none"
-                                className="h-auto w-full"
-                                preserveAspectRatio="none"
-                            >
-                                <path
-                                    d="M2.75732 212.5C2.75732 212.5 400.757 6.00006 694.257 6C987.757 5.99994 1512.76 300.5 1789.76 300.5C2102.76 300.5 2430.26 -145.5 3711.76 257.5"
-                                    stroke="#00FFAE"
-                                    strokeWidth={11}
-                                />
-                            </svg>
-                        </div>
+                        {/* <CameraPathDebug
+                            scrollerRef={divisionScrollRef}
+                            panelWidth={3400}
+                            markers={TRIGGERS.map((t) => t.left)}
+                            channels={[
+                                {
+                                    d: 'M0,243.62 C0,243.62 451.83,228.12 808.52,243.62 C1165.2,259.12 1374.43,2.09 1735.62,7.59 C2096.82,13.09 2409.76,173.59 2729.48,138.59 C3049.18,103.59 3400,274.09 3400,274.09',
+                                    zero: 'mean',
+                                    label: 'lift',
+                                    color: '#00FFAE',
+
+                                    gain: 0.15,
+                                },
+                            ]}
+                        /> */}
+
                         {TRIGGERS.map((trg, i) => (
                             <div
                                 key={i}
@@ -153,7 +158,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                                     left: `${trg.left}%`,
                                     top: `${trg.top}%`,
                                 }}
-                                className="absolute z-50 h-5 w-5 bg-green-600"
+                                className="absolute z-50 h-5 w-5"
                             ></div>
                         ))}
 
