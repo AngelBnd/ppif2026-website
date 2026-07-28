@@ -60,14 +60,16 @@ Route::get('/games/core-logic-test/reveal', function () {
 });
 
 Route::prefix('api')->group(function () {
-    Route::post('teams/join', [TeamController::class, 'join']);
+    Route::post('teams/join', [TeamController::class, 'join'])
+        ->middleware('throttle:team-join');
 
     Route::middleware('team')->group(function () {
         Route::get('teams/me', [TeamController::class, 'me']);
         Route::get('teams/me/reveal', [TeamController::class, 'reveal']);
         Route::post('teams/logout', [TeamController::class, 'logout']);
 
-        Route::post('games/reconstruct-identity/guess', [GameController::class, 'guess']);
+        Route::post('games/reconstruct-identity/guess', [GameController::class, 'guess'])
+            ->middleware('throttle:team-guess');
         Route::post('games/{slug}/start', [GameController::class, 'start']);
         Route::post('games/{slug}/complete', [GameController::class, 'complete']);
     });

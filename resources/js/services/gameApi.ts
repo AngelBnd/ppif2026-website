@@ -134,10 +134,10 @@ export async function startGame(gameSlug: GameSlug): Promise<void> {
  */
 export async function completeGame(
     gameSlug: GameSlug,
-    options?: { score?: number },
+    options?: { answers?: number[] },
 ): Promise<{ letters: string[]; completedGames: GameSlug[] }> {
     const payload =
-        options?.score !== undefined ? { score: options.score } : undefined;
+        options?.answers !== undefined ? { answers: options.answers } : undefined;
 
     const data = await apiRequest<{
         fragment: { letters: string[] };

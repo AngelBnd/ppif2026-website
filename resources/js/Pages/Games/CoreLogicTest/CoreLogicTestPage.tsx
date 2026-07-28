@@ -32,6 +32,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [lives, setLives] = useState<number>(3);
     const [correctCount, setCorrectCount] = useState<number>(0);
+    const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
     const [showExplanation, setShowExplanation] = useState<boolean>(false);
 
     const [coddieState, setCoddieState] = useState<
@@ -772,6 +773,8 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
     const handleAnswerClick = (selectedIdx: number) => {
         if (showExplanation) return;
 
+        setSelectedAnswers((prev) => [...prev, selectedIdx]);
+
         const isCorrect = selectedIdx === currentQuestion.ans;
 
         if (isCorrect) {
@@ -822,13 +825,20 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                 setCurrentIndex((prev) => prev + 1);
             }, 250);
         } else {
-            handleFinish(correctCount);
+            handleFinish();
         }
     };
 
-    // Handler Finish
-    const handleFinish = (finalCorrectScore: number) => {
-        sessionStorage.setItem('core_logic_score', String(finalCorrectScore));
+    // Handler Finish. `core_logic_score` is kept only for the immediate result
+    // UI; the authoritative score is recomputed server-side from
+    // `core_logic_answers`, so a spoofed sessionStorage value here can't
+    // affect what's actually persisted.
+    const handleFinish = () => {
+        sessionStorage.setItem('core_logic_score', String(correctCount));
+        sessionStorage.setItem(
+            'core_logic_answers',
+            JSON.stringify(selectedAnswers),
+        );
         finishGame();
     };
 
@@ -837,6 +847,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
         setCurrentIndex(0);
         setLives(3);
         setCorrectCount(0);
+        setSelectedAnswers([]);
         setIsGameOver(false);
         setCustomMessage('');
 
@@ -900,10 +911,20 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
             >
                 {import.meta.env.DEV && (
                     <button
-                        onClick={() => handleFinish(7)}
+                        onClick={() => {
+                            sessionStorage.setItem(
+                                'core_logic_score',
+                                String(MCQ.length),
+                            );
+                            sessionStorage.setItem(
+                                'core_logic_answers',
+                                JSON.stringify(MCQ.map((q) => q.ans)),
+                            );
+                            finishGame();
+                        }}
                         className="fixed right-2 top-2 z-[9999] rounded bg-red-600 px-3 py-1 text-xs font-bold text-white shadow-lg hover:bg-red-700"
                     >
-                        Skip (7 correct)
+                        Skip (all correct)
                     </button>
                 )}
                 <div className="game-canvas">

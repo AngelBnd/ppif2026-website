@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GameProgress;
 use App\Models\Team;
+use App\Support\CoreLogicCatalog;
 use App\Support\GameCatalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -54,17 +55,27 @@ class GameController extends Controller
             abort(422, 'Reconstruct Identity is completed via the guess endpoint.');
         }
 
-        $validated = $request->validate([
-            'score' => ['nullable', 'integer', 'min:0', 'max:10'],
-        ]);
+        // Core Logic Test's score is never taken from the client: it is
+        // recomputed here from the raw answers against the server-side key.
+        $validated = $slug === GameCatalog::CORE_LOGIC
+            ? $request->validate([
+                'answers' => ['required', 'array', 'size:'.CoreLogicCatalog::QUESTION_COUNT],
+                'answers.*' => ['required', 'integer', 'min:0', 'max:3'],
+            ])
+            : [];
 
         $team = $this->team($request);
         $this->assertUnlocked($team, $slug);
 
+        // Captured before finalize() so a replayed /complete call (e.g. with a
+        // more favourable answers array) can never overwrite a score that was
+        // already locked in by the first, genuine completion.
+        $alreadyCompleted = in_array($slug, $team->completedSlugs(), true);
+
         $progress = $this->finalize($team, $slug);
 
-        if ($slug === GameCatalog::CORE_LOGIC && array_key_exists('score', $validated) && $validated['score'] !== null) {
-            $progress->score = (int) $validated['score'];
+        if ($slug === GameCatalog::CORE_LOGIC && ! $alreadyCompleted) {
+            $progress->score = CoreLogicCatalog::score($validated['answers']);
             $progress->save();
         }
 
