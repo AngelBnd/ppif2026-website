@@ -65,14 +65,16 @@ export default function GamePage({ gameSlug }: Props) {
             return;
         }
 
-        const score =
+        const answers =
             gameSlug === 'core-logic-test'
-                ? Number(sessionStorage.getItem('core_logic_score')) || 0
+                ? (JSON.parse(
+                      sessionStorage.getItem('core_logic_answers') || '[]',
+                  ) as number[])
                 : undefined;
 
         const result = await completeGame(
             gameSlug,
-            score !== undefined ? { score } : undefined,
+            answers !== undefined ? { answers } : undefined,
         );
 
         setLetters(result.letters);
