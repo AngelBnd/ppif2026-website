@@ -927,7 +927,6 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                                     />
                                 </div>
 
-                                {/* Current Question Banner */}
                                 <div
                                     ref={currentQuestionBannerRef}
                                     className="absolute left-[30px] top-[0px] z-30 h-[95px] w-[180px] overflow-visible"
@@ -1207,7 +1206,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
 
                     {/* PILIHAN GANDA */}
                     <section
-                        className={`-2 -yellow-400 absolute left-[200px] top-[390px] mx-auto mt-8 flex w-full max-w-7xl flex-col items-center px-4 transition-opacity duration-300 ${showExplanation ? 'pointer-events-none opacity-20' : 'opacity-100'}`}
+                        className={`absolute left-[200px] top-[390px] mx-auto mt-8 flex w-full max-w-7xl flex-col items-center px-4 transition-opacity duration-300 ${showExplanation ? 'pointer-events-none opacity-20' : 'opacity-100'}`}
                     >
                         {/* KELOMPOK ATAS (Pilihan A dan B) */}
                         <div className="-2 -blue-500 flex w-full flex-col justify-center md:flex-row">

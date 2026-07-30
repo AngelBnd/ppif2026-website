@@ -168,16 +168,16 @@ export default function GameHubStoryline({ onReady }: Props) {
                                 />
                             ))}
                         </div>
+
+                        <button
+                            onClick={onReady}
+                            className="absolute bottom-6 right-4 z-30 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-black transition hover:scale-105 active:scale-95"
+                        >
+                            I'm Ready
+                        </button>
                     </div>
                 </div>
             </div>
-
-            {/* <button
-                onClick={onReady}
-                className="absolute bottom-6 left-1/2 z-30 -translate-x-1/2 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-black transition hover:scale-105 active:scale-95"
-            >
-                I'm Ready
-            </button> */}
         </div>
     );
 }
