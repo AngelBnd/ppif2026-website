@@ -1,12 +1,4 @@
 ﻿import SLBox1 from '@/assets/games/storyline/lineboxesthingies/SLBox1.webp';
-import SLBox2 from '@/assets/games/storyline/lineboxesthingies/SLBox2.webp';
-import SLBox3 from '@/assets/games/storyline/lineboxesthingies/SLBox3.webp';
-import SLBox4 from '@/assets/games/storyline/lineboxesthingies/SLBox4.webp';
-import SLBox5 from '@/assets/games/storyline/lineboxesthingies/SLBox5.webp';
-import SLBox6 from '@/assets/games/storyline/lineboxesthingies/SLBox6.webp';
-import SLBox7 from '@/assets/games/storyline/lineboxesthingies/SLBox7.webp';
-import SLBox8 from '@/assets/games/storyline/lineboxesthingies/SLBox8.webp';
-import SLBox9 from '@/assets/games/storyline/lineboxesthingies/SLBox9.webp';
 import SLBox10 from '@/assets/games/storyline/lineboxesthingies/SLBox10.webp';
 import SLBox11 from '@/assets/games/storyline/lineboxesthingies/SLBox11.webp';
 import SLBox12 from '@/assets/games/storyline/lineboxesthingies/SLBox12.webp';
@@ -17,7 +9,28 @@ import SLBox16 from '@/assets/games/storyline/lineboxesthingies/SLBox16.webp';
 import SLBox17 from '@/assets/games/storyline/lineboxesthingies/SLBox17.webp';
 import SLBox18 from '@/assets/games/storyline/lineboxesthingies/SLBox18.webp';
 import SLBox19 from '@/assets/games/storyline/lineboxesthingies/SLBox19.webp';
+import SLBox2 from '@/assets/games/storyline/lineboxesthingies/SLBox2.webp';
+import SLBox20 from '@/assets/games/storyline/lineboxesthingies/SLBox20.webp';
+import SLBox21 from '@/assets/games/storyline/lineboxesthingies/SLBox21.webp';
+import SLBox22 from '@/assets/games/storyline/lineboxesthingies/SLBox22.webp';
+import SLBox23 from '@/assets/games/storyline/lineboxesthingies/SLBox23.webp';
+import SLBox24 from '@/assets/games/storyline/lineboxesthingies/SLBox24.webp';
+import SLBox25 from '@/assets/games/storyline/lineboxesthingies/SLBox25.webp';
+import SLBox3 from '@/assets/games/storyline/lineboxesthingies/SLBox3.webp';
+import SLBox4 from '@/assets/games/storyline/lineboxesthingies/SLBox4.webp';
+import SLBox5 from '@/assets/games/storyline/lineboxesthingies/SLBox5.webp';
+import SLBox6 from '@/assets/games/storyline/lineboxesthingies/SLBox6.webp';
+import SLBox7 from '@/assets/games/storyline/lineboxesthingies/SLBox7.webp';
+import SLBox8 from '@/assets/games/storyline/lineboxesthingies/SLBox8.webp';
+import SLBox9 from '@/assets/games/storyline/lineboxesthingies/SLBox9.webp';
 import Panel1 from '@/assets/games/storyline/panels/Panel1.webp';
+import Panel10 from '@/assets/games/storyline/panels/Panel10.webp';
+import Panel11 from '@/assets/games/storyline/panels/Panel11.webp';
+import Panel12 from '@/assets/games/storyline/panels/Panel12.webp';
+import Panel13 from '@/assets/games/storyline/panels/Panel13.webp';
+import Panel14 from '@/assets/games/storyline/panels/Panel14.webp';
+import Panel15 from '@/assets/games/storyline/panels/Panel15.webp';
+import Panel16 from '@/assets/games/storyline/panels/Panel16.webp';
 import Panel2 from '@/assets/games/storyline/panels/Panel2.webp';
 import Panel3 from '@/assets/games/storyline/panels/Panel3.webp';
 import Panel4 from '@/assets/games/storyline/panels/Panel4.webp';
@@ -26,11 +39,8 @@ import Panel6 from '@/assets/games/storyline/panels/Panel6.webp';
 import Panel7 from '@/assets/games/storyline/panels/Panel7.webp';
 import Panel8 from '@/assets/games/storyline/panels/Panel8.webp';
 import Panel9 from '@/assets/games/storyline/panels/Panel9.webp';
-import Panel10 from '@/assets/games/storyline/panels/Panel10.webp';
-import Panel11 from '@/assets/games/storyline/panels/Panel11.webp';
-import Panel12 from '@/assets/games/storyline/panels/Panel12.webp';
-import NextPage from '@/assets/svgs/NextPage.svg';
 import ImReady from '@/assets/svgs/ImReady.svg';
+import NextPage from '@/assets/svgs/NextPage.svg';
 import { CAMERA_PATHS } from '@/Components/about/cameraPath';
 import {
     CameraConfig,
@@ -47,8 +57,37 @@ type Props = {
     onReady: () => void;
 };
 
+function buildLiftPath(
+    panels: { left: string; top: string }[],
+    widthPx: number,
+): string {
+    const pts = panels
+        .map((p) => ({ x: parseFloat(p.left), y: -parseFloat(p.top) }))
+        .sort((a, b) => a.x - b.x);
+
+    const first = pts[0] ?? { x: 0, y: -50 };
+    const last = pts[pts.length - 1] ?? { x: widthPx, y: -50 };
+
+    const nodes = [
+        { x: 0, y: first.y },
+        ...pts,
+        { x: widthPx, y: last.y },
+    ].filter((n, i, a) => i === 0 || n.x > a[i - 1].x);
+
+    let d = `M${nodes[0].x},${nodes[0].y}`;
+    for (let i = 1; i < nodes.length; i++) {
+        const p0 = nodes[i - 1];
+        const p1 = nodes[i];
+        const mx = (p0.x + p1.x) / 2;
+        d += ` C${mx},${p0.y} ${mx},${p1.y} ${p1.x},${p1.y}`;
+    }
+    return d;
+}
+
 export default function GameHubStoryline({ onReady }: Props) {
     const [page, setPage] = useState<1 | 2>(1);
+
+    const PAGE_WIDTH = page === 1 ? '7400px' : '5200px';
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
@@ -78,64 +117,103 @@ export default function GameHubStoryline({ onReady }: Props) {
     // for the fade-in/out buildBeat pattern (data-beat).
     const PANELS_PAGE_1 = [
         { src: Panel1, left: '160px', top: '22%', width: '460px', beat: 0 },
-        { src: Panel2, left: '920px', top: '34%', width: '460px', beat: 1 },
-        { src: Panel3, left: '1600px', top: '28%', width: '480px', beat: 2 },
-        { src: Panel4, left: '2350px', top: '40%', width: '400px', beat: 3 },
-        { src: Panel5, left: '3150px', top: '48%', width: '460px', beat: 4 },
-        { src: Panel6, left: '3680px', top: '18%', width: '520px', beat: 5 },
+        { src: Panel2, left: '650px', top: '34%', width: '460px', beat: 1 },
+        { src: Panel3, left: '1350px', top: '20%', width: '480px', beat: 2 },
+        { src: Panel4, left: '2050px', top: '40%', width: '340px', beat: 3 },
+        { src: Panel5, left: '3150px', top: '60%', width: '450px', beat: 4 },
+        { src: Panel6, left: '3380px', top: '22%', width: '450px', beat: 5 },
         { src: Panel7, left: '4650px', top: '32%', width: '480px', beat: 6 },
-        { src: Panel8, left: '5750px', top: '36%', width: '520px', beat: 7, evil: true },
+        {
+            src: Panel8,
+            left: '5850px',
+            top: '25%',
+            width: '520px',
+            beat: 7,
+            evil: true,
+        },
     ];
 
     const BOXES_PAGE_1 = [
         // Beat 0 (Panel 1)
-        { src: SLBox1, left: '60px', top: '10%', width: '280px', beat: 0 },
-        { src: SLBox2, left: '480px', top: '32%', width: '300px', beat: 0 },
+        { src: SLBox1, left: '60px', top: '10%', width: '300px', beat: 0 },
+        { src: SLBox2, left: '480px', top: '32%', width: '310px', beat: 0 },
         // Beat 1 (Panel 2)
-        { src: SLBox3, left: '1220px', top: '50%', width: '250px', beat: 1 },
+        { src: SLBox3, left: '920px', top: '38%', width: '160px', beat: 1 },
         // Beat 2 (Panel 3)
-        { src: SLBox4, left: '1640px', top: '66%', width: '330px', beat: 2 },
+        { src: SLBox4, left: '1240px', top: '50%', width: '440px', beat: 2 },
         // Beat 3 (Panel 4)
-        { src: SLBox5, left: '2320px', top: '24%', width: '280px', beat: 3 },
-        { src: SLBox6, left: '2620px', top: '48%', width: '300px', beat: 3 },
+        { src: SLBox5, left: '2120px', top: '35%', width: '380px', beat: 3 },
+        { src: SLBox6, left: '2520px', top: '48%', width: '370px', beat: 4 },
         // Beat 4 (Panel 5)
-        { src: SLBox7, left: '3100px', top: '36%', width: '150px', beat: 4 },
-        { src: SLBox9, left: '3540px', top: '46%', width: '130px', beat: 4 },
-        { src: SLBox8, left: '3420px', top: '74%', width: '240px', beat: 4 },
+        { src: SLBox7, left: '3100px', top: '44%', width: '150px', beat: 5 },
+        { src: SLBox9, left: '3530px', top: '65%', width: '270px', beat: 7 },
+        { src: SLBox8, left: '3340px', top: '52%', width: '120px', beat: 6 },
         // Beat 5 (Panel 6)
-        { src: SLBox10, left: '4220px', top: '48%', width: '260px', beat: 5 },
+        { src: SLBox10, left: '4020px', top: '48%', width: '380px', beat: 8 },
         // Beat 6 (Panel 7)
-        { src: SLBox11, left: '4680px', top: '14%', width: '290px', beat: 6 },
-        { src: SLBox12, left: '4980px', top: '68%', width: '270px', beat: 6 },
-        { src: SLBox13, left: '5350px', top: '52%', width: '260px', beat: 6 },
+        { src: SLBox11, left: '4480px', top: '20%', width: '360px', beat: 9 },
+        { src: SLBox12, left: '4900px', top: '68%', width: '350px', beat: 10 },
+        { src: SLBox13, left: '5350px', top: '43%', width: '400px', beat: 11 },
         // Beat 7 (Panel 8 - INFECTED EVIL GLITCH)
-        { src: SLBox14, left: '5820px', top: '24%', width: '260px', beat: 7, evil: true },
-        { src: SLBox15, left: '6300px', top: '52%', width: '310px', beat: 7, evil: true },
+        {
+            src: SLBox14,
+            left: '5820px',
+            top: '32%',
+            width: '380px',
+            beat: 12,
+            evil: true,
+        },
+        {
+            src: SLBox15,
+            left: '6500px',
+            top: '44%',
+            width: '450px',
+            beat: 13,
+            evil: true,
+        },
     ];
 
     // STORYLINE PAGE 2 (PANEL 9 - 12 + SLBOX 16 - 19)
     const PANELS_PAGE_2 = [
-        { src: Panel9, left: '160px', top: '28%', width: '420px', beat: 0 },
-        { src: Panel10, left: '680px', top: '24%', width: '320px', beat: 1 },
-        { src: Panel11, left: '1080px', top: '24%', width: '320px', beat: 2 },
-        { src: Panel12, left: '1480px', top: '24%', width: '320px', beat: 3 },
+        { src: Panel9, left: '320px', top: '25%', width: '350px', beat: 0 },
+        { src: Panel10, left: '780px', top: '24%', width: '235px', beat: 1 },
+        { src: Panel11, left: '1035px', top: '24%', width: '240px', beat: 2 },
+        { src: Panel12, left: '1295px', top: '24%', width: '235px', beat: 3 },
+        { src: Panel13, left: '2000px', top: '15%', width: '450px', beat: 4 },
+        { src: Panel14, left: '2480px', top: '24%', width: '440px', beat: 5 },
+        { src: Panel15, left: '3180px', top: '35%', width: '450px', beat: 6 },
+        { src: Panel16, left: '3800px', top: '43%', width: '450px', beat: 7 },
     ];
 
     const BOXES_PAGE_2 = [
-        { src: SLBox16, left: '100px', top: '10%', width: '380px', beat: 0 },
-        { src: SLBox17, left: '640px', top: '16%', width: '180px', beat: 1 },
-        { src: SLBox18, left: '1120px', top: '46%', width: '180px', beat: 2 },
-        { src: SLBox19, left: '1540px', top: '72%', width: '260px', beat: 3 },
+        { src: SLBox16, left: '120px', top: '10%', width: '430px', beat: 0 },
+        { src: SLBox17, left: '740px', top: '27%', width: '180px', beat: 1 },
+        { src: SLBox18, left: '1065px', top: '50%', width: '180px', beat: 2 },
+        { src: SLBox19, left: '1340px', top: '75%', width: '300px', beat: 3 },
+        { src: SLBox20, left: '1660px', top: '50%', width: '300px', beat: 4 },
+        { src: SLBox21, left: '1900px', top: '8%', width: '420px', beat: 5 },
+        { src: SLBox22, left: '2600px', top: '47%', width: '400px', beat: 6 },
+        { src: SLBox23, left: '3050px', top: '26%', width: '370px', beat: 7 },
+        { src: SLBox24, left: '3540px', top: '49%', width: '370px', beat: 8 },
+        { src: SLBox25, left: '4340px', top: '50%', width: '380px', beat: 9 },
     ];
+
+    // Lift path traced from THIS page's panel heights — differs per page
+    // because each page has different panels.
+    const LIFT_D =
+        page === 1
+            ? buildLiftPath(PANELS_PAGE_1, parseFloat(PAGE_WIDTH))
+            : buildLiftPath(PANELS_PAGE_2, parseFloat(PAGE_WIDTH));
 
     const CAMERA_CONFIG: Partial<CameraConfig> = {
         perspective: 900,
         markers: true,
         paths: {
             lift: {
-                d: 'M0,183.62 C0,183.62 451.83,183.62 808.52,183.62 C1165.2,183.62 1374.43,2.09 1735.62,7.59 C2096.82,13.09 2409.76,173.59 2729.48,138.59 C3049.18,103.59 3400,274.09 3400,274.09',
+                d: LIFT_D,
                 zero: 'mean',
-                gain: 0.23,
+
+                gain: 0.4,
             },
             scale: { d: CAMERA_PATHS.scale, gain: 0.03 },
             sway: { d: CAMERA_PATHS.sway, zero: 'mean', gain: 0 },
@@ -170,7 +248,10 @@ export default function GameHubStoryline({ onReady }: Props) {
                 onComplete: () => {
                     setPage(2);
                     if (scrollRef.current) {
-                        scrollRef.current.scrollTo({ left: 0, behavior: 'instant' });
+                        scrollRef.current.scrollTo({
+                            left: 0,
+                            behavior: 'instant',
+                        });
                     }
                 },
             })
@@ -191,7 +272,10 @@ export default function GameHubStoryline({ onReady }: Props) {
         if (!scroller || !world) return;
 
         const ctx = gsap.context(() => {
-            const storyElements = gsap.utils.toArray<HTMLElement>('[data-beat]', world);
+            const storyElements = gsap.utils.toArray<HTMLElement>(
+                '[data-beat]',
+                world,
+            );
 
             storyElements.forEach((el) => {
                 const beatNum = Number(el.getAttribute('data-beat')) || 0;
@@ -228,7 +312,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                             duration: 0.08,
                             delay: page === 1 ? beatNum * 0.22 : beatNum * 0.38,
                             ease: 'none',
-                        }
+                        },
                     )
                         .to(el, {
                             skewX: 10,
@@ -273,10 +357,13 @@ export default function GameHubStoryline({ onReady }: Props) {
                                     start: 'left 92%',
                                     toggleActions: 'play none none reverse',
                                 },
-                            }
+                            },
                         );
 
-                        const tl = gsap.timeline({ repeat: -1, repeatDelay: 2.3 });
+                        const tl = gsap.timeline({
+                            repeat: -1,
+                            repeatDelay: 2.3,
+                        });
                         tl.to(el, {
                             skewX: 12,
                             x: 6,
@@ -326,7 +413,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                                     start: 'left 92%',
                                     toggleActions: 'play none none reverse',
                                 },
-                            }
+                            },
                         );
                     } else {
                         gsap.fromTo(
@@ -354,7 +441,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                                     start: 'left 92%',
                                     toggleActions: 'play none none reverse',
                                 },
-                            }
+                            },
                         );
                     }
                 } else {
@@ -383,7 +470,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                                 start: 'left 95%',
                                 toggleActions: 'play none none reverse',
                             },
-                        }
+                        },
                     );
                 }
             });
@@ -394,7 +481,6 @@ export default function GameHubStoryline({ onReady }: Props) {
 
     return (
         <div className="absolute inset-0 overflow-hidden text-white">
-
             {/* ini diganti ajah jujur gatau mau gimana transisi pindah pagenya wkwkwk */}
             <div
                 ref={wipeRef}
@@ -403,9 +489,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                 <div className="absolute -inset-[25%] -skew-x-[25deg] bg-[#E60012] shadow-[0_0_80px_#0A0C0F]" />
                 <div className="absolute -inset-[25%] translate-x-8 -skew-x-[25deg] bg-neutral-950" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-5xl font-black italic tracking-widest text-white drop-shadow-[5px_5px_0px_#E60012] -rotate-6">
-                        STORYLINE // NEXT CHAPTER
-                    </span>
+                    <span className="-rotate-6 text-5xl font-black italic tracking-widest text-white drop-shadow-[5px_5px_0px_#E60012]"></span>
                 </div>
             </div>
 
@@ -417,9 +501,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                     ref={panelRef}
                     className="relative"
                     style={{
-                        width: page === 1 ? '7200px' : '2600px',
+                        width: PAGE_WIDTH,
                         height: '856px',
-                        minWidth: page === 1 ? '7200px' : '2600px',
+                        minWidth: PAGE_WIDTH,
                         minHeight: '856px',
                     }}
                 >
@@ -441,7 +525,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                         ref={cameraRef}
                         className="relative h-[690px]"
                         style={{
-                            width: page === 1 ? '7200px' : '2600px',
+                            width: PAGE_WIDTH,
                             perspective: '900px',
                         }}
                     >
@@ -464,26 +548,53 @@ export default function GameHubStoryline({ onReady }: Props) {
                             {page === 1 && (
                                 <>
                                     <svg
-                                        className="pointer-events-none absolute left-[2600px] top-[14%] z-10 h-[540px] w-[1800px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
+                                        className="pointer-events-none absolute left-[2350px] top-[20%] z-10 h-[540px] w-[1500px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
                                         viewBox="0 0 1800 540"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
                                         <path
-                                            d="M0 180 L280 260 L620 120 L920 480 L1250 80 L1580 340 L1800 240 L1800 320 L1580 440 L1250 180 L920 520 L620 220 L280 360 L0 260 Z"
-                                            fill="#E60012"
+                                            d="M284.5 343.5L16.5 225.5L0 310.5L302 409.5L495.5 212.5L1049 427.5L940 75.5L1272 149V0L854 25L1013 387.5L460.5 115.5L284.5 343.5Z"
+                                            fill="#BF1E2E"
                                         />
                                     </svg>
 
                                     <svg
-                                        className="pointer-events-none absolute left-[5450px] top-[18%] z-10 h-[520px] w-[1150px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
+                                        className="pointer-events-none absolute left-[3550px] top-[38%] z-10 h-[540px] w-[1400px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
+                                        viewBox="0 0 1800 540"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            d="M258 338L337 0L574 126.5L654.5 51L776.5 70L574 189.5L360 43.5V457L19 395L0 315L258 338Z"
+                                            fill="#BF1E2E"
+                                        />
+                                    </svg>
+
+                                    <svg
+                                        className="pointer-events-none absolute left-[5440px] top-[25%] z-10 h-[520px] w-[850px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
                                         viewBox="0 0 1150 520"
                                         fill="none"
                                         xmlns="http://www.w3.org/2000/svg"
                                     >
                                         <path
-                                            d="M0 160 L240 340 L520 280 L820 60 L1150 240 L1150 320 L820 160 L520 380 L240 440 L0 260 Z"
-                                            fill="#E60012"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            d="M0 0L391.5 121.5H211.5L49.5 35.5L309.5 329.5L558.5 238.5L574 361L284 437.5L0 0Z"
+                                            fill="#BF1E2E"
+                                        />
+                                    </svg>
+
+                                    <svg
+                                        className="pointer-events-none absolute left-[6200px] top-[55%] z-10 h-[520px] w-[1150px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
+                                        viewBox="0 0 1150 520"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            d="M218.731 178.748L0.000681141 116L0.00180718 9.50712e-07L213.608 136.644L344.095 36.7375L386.501 36.7375L218.731 178.748Z"
+                                            fill="#BF1E2E"
                                         />
                                     </svg>
 
@@ -495,7 +606,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                                             draggable={false}
                                             data-beat={p.beat}
                                             data-type="panel"
-                                            data-evil={p.evil ? 'true' : 'false'}
+                                            data-evil={
+                                                p.evil ? 'true' : 'false'
+                                            }
                                             style={{
                                                 left: p.left,
                                                 top: p.top,
@@ -513,7 +626,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                                             draggable={false}
                                             data-beat={b.beat}
                                             data-type="box"
-                                            data-evil={b.evil ? 'true' : 'false'}
+                                            data-evil={
+                                                b.evil ? 'true' : 'false'
+                                            }
                                             style={{
                                                 left: b.left,
                                                 top: b.top,
@@ -528,9 +643,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                                         data-beat={7}
                                         data-type="btn"
                                         style={{
-                                            left: '6750px',
-                                            top: '78%',
-                                            width: '180px',
+                                            right: '48px',
+                                            bottom: '35%',
+                                            width: '190px',
                                         }}
                                         className="group pointer-events-auto absolute z-50 cursor-pointer select-none transition-transform duration-300 hover:scale-110 active:scale-95"
                                     >
@@ -538,7 +653,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                                             src={NextPage}
                                             alt="Next Page"
                                             draggable={false}
-                                            className="w-full h-auto drop-shadow-[5px_5px_0px_#E60012]"
+                                            className="h-auto w-full"
                                         />
                                     </button>
                                 </>
@@ -586,8 +701,8 @@ export default function GameHubStoryline({ onReady }: Props) {
                                         data-beat={3}
                                         data-type="btn"
                                         style={{
-                                            left: '1950px',
-                                            top: '72%',
+                                            right: '48px',
+                                            bottom: '35%',
                                             width: '190px',
                                         }}
                                         className="group pointer-events-auto absolute z-50 cursor-pointer select-none transition-transform duration-300 hover:scale-110 active:scale-95"
@@ -596,19 +711,19 @@ export default function GameHubStoryline({ onReady }: Props) {
                                             src={ImReady}
                                             alt="I'm Ready"
                                             draggable={false}
-                                            className="w-full h-auto drop-shadow-[5px_5px_0px_#E60012]"
+                                            className="h-auto w-full drop-shadow-[5px_5px_0px_#E60012]"
                                         />
                                     </button>
                                 </>
                             )}
                         </div>
 
-                        <button
+                        {/* <button
                             onClick={onReady}
                             className="absolute bottom-6 right-4 z-30 rounded-xl bg-white px-8 py-4 text-lg font-semibold text-black transition hover:scale-105 active:scale-95"
                         >
                             I'm Ready
-                        </button>
+                        </button> */}
                     </div>
                 </div>
             </div>

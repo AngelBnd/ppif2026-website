@@ -9,7 +9,14 @@ import CustomScrollBox from '@/Components/global/CustomScrollBox';
 import gsap from 'gsap';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import {
+    lazy,
+    Suspense,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import { type DivisionsSectionRef } from '@/Components/about/DivisionsSection';
 import Button from '@/Components/global/Button';
@@ -79,6 +86,9 @@ export default function About() {
     const galleryWrapper = useRef<HTMLDivElement>(null);
     const divisionsSectionRef = useRef<DivisionsSectionRef>(null);
     const tabTimelineRef = useRef<gsap.core.Timeline | null>(null);
+    const codieRef = useRef<HTMLDivElement>(null);
+    const morphBoxRef = useRef<HTMLDivElement>(null);
+    const tabRef = useRef<HTMLDivElement>(null);
 
     const [renderDivisions, setRenderDivisions] = useState(false);
     const [divisionsReady, setDivisionsReady] = useState(false);
@@ -92,6 +102,72 @@ export default function About() {
     const [renderDivisionButton, setRenderDivisionButton] = useState(
         currentInfo === 'ppif',
     );
+    const [codieIntroDone, setCodieIntroDone] = useState(false);
+
+    useLayoutEffect(() => {
+        if (!morphBoxRef.current || !tabRef.current) return;
+
+        const timeline = gsap.timeline();
+        timeline
+            .set(morphBoxRef.current, {
+                xPercent: -30,
+                rotation: -4,
+                scale: 1,
+                autoAlpha: 0,
+            })
+            .set(tabRef.current, {
+                xPercent: -10,
+                rotation: -6,
+                scale: 1,
+                autoAlpha: 0,
+            })
+            .to(morphBoxRef.current, {
+                xPercent: 8,
+                rotation: 2,
+                scale: 1.03,
+                autoAlpha: 1,
+                duration: 0.55,
+                ease: 'power3.out',
+            })
+            .to(morphBoxRef.current, {
+                xPercent: -2,
+                rotation: -1,
+                scale: 0.99,
+                duration: 0.15,
+                ease: 'power2.inOut',
+            })
+            .to(morphBoxRef.current, {
+                xPercent: 0,
+                rotation: 0,
+                scale: 1,
+                duration: 0.12,
+                ease: 'power2.out',
+            })
+            .to(
+                tabRef.current,
+                {
+                    xPercent: 5,
+                    rotation: 3,
+                    scale: 1,
+                    duration: 0.12,
+                    autoAlpha: 1,
+                    ease: 'power2.out',
+                },
+                '<',
+            )
+            .to(tabRef.current, {
+                xPercent: 0,
+                rotation: 0,
+                scale: 1,
+                duration: 0.12,
+                autoAlpha: 1,
+                ease: 'power2.out',
+            });
+
+        return () => {
+            timeline.kill();
+        };
+    }, []);
 
     const selectedInfo = informationPlaceholder.find(
         (info) => info.topic === currentInfo,
@@ -297,6 +373,40 @@ export default function About() {
     return (
         <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden">
             <div className="transition-300 pointer-events-none absolute z-0 h-full w-full bg-[#7C131E] opacity-70 ease-in" />
+            <div
+                ref={codieRef}
+                className="absolute -bottom-2 left-0 z-0 h-auto"
+            >
+                {!codieIntroDone ? (
+                    <video
+                        key="intro"
+                        autoPlay
+                        muted
+                        playsInline
+                        className="block h-auto w-full"
+                        onEnded={() => setCodieIntroDone(true)}
+                    >
+                        <source
+                            src="/videos/CODIEDYNAMIC.webm"
+                            type="video/webm"
+                        />
+                    </video>
+                ) : (
+                    <video
+                        key="static"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="block h-auto w-full"
+                    >
+                        <source
+                            src="/videos/CODIESTATIC1.webm"
+                            type="video/webm"
+                        />
+                    </video>
+                )}
+            </div>
 
             {/* <AboutBackground /> */}
             {renderMainContent ? (
@@ -313,11 +423,16 @@ export default function About() {
                                     className=""
                                     currentInfo={currentInfo}
                                 />
-                                <InfoTabs
-                                    className={` ${activeTab === 'divisions' ? 'pointer-events-none' : 'pointer-events-auto'} absolute -top-[30%] right-0`}
-                                    activeTab={activeTab}
-                                    setActiveTab={setActiveTab}
-                                />
+                                <div
+                                    ref={tabRef}
+                                    className="absolute -top-[30%] w-full"
+                                >
+                                    <InfoTabs
+                                        className={` ${activeTab === 'divisions' ? 'pointer-events-none' : 'pointer-events-auto'} absolute right-0`}
+                                        activeTab={activeTab}
+                                        setActiveTab={setActiveTab}
+                                    />
+                                </div>
                                 {renderDivisionButton && (
                                     <div
                                         ref={divisionButtonRef}
@@ -337,16 +452,19 @@ export default function About() {
                                 )}
                             </div>
 
-                            <div className="absolute bottom-[14%] right-[23.7%] z-20 h-[42%] w-[48%] origin-top-left [perspective:380px]">
-                                {/* bg-green-400 */}
-                                <div className="pointer-events-auto h-full w-full origin-left [transform:rotateZ(-4deg)_rotateY(-11deg)_skewX(2deg)]">
-                                    <CustomScrollBox
-                                        text={selectedInfo?.tabs[activeTab]}
-                                    />
+                            <div ref={morphBoxRef}>
+                                <div className="absolute bottom-[14%] right-[23.7%] z-20 h-[42%] w-[48%] origin-top-left [perspective:380px]">
+                                    {/* bg-green-400 */}
+                                    <div className="pointer-events-auto h-full w-full origin-left [transform:rotateZ(-4deg)_rotateY(-11deg)_skewX(2deg)]">
+                                        <CustomScrollBox
+                                            text={selectedInfo?.tabs[activeTab]}
+                                        />
+                                    </div>
                                 </div>
+                                {/* bg-red-200 */}
+                                <MorphingAboutBox activeTab={activeTab} />
                             </div>
-                            {/* bg-red-200 */}
-                            <MorphingAboutBox activeTab={activeTab} />
+
                             <InfoSwitcher
                                 className={`${activeTab === 'divisions' ? 'pointer-events-none' : 'pointer-events-auto'} absolute -bottom-6 -right-12 z-20`}
                                 currentInfo={currentInfo}
