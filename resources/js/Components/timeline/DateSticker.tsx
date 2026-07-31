@@ -1,4 +1,4 @@
-import sat15Img from '@/assets/timeline/15-saturday.svg';
+﻿import sat15Img from '@/assets/timeline/15-saturday.svg';
 import tue18Img from '@/assets/timeline/18-tuesday.svg';
 
 import { forwardRef } from 'react';
@@ -8,17 +8,13 @@ type DateStickerProps = {
     day: string;
     /** Short weekday label, e.g. "SAT". */
     weekday: string;
-    /** Number fill colour. */
-    color?: 'blue' | 'white';
-    /** Whether the PPIF logo badge is shown above this date. */
-    withLogo?: boolean;
     /** Absolute position + transform inside the timeline stage. */
     style?: React.CSSProperties;
     className?: string;
 };
 
 const DateSticker = forwardRef<HTMLDivElement, DateStickerProps>(
-    ({ day, weekday, color, withLogo = false, className = '', style }, ref) => {
+    ({ day, weekday, className = '', style }, ref) => {
         // Determine which image to show based on the 'day' prop
         const stickerImg = day === '15' ? sat15Img : tue18Img;
 

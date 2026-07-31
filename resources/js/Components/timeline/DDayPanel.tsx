@@ -2,7 +2,15 @@ import aug26Tag from '@/assets/timeline/aug26-tag.svg';
 import decor from '@/assets/timeline/decor.svg';
 import detailsButton from '@/assets/timeline/details-button.svg';
 
-import type { ComponentType, SVGProps } from 'react';
+import {
+    useLayoutEffect,
+    useRef,
+    type ComponentType,
+    type SVGProps,
+} from 'react';
+
+import gsap from 'gsap';
+
 type SVGComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
 type DDayPanelProps = {
@@ -19,8 +27,72 @@ export default function DDayPanel({
     HeaderSVG,
     headerClassName,
 }: DDayPanelProps) {
+    const panelRef = useRef<HTMLDivElement | null>(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
+    const hasMountedRef = useRef(false);
+
+    // Entire panel enters from the right on initial render
+    useLayoutEffect(() => {
+        const panel = panelRef.current;
+
+        if (!panel) return;
+
+        const ctx = gsap.context(() => {
+            gsap.fromTo(
+                panel,
+                {
+                    xPercent: 10,
+                },
+                {
+                    xPercent: 0,
+
+                    duration: 0.4,
+                    ease: 'power4.out',
+                    clearProps: 'transform',
+                },
+            );
+        }, panel);
+
+        return () => ctx.revert();
+    }, []);
+
+    // Only the content slides when the displayed information changes
+    useLayoutEffect(() => {
+        const content = contentRef.current;
+
+        if (!content) return;
+
+        // Let the initial panel entrance handle the first render
+        if (!hasMountedRef.current) {
+            hasMountedRef.current = true;
+            return;
+        }
+
+        const ctx = gsap.context(() => {
+            gsap.killTweensOf(content);
+
+            gsap.fromTo(
+                content,
+                {
+                    x: 90,
+                },
+                {
+                    x: 0,
+
+                    duration: 0.4,
+                    ease: 'back.out(1.2)',
+                },
+            );
+        }, content);
+
+        return () => ctx.revert();
+    }, [currentInfo]);
+
     return (
-        <div className="bg pointer-events-none absolute inset-y-0 -right-12 z-30 w-1/2">
+        <div
+            ref={panelRef}
+            className="bg pointer-events-none absolute inset-y-0 -right-12 z-30 w-1/2"
+        >
             {/* 1. THE MASKED BACKGROUNDS */}
             <div
                 className="absolute inset-0 bg-[#0a0c0f]"
@@ -46,7 +118,10 @@ export default function DDayPanel({
                     className="absolute left-[18%] top-[-5%] w-[42%] drop-shadow-md"
                 />
 
-                <div className="absolute left-[30%] top-[8%] mt-4 flex h-[33rem] w-[56%] flex-col items-start gap-[1vmin]">
+                <div
+                    ref={contentRef}
+                    className="absolute left-[30%] top-[8%] mt-4 flex h-[33rem] w-[56%] flex-col items-start gap-[1vmin]"
+                >
                     {/* 1. D-DAY PPIF title */}
                     {/* Removed absolute positioning; it now takes 100% of the wrapper's width */}
                     <div

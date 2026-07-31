@@ -1,9 +1,9 @@
 import CardSVG from '@/assets/about/divisions/DVCard.svg?react';
-import type { CSSProperties, ElementType } from 'react';
+import type { CSSProperties } from 'react';
 
 type DivisionCardProps = {
     imageSrc: string;
-    TitleSVG: ElementType;
+    titleSrc: string;
     direction?: 'left' | 'right';
     className?: string;
     style?: CSSProperties;
@@ -16,7 +16,7 @@ type DivisionCardProps = {
 
 export default function DivisionCard({
     imageSrc,
-    TitleSVG,
+    titleSrc,
     direction = 'right',
     className = '',
     style,
@@ -87,7 +87,12 @@ export default function DivisionCard({
                             : '[transform:scale(0.8)]',
                     ].join(' ')}
                 >
-                    <TitleSVG className="block h-auto w-full" />
+                    <img
+                        src={titleSrc}
+                        alt=""
+                        draggable={false}
+                        className="block h-auto w-full select-none"
+                    />
                 </div>
             </div>
         </div>

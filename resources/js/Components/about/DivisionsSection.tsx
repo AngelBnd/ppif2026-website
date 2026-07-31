@@ -1,22 +1,30 @@
-import DivisionStreak from '@/assets/about/divisions/DivisionsStreak.svg?react';
+﻿import DivisionStreak from '@/assets/about/divisions/DivisionsStreak.svg?react';
 
-import BackButtonSVG2 from '@/assets/icons/BackButtonSVG2.svg?react';
+import BackButtonSVG2 from '@/assets/icons/BackButtonSVG2.svg';
 import DivisionCard from '@/Components/about/DivisionCard';
 import Button from '../global/Button';
 
+import { divisionData, DivisionData } from '@/data/divisions';
 import { currentTab } from '@/Pages/About';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
     forwardRef,
-    useEffect,
     useImperativeHandle,
     useLayoutEffect,
     useRef,
     useState,
 } from 'react';
-import DivisionPopup, { DivisionPopupRef } from './DivisionPopup';
 
-import { divisionData, DivisionData } from '@/data/divisions';
+import {
+    CameraConfig,
+    useDivisionCamera,
+    type DivisionTrigger,
+} from './useDivisionCamera';
+
+import { CAMERA_PATHS } from './cameraPath';
+import DivisionPopup, { DivisionPopupRef } from './DivisionPopup';
+gsap.registerPlugin(ScrollTrigger);
 
 type DivisionsSectionProps = {
     onReady?: () => void;
@@ -34,6 +42,10 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
         const divisionsWrapper = useRef<HTMLDivElement>(null);
         const divisionScrollRef = useRef<HTMLDivElement>(null);
         const panelRef = useRef<HTMLDivElement>(null);
+        const worldRef = useRef<HTMLDivElement>(null);
+        const cameraRef = useRef<HTMLDivElement>(null);
+        const streakClipRef = useRef<HTMLDivElement>(null);
+        const markRefs = useRef<(HTMLDivElement | null)[]>([]);
 
         const divisionPopupRef = useRef<DivisionPopupRef | null>(null);
         const [renderDivisionPopup, setRenderDivisionPopup] = useState(false);
@@ -42,6 +54,52 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
         const [selectedDivision, setSelectedDivision] =
             useState<DivisionData | null>(null);
 
+        const refs = useRef({
+            scroller: divisionScrollRef,
+            panel: panelRef,
+            camera: cameraRef,
+            world: worldRef,
+            clip: streakClipRef,
+            marks: markRefs,
+        }).current;
+
+        useImperativeHandle(ref, () => ({
+            wrapper: divisionsWrapper.current,
+        }));
+
+        const TRIGGERS: DivisionTrigger[] = [
+            { left: 29, top: 20, inset: 64 },
+            { left: 45, top: 20, inset: 43 },
+            { left: 63, top: 20, inset: 32 },
+            { left: 77, top: 20, inset: 0 },
+        ];
+
+        const CAMERA_CONFIG: Partial<CameraConfig> = {
+            perspective: 900,
+            markers: false,
+            paths: {
+                lift: {
+                    d: 'M0,183.62 C0,183.62 451.83,183.62 808.52,183.62 C1165.2,183.62 1374.43,2.09 1735.62,7.59 C2096.82,13.09 2409.76,173.59 2729.48,138.59 C3049.18,103.59 3400,274.09 3400,274.09',
+                    zero: 'mean',
+
+                    gain: 0.23,
+                },
+                scale: { d: CAMERA_PATHS.scale, gain: 0.03 },
+                sway: { d: CAMERA_PATHS.sway, zero: 'mean', gain: 0 },
+            },
+            bankGain: 0.0009,
+            bankSlopeGain: 0.008,
+            dollyGain: 0.0,
+            dollyMax: 0,
+        };
+
+        useDivisionCamera({
+            enabled: renderDivisions,
+            triggers: TRIGGERS,
+            refs,
+            config: CAMERA_CONFIG,
+        });
+
         const handleOpenDivisionPopup = (division: DivisionData) => {
             if (renderDivisionPopup || isClosingDivisionPopup) return;
 
@@ -49,133 +107,11 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
             setRenderDivisionPopup(true);
         };
 
-        useImperativeHandle(ref, () => ({
-            wrapper: divisionsWrapper.current,
-        }));
-
         useLayoutEffect(() => {
-            onReady?.();
-        }, [onReady]);
-
-        useEffect(() => {
             if (!renderDivisions) return;
-
-            const scroller = divisionScrollRef.current;
-            if (!scroller) return;
-
-            let scrollTween: gsap.core.Tween | null = null;
-
-            let isDragging = false;
-            let startX = 0;
-            let startScrollLeft = 0;
-
-            let lastX = 0;
-            let velocity = 0;
-
-            const clampScroll = (value: number) => {
-                const maxScroll = scroller.scrollWidth - scroller.clientWidth;
-                return gsap.utils.clamp(0, maxScroll, value);
-            };
-
-            const handleWheel = (e: WheelEvent) => {
-                e.preventDefault();
-
-                const nextScroll = clampScroll(
-                    scroller.scrollLeft + e.deltaY * 1.6,
-                );
-
-                scrollTween?.kill();
-
-                scrollTween = gsap.to(scroller, {
-                    scrollLeft: nextScroll,
-                    duration: 0.6,
-                    ease: 'power3.out',
-                });
-            };
-
-            const handleMouseDown = (e: MouseEvent) => {
-                isDragging = true;
-
-                startX = e.clientX;
-                lastX = e.clientX;
-                velocity = 0;
-
-                startScrollLeft = scroller.scrollLeft;
-
-                scrollTween?.kill();
-
-                scroller.style.cursor = 'grabbing';
-                scroller.style.userSelect = 'none';
-            };
-
-            const handleMouseMove = (e: MouseEvent) => {
-                if (!isDragging) return;
-
-                const dragDistance = e.clientX - startX;
-
-                velocity = e.clientX - lastX;
-                lastX = e.clientX;
-
-                scroller.scrollLeft = clampScroll(
-                    startScrollLeft - dragDistance,
-                );
-            };
-
-            const releaseWithImpact = () => {
-                if (!isDragging) return;
-
-                isDragging = false;
-
-                scroller.style.cursor = 'grab';
-                scroller.style.userSelect = '';
-
-                const impactScroll = clampScroll(
-                    scroller.scrollLeft - velocity * 9,
-                );
-
-                scrollTween?.kill();
-
-                scrollTween = gsap.to(scroller, {
-                    scrollLeft: impactScroll,
-                    duration: 0.55,
-                    ease: 'power3.out',
-                });
-            };
-
-            const handleMouseUp = () => {
-                releaseWithImpact();
-            };
-
-            const handleMouseLeave = () => {
-                releaseWithImpact();
-            };
-
-            scroller.addEventListener('wheel', handleWheel, {
-                passive: false,
-            });
-
-            scroller.addEventListener('mousedown', handleMouseDown);
-            window.addEventListener('mousemove', handleMouseMove);
-            window.addEventListener('mouseup', handleMouseUp);
-            scroller.addEventListener('mouseleave', handleMouseLeave);
-
-            scroller.style.cursor = 'grab';
-
-            return () => {
-                scrollTween?.kill();
-
-                scroller.removeEventListener('wheel', handleWheel);
-                scroller.removeEventListener('mousedown', handleMouseDown);
-                window.removeEventListener('mousemove', handleMouseMove);
-                window.removeEventListener('mouseup', handleMouseUp);
-                scroller.removeEventListener('mouseleave', handleMouseLeave);
-
-                scroller.style.cursor = '';
-                scroller.style.userSelect = '';
-            };
-        }, [renderDivisions]);
-
-        if (!renderDivisions) return null;
+            const id = requestAnimationFrame(() => onReady?.());
+            return () => cancelAnimationFrame(id);
+        }, [renderDivisions, onReady]);
 
         return (
             <div
@@ -188,7 +124,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                 >
                     <div
                         ref={panelRef}
-                        className="brelative"
+                        className="relative"
                         style={{
                             width: '3400px',
                             height: '856px',
@@ -196,32 +132,84 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                             minHeight: '856px',
                         }}
                     >
-                        <div className="relative h-[690px] w-[3400px]">
-                            <DivisionStreak className="relative z-20 h-full w-auto max-w-none drop-shadow-[0px_8px_0px_#0A0C0F]" />
+                        {/* <CameraPathDebug
+                            scrollerRef={divisionScrollRef}
+                            panelWidth={3400}
+                            markers={TRIGGERS.map((t) => t.left)}
+                            channels={[
+                                {
+                                    d: 'M0,243.62 C0,243.62 451.83,228.12 808.52,243.62 C1165.2,259.12 1374.43,2.09 1735.62,7.59 C2096.82,13.09 2409.76,173.59 2729.48,138.59 C3049.18,103.59 3400,274.09 3400,274.09',
+                                    zero: 'mean',
+                                    label: 'lift',
+                                    color: '#00FFAE',
 
-                            <div className="absolute inset-0 z-30 h-full w-full">
-                                {divisionData.map((division) => (
-                                    <div
-                                        key={division.name}
-                                        className="pointer-events-auto absolute cursor-pointer"
-                                        style={{
-                                            left: division.left,
-                                            [division.vertical.side]:
-                                                division.vertical.value,
-                                        }}
-                                        onClick={() =>
-                                            handleOpenDivisionPopup(division)
-                                        }
-                                    >
-                                        <DivisionCard
+                                    gain: 0.15,
+                                },
+                            ]}
+                        /> */}
+
+                        {TRIGGERS.map((trg, i) => (
+                            <div
+                                key={i}
+                                ref={(el) => {
+                                    markRefs.current[i] = el;
+                                }}
+                                style={{
+                                    left: `${trg.left}%`,
+                                    top: `${trg.top}%`,
+                                }}
+                                className="absolute z-50 h-5 w-5"
+                            ></div>
+                        ))}
+
+                        <div
+                            ref={cameraRef}
+                            className="relative h-[690px] w-[3400px]"
+                            style={{ perspective: '900px' }}
+                        >
+                            <div
+                                ref={worldRef}
+                                className="absolute inset-0 h-full w-full"
+                                style={{
+                                    transformStyle: 'preserve-3d',
+                                    willChange: 'transform',
+                                }}
+                            >
+                                <div
+                                    ref={streakClipRef}
+                                    className="h-full [clip-path:inset(0_80%_0_0)]"
+                                >
+                                    <DivisionStreak className="relative z-20 h-full w-auto max-w-none drop-shadow-[0px_8px_0px_#0A0C0F]" />
+                                </div>
+
+                                <div className="absolute inset-0 z-30 h-full w-full">
+                                    {divisionData.map((division) => (
+                                        <div
                                             key={division.name}
-                                            imageSrc={division.image}
-                                            TitleSVG={division.NameSVG}
-                                            direction={division.direction}
-                                            namePosition={division.namePosition}
-                                        />
-                                    </div>
-                                ))}
+                                            className="pointer-events-auto absolute cursor-pointer"
+                                            style={{
+                                                left: division.left,
+                                                [division.vertical.side]:
+                                                    division.vertical.value,
+                                            }}
+                                            onClick={() =>
+                                                handleOpenDivisionPopup(
+                                                    division,
+                                                )
+                                            }
+                                        >
+                                            <DivisionCard
+                                                key={division.name}
+                                                imageSrc={division.image}
+                                                titleSrc={division.nameSrc}
+                                                direction={division.direction}
+                                                namePosition={
+                                                    division.namePosition
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>

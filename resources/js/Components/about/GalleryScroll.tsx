@@ -12,14 +12,18 @@ type BorderComponent = ComponentType<SVGProps<SVGSVGElement>>;
 type Props = {
     className?: string;
     images: string[];
-    setIdxClicked: React.Dispatch<React.SetStateAction<number>>;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIdxClicked?: React.Dispatch<React.SetStateAction<number>>;
+    setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+
+    clickable?: boolean;
+    faceDirection?: 'left' | 'right';
+    pictureSize?: 'normal' | 'large';
 };
 
 type GalleryImage = {
     path: string;
     originalIndex: number;
-    width: string;
+    width: number;
     border: BorderComponent;
     marginBottom: string;
 };
@@ -34,9 +38,11 @@ type PictureProps = {
     picPath: string;
     originalIndex: number;
     className?: string;
+    style?: React.CSSProperties;
     Border: BorderComponent;
-    setIdxClicked: React.Dispatch<React.SetStateAction<number>>;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIdxClicked?: React.Dispatch<React.SetStateAction<number>>;
+    setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    clickable: boolean;
 };
 
 type PictureColumnProps = {
@@ -44,8 +50,10 @@ type PictureColumnProps = {
     className?: string;
     zIndex: string;
     columnRef: (el: HTMLDivElement | null) => void;
-    setIdxClicked: React.Dispatch<React.SetStateAction<number>>;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIdxClicked?: React.Dispatch<React.SetStateAction<number>>;
+    setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+    clickable: boolean;
+    pictureSize: 'normal' | 'large';
 };
 
 const galleryColumnLayouts = [
@@ -54,22 +62,22 @@ const galleryColumnLayouts = [
         speed: 48,
         images: [
             {
-                width: 'w-[14rem]',
+                width: 14,
                 marginBottom: 'mb-[6rem]',
                 border: Border1,
             },
             {
-                width: 'w-[13rem]',
+                width: 13,
                 marginBottom: 'mb-[5rem]',
                 border: Border2,
             },
             {
-                width: 'w-[18rem]',
+                width: 18,
                 marginBottom: 'mb-[2rem]',
                 border: Border3,
             },
             {
-                width: 'w-[13rem]',
+                width: 13,
                 marginBottom: 'mb-[5rem]',
                 border: Border2,
             },
@@ -80,17 +88,17 @@ const galleryColumnLayouts = [
         speed: 32,
         images: [
             {
-                width: 'w-[20rem]',
+                width: 20,
                 marginBottom: 'mb-[7rem]',
                 border: Border2,
             },
             {
-                width: 'w-[28rem]',
+                width: 28,
                 marginBottom: 'mb-[4rem]',
                 border: Border1,
             },
             {
-                width: 'w-[22rem]',
+                width: 22,
                 marginBottom: 'mb-[6rem]',
                 border: Border3,
             },
@@ -101,22 +109,22 @@ const galleryColumnLayouts = [
         speed: 50,
         images: [
             {
-                width: 'w-[19rem]',
+                width: 19,
                 marginBottom: 'mb-[2rem]',
                 border: Border3,
             },
             {
-                width: 'w-[12.5rem]',
+                width: 12.5,
                 marginBottom: 'mb-[9rem]',
                 border: Border1,
             },
             {
-                width: 'w-[16rem]',
+                width: 16,
                 marginBottom: 'mb-[7rem]',
                 border: Border2,
             },
             {
-                width: 'w-[14rem]',
+                width: 14,
                 marginBottom: 'mb-[8rem]',
                 border: Border1,
             },
@@ -131,14 +139,35 @@ function Picture({
     className = '',
     setIdxClicked,
     setIsOpen,
+    clickable,
+    style,
 }: PictureProps) {
+    const handleClick = () => {
+        if (!clickable) return;
+
+        setIdxClicked?.(originalIndex);
+        setIsOpen?.(true);
+    };
+
     return (
         <div
-            onClick={() => {
-                setIdxClicked(originalIndex);
-                setIsOpen(true);
+            style={style}
+            onClick={handleClick}
+            role={clickable ? 'button' : undefined}
+            tabIndex={clickable ? 0 : undefined}
+            onKeyDown={(event) => {
+                if (!clickable) return;
+
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    handleClick();
+                }
             }}
-            className={`pointer-events-auto relative aspect-video ${className} cursor-pointer transition-transform duration-300 ease-out hover:scale-[1.08]`}
+            className={`pointer-events-auto relative aspect-video ${className} ${
+                clickable
+                    ? 'cursor-pointer transition-transform duration-300 ease-out hover:scale-[1.08] active:scale-[1.03]'
+                    : 'cursor-default'
+            }`}
         >
             <img
                 src={picPath}
@@ -158,6 +187,8 @@ function PictureColumns({
     columnRef,
     setIdxClicked,
     setIsOpen,
+    clickable,
+    pictureSize,
 }: PictureColumnProps) {
     const loopedImages = [...column.images, ...column.images];
 
@@ -169,17 +200,26 @@ function PictureColumns({
                 ref={columnRef}
                 className="flex flex-col items-center will-change-transform"
             >
-                {loopedImages.map((img, index) => (
-                    <Picture
-                        key={`${index}-${img.path}`}
-                        picPath={img.path}
-                        originalIndex={img.originalIndex}
-                        Border={img.border}
-                        className={`${img.width} ${img.marginBottom}`}
-                        setIdxClicked={setIdxClicked}
-                        setIsOpen={setIsOpen}
-                    />
-                ))}
+                {loopedImages.map((img, index) => {
+                    const width =
+                        pictureSize === 'large' ? img.width + 3 : img.width;
+
+                    return (
+                        <Picture
+                            key={`${index}-${img.path}`}
+                            picPath={img.path}
+                            originalIndex={img.originalIndex}
+                            Border={img.border}
+                            className={img.marginBottom}
+                            style={{
+                                width: `${width}rem`,
+                            }}
+                            setIdxClicked={setIdxClicked}
+                            setIsOpen={setIsOpen}
+                            clickable={clickable}
+                        />
+                    );
+                })}
             </div>
         </div>
     );
@@ -189,10 +229,14 @@ export default function GalleryScroll({
     images,
     setIdxClicked,
     setIsOpen,
+    clickable = true,
+    faceDirection = 'right',
+    pictureSize = 'normal',
 }: Props) {
     const columnRefs = useRef<(HTMLDivElement | null)[]>([]);
     const scrollBoostRef = useRef(0);
     const isScrollingUpRef = useRef(false);
+    const rotateY = faceDirection === 'left' ? -30 : 30;
 
     let imageIndex = 0;
 
@@ -313,7 +357,12 @@ export default function GalleryScroll({
 
     return (
         <div className={`${className} [perspective:1200px]`}>
-            <div className="flex justify-center -space-x-40 [transform-style:preserve-3d] [transform:rotateY(30deg)_rotateX(2deg)]">
+            <div
+                className="flex justify-center -space-x-40 [transform-style:preserve-3d]"
+                style={{
+                    transform: `rotateY(${rotateY}deg) rotateX(2deg)`,
+                }}
+            >
                 <PictureColumns
                     column={galleryColumns[0]}
                     zIndex="z-20"
@@ -322,6 +371,8 @@ export default function GalleryScroll({
                     }}
                     setIdxClicked={setIdxClicked}
                     setIsOpen={setIsOpen}
+                    clickable={clickable}
+                    pictureSize={pictureSize}
                 />
 
                 <PictureColumns
@@ -333,6 +384,8 @@ export default function GalleryScroll({
                     }}
                     setIdxClicked={setIdxClicked}
                     setIsOpen={setIsOpen}
+                    clickable={clickable}
+                    pictureSize={pictureSize}
                 />
 
                 <PictureColumns
@@ -343,6 +396,8 @@ export default function GalleryScroll({
                     }}
                     setIdxClicked={setIdxClicked}
                     setIsOpen={setIsOpen}
+                    clickable={clickable}
+                    pictureSize={pictureSize}
                 />
             </div>
         </div>

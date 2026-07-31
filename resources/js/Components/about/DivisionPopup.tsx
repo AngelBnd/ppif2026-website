@@ -1,4 +1,4 @@
-import ChainBG1 from '@/assets/about/divisions/ChainBG1.svg?react';
+﻿import ChainBG1 from '@/assets/about/divisions/ChainBG1.svg?react';
 import ChainBG2 from '@/assets/about/divisions/ChainBG2.svg?react';
 import ChainFG1 from '@/assets/about/divisions/ChainFG1.svg?react';
 import ChainFG2 from '@/assets/about/divisions/ChainFG2.svg?react';
@@ -13,7 +13,7 @@ import IdentityBox from '@/assets/about/divisions/IdentityBox.svg?react';
 import LeftArrow from '@/assets/svgs/LeftArrow.svg?react';
 import RightArrow from '@/assets/svgs/RightArrow.svg?react';
 
-import BackButtonSVG from '@/assets/icons/BackButtonSVG.svg?react';
+import BackButtonSVG from '@/assets/icons/BackButtonSVG.svg';
 import Button from '../global/Button';
 
 import gsap from 'gsap';
@@ -751,7 +751,10 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                                         className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 select-none object-cover"
                                     />
                                 </div>
-                                <division.NameSVG
+                                <img
+                                    src={division.nameSrc}
+                                    alt=""
+                                    draggable={false}
                                     style={{
                                         left:
                                             division.namePositionPopup?.left ??
@@ -762,9 +765,9 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                                         width: division.widthPopup,
                                     }}
                                     className={[
-                                        'pointer-events-none absolute z-20 h-auto',
+                                        'pointer-events-none absolute z-20 h-auto select-none',
                                         'bottom-0 origin-center',
-                                        isLeft ? 'rotate-[-33deg]' : '[]',
+                                        isLeft ? 'rotate-[-33deg]' : '',
                                     ].join(' ')}
                                 />
                             </div>
