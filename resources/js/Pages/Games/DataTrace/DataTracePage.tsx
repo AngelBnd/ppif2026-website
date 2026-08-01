@@ -1,6 +1,6 @@
 ﻿import { IMG_QS } from '@/data/gameQuestions/dataTraceQuestions';
 import { gsap } from 'gsap';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, forwardRef, useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
 
 // assets
@@ -12,6 +12,27 @@ import okButtonHover from '@/assets/games/dataTrace/svgs/OkButtonHover.svg';
 import QuestionBackground from '@/assets/games/dataTrace/svgs/QuestionBackground.svg';
 import QuestionRemainingBanner from '@/assets/games/dataTrace/svgs/QuestionRemainingBanner.svg';
 import Shape1 from '@/assets/games/dataTrace/svgs/Shape1.svg';
+
+type DecorShapeProps = {
+    src: string;
+    alt: string;
+    /** Wrapper positioning/sizing classes. */
+    className?: string;
+    /** Classes for the inner <img>. */
+    imageClassName?: string;
+};
+
+export const DecorShape = forwardRef<HTMLDivElement, DecorShapeProps>(
+    ({ src, alt, className = '', imageClassName = '' }, ref) => (
+        <div
+            ref={ref}
+            className={`pointer-events-none absolute origin-center ${className}`}
+        >
+            <img src={src} alt={alt} className={imageClassName} />
+        </div>
+    ),
+);
+DecorShape.displayName = 'DecorShape';
 
 export default function DataTracePage({ finishGame }: GamePageChildProps) {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -352,19 +373,19 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
             }
         `}</style>
             <main
-                className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#BE202F] px-4 text-zinc-300 selection:bg-zinc-800 selection:text-white"
+                className="relative z-[2] flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#BE202F] px-4 text-zinc-300 selection:bg-zinc-800 selection:text-white"
                 style={{ fontFamily: "'Arsenal', monospace" }}
             >
                 {import.meta.env.DEV && (
                     <button
                         onClick={() => finishGame()}
-                        className="fixed right-2 top-2 z-[9999] rounded bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-lg hover:bg-red-700"
+                        className="pointer-events-auto fixed right-2 top-32 z-[9999] rounded bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-lg hover:bg-red-700"
                     >
                         Skip (development)
                     </button>
                 )}
                 {/* MAIN WRAPPER CONTAINER */}
-                <div className="absolute z-10 flex h-[620px] w-full max-w-[1440px] flex-col items-center justify-between border-dashed border-yellow-400 p-8 sm:p-10">
+                <div className="absolute z-[40] flex h-[620px] w-full max-w-[1440px] flex-col items-center justify-between border-dashed border-yellow-400 p-8 sm:p-10">
                     {/* QUESTION CONTAINER */}
                     <div className="absolute z-10 flex w-full flex-col items-center">
                         {/* paper asset */}
@@ -380,27 +401,21 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                         </div>
 
                         {/* shape dekorasi */}
-                        <div
+                        <DecorShape
                             ref={exclShapeRef}
-                            className="w-30 pointer-events-none absolute -left-[-1050px] -top-[-130px] z-10 h-44 origin-center border-yellow-400"
-                        >
-                            <img
-                                src={ExclamationShape}
-                                alt="Exclamation Shape"
-                                className="h-full w-full opacity-80"
-                            />
-                        </div>
+                            src={ExclamationShape}
+                            alt="Exclamation Shape"
+                            className="w-30 -left-[-1050px] -top-[-130px] z-10 h-44 border-yellow-400"
+                            imageClassName="h-full w-full opacity-80"
+                        />
 
-                        <div
+                        <DecorShape
                             ref={shape1Ref}
-                            className="pointer-events-none absolute -bottom-[480px] -right-[-1090px] z-10 h-40 w-40 origin-center border-yellow-400"
-                        >
-                            <img
-                                src={Shape1}
-                                alt="Shape Decoration"
-                                className="h-full w-full opacity-80"
-                            />
-                        </div>
+                            src={Shape1}
+                            alt="Shape Decoration"
+                            className="-bottom-[480px] -right-[-1090px] z-10 h-40 w-40 border-yellow-400"
+                            imageClassName="h-full w-full opacity-80"
+                        />
 
                         <div className="absolute left-[50%] top-[-40px] z-10 flex h-44 w-full max-w-[1200px] -translate-x-1/2 items-center justify-between gap-4 border-yellow-400">
                             {/* 1. Current Question Banner */}
@@ -442,7 +457,7 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                             {/* 2. Question Progress Banner */}
                             <div
                                 ref={bannerRightRef}
-                                className="relative flex h-full w-full flex-1 items-center justify-center opacity-0"
+                                className="relative z-[10] flex h-full w-full flex-1 items-center justify-center opacity-0"
                                 style={{
                                     width: '120px',
                                     height: '90px',

@@ -6,7 +6,7 @@ export default function BottomFrame() {
 
     return (
         <div
-            className={`pointer-events-none fixed -bottom-8 left-0 block w-full overflow-hidden ${isGamePage ? 'invisible' : ''}`}
+            className={`pointer-events-none fixed -bottom-8 left-0 block w-full overflow-hidden ${isGamePage ? 'pointer-events-none z-[0]' : ''}`}
         >
             <div className="bottomFrame-video-mask bg-[#0A0C0F]">
                 <video

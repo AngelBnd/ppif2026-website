@@ -1,4 +1,4 @@
-﻿import { useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 // @ts-ignore
 import { useGSAP } from '@gsap/react';
 import { Head, Link } from '@inertiajs/react';
@@ -419,6 +419,20 @@ export default function BriefingDayPage() {
             dependencies: [currentIndex],
         },
     );
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key.toLowerCase() === 'c') {
+                setIsViewOpen(false);
+                setShouldRenderView(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
 
     return (
         <>
