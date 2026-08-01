@@ -123,7 +123,11 @@ export default function DDayPanel({
         }
 
         const ctx = gsap.context(() => {
-            const items = content.children;
+            const items = Array.from(content.children).filter(
+                (el) =>
+                    el !== decorShape1ref.current &&
+                    el !== decorShape2ref.current,
+            );
             gsap.killTweensOf(items);
 
             gsap.fromTo(
@@ -139,22 +143,29 @@ export default function DDayPanel({
                 },
             );
 
-            gsap.to(decorShape1ref.current, {
-                scale: 1.09,
-                duration: 1,
-                repeat: -1,
-                delay: 0.4,
-                yoyo: true,
-                ease: 'sine.inOut',
-            });
+            gsap.fromTo(
+                [decorShape1ref.current],
+                { x: 30, autoAlpha: 0, rotate: '-20deg' },
+                {
+                    rotate: '0deg',
+                    x: 0,
+                    autoAlpha: 1,
+                    duration: 0.3,
+                    ease: 'back.out(1.4)',
+                },
+            );
 
-            gsap.to(decorShape2ref.current, {
-                scale: 1.1,
-                duration: 1,
-                repeat: -1,
-                yoyo: true,
-                ease: 'sine.inOut',
-            });
+            gsap.fromTo(
+                [decorShape2ref.current],
+                { x: 30, autoAlpha: 0, rotate: '20deg' },
+                {
+                    rotate: '0deg',
+                    x: 0,
+                    autoAlpha: 1,
+                    duration: 0.3,
+                    ease: 'back.out(1.4)',
+                },
+            );
         }, content);
 
         return () => ctx.revert();
