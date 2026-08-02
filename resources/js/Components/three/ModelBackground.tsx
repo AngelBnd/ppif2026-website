@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import {
     AmbientLight,
     DirectionalLight,
+    Fog,
     Mesh,
     PerspectiveCamera,
     Scene,
@@ -24,8 +25,8 @@ const cameraPresets: Record<
     { position: [number, number, number]; lookAt: [number, number, number] }
 > = {
     home: {
-        position: [12, 0.3, 1],
-        lookAt: [1, 3, 4],
+        position: [12, 3, -1],
+        lookAt: [1, 2, 4],
     },
     about: {
         position: [3, 1.2, 5],
@@ -54,11 +55,12 @@ export default function ModelBackground({
         const container = containerRef.current;
 
         const scene = new Scene();
+        scene.fog = new Fog(0x000000, 30, 90);
 
         const camera = new PerspectiveCamera(
             50,
             window.innerWidth / window.innerHeight,
-            0.2,
+            3,
             100,
         );
 
@@ -76,7 +78,7 @@ export default function ModelBackground({
 
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(0x000000, 0);
+        renderer.setClearColor(0x000000, 1);
 
         container.appendChild(renderer.domElement);
 
@@ -84,7 +86,7 @@ export default function ModelBackground({
         scene.add(ambientLight);
 
         const directionalLight = new DirectionalLight(0xffffff, 1.5);
-        directionalLight.position.set(3, 5, 4);
+        directionalLight.position.set(0, 0, 0);
         scene.add(directionalLight);
 
         const loader = new GLTFLoader();

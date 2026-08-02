@@ -112,7 +112,7 @@ export default function About() {
             .set(morphBoxRef.current, {
                 xPercent: -30,
                 rotation: -4,
-                scale: 1,
+                scale: 0.7,
                 autoAlpha: 0,
             })
             .set(tabRef.current, {
@@ -122,9 +122,9 @@ export default function About() {
                 autoAlpha: 0,
             })
             .to(morphBoxRef.current, {
-                xPercent: 8,
+                xPercent: 3,
                 rotation: 2,
-                scale: 1.03,
+                scale: 1.02,
                 autoAlpha: 1,
                 duration: 0.55,
                 ease: 'power3.out',

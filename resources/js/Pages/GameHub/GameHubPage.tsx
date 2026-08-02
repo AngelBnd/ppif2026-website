@@ -15,7 +15,7 @@ export default function GameHubPage() {
 
         if (teamId) return 'games'; // <- ubah jadi 'story'
 
-        return 'story'; 
+        return 'story';
     });
 
     const handleBack = () => {
@@ -28,7 +28,7 @@ export default function GameHubPage() {
     };
 
     return (
-        <main className="h-screen w-screen overflow-hidden">
+        <main className="z-50 h-screen w-screen overflow-hidden">
             <Button
                 onClick={handleBack}
                 Icon={BackButton}

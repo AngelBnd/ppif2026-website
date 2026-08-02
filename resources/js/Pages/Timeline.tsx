@@ -5,7 +5,6 @@ import DateSticker from '@/Components/timeline/DateSticker';
 import DDayPanel from '@/Components/timeline/DDayPanel';
 import PersonaArrow from '@/Components/timeline/PersonaArrow';
 import TimelineBackground from '@/Components/timeline/TimelineBackground';
-import AppLayout from '@/Layouts/AppLayout';
 import { Head } from '@inertiajs/react';
 import {
     useEffect,
@@ -309,7 +308,7 @@ export default function Timeline() {
     }, [pos.logo]);
 
     return (
-        <AppLayout showBackground={false}>
+        <div>
             <Head title="Timeline" />
 
             <div className="relative z-40 h-screen w-full overflow-hidden">
@@ -391,6 +390,6 @@ export default function Timeline() {
                     headerClassName={currentInfo.headerClassName}
                 />
             </div>
-        </AppLayout>
+        </div>
     );
 }
