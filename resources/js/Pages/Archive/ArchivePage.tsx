@@ -1,5 +1,6 @@
 ﻿// @ts-ignore
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 
 // assets
 import ArchiveShape from '@/assets/archive/ArchiveShape.svg?react';
@@ -8,7 +9,11 @@ import DDayButton from '@/assets/archive/DDayButton.svg?react';
 import GalleryScroll from '@/Components/about/GalleryScroll';
 import ArchiveBackground from './ArchiveBackground';
 
+import ArchiveWaitInfo from '@/Pages/Archive/ArchiveWaitInfo';
+
 export default function ArchivePage() {
+    const [showOverlay, setShowOverlay] = useState(true);;
+
     const dummyPhotos = [
         'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=400',
         'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=400',
@@ -88,6 +93,11 @@ export default function ArchivePage() {
                     100% { transform: translateY(-50%); }
                 }
             `}</style>
+
+            {/* Render Overlay Info */}
+            {showOverlay && (
+                <ArchiveWaitInfo onClose={() => setShowOverlay(false)} />
+            )}
 
             <div
                 className="relative flex min-h-screen select-none overflow-hidden bg-transparent text-white"
