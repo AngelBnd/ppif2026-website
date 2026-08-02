@@ -1,38 +1,27 @@
 import { router } from '@inertiajs/react';
-import gsap from 'gsap';
 import { useEffect, useRef } from 'react';
-
-// Layers
-const TRANSITION_LAYERS = [
-    { id: 'white', bg: 'bg-[#FFFFFF]', zIndex: 'z-0' },
-    { id: 'white-smoke', bg: 'bg-[#F3F4F6]', zIndex: 'z-[5]' },
-    { id: 'light-gray', bg: 'bg-[#E5E7EB]', zIndex: 'z-[10]' },
-    { id: 'silver', bg: 'bg-[#9CA3AF]', zIndex: 'z-[15]' },
-    { id: 'gray', bg: 'bg-[#4B5563]', zIndex: 'z-[20]' },
-    { id: 'dark-gray', bg: 'bg-[#1F2937]', zIndex: 'z-[25]' },
-    { id: 'black', bg: 'bg-[#111827]', zIndex: 'z-[30]' },
-    { id: 'deep-black', bg: 'bg-[#050505]', zIndex: 'z-[35]' },
-    { id: 'dark-burgundy', bg: 'bg-[#2A0007]', zIndex: 'z-[40]' },
-    { id: 'deep-maroon', bg: 'bg-[#4A0404]', zIndex: 'z-[45]' },
-    { id: 'maroon', bg: 'bg-[#7A0010]', zIndex: 'z-[50]' },
-    { id: 'crimson', bg: 'bg-[#A80A18]', zIndex: 'z-[55]' },
-    { id: 'dark-red', bg: 'bg-[#C9182B]', zIndex: 'z-[60]' },
-    { id: 'red', bg: 'bg-[#E63946]', zIndex: 'z-[65]' }
-];
+import CircleWipe, { CircleWipeHandle } from './CircleWipe';
 
 export default function PageTransition() {
-    const containerRef = useRef<HTMLDivElement>(null);
-    const layersRef = useRef<(HTMLDivElement | null)[]>([]);
+    const wipeRef = useRef<CircleWipeHandle>(null);
     const isTransitioningRef = useRef(false);
     const pendingVisitRef = useRef<string | null>(null);
+    const isCommittingRef = useRef(false);
 
     useEffect(() => {
-        gsap.set(layersRef.current, {
-            x: '-160%',
-            rotation: 8,
-            scale: 1.9,
-        });
-        gsap.set(containerRef.current, { display: 'none' });
+        const startCover = (url: string) => {
+            isTransitioningRef.current = true;
+            pendingVisitRef.current = url;
+
+            wipeRef.current?.leave(() => {
+                if (pendingVisitRef.current) {
+                    const targetUrl = pendingVisitRef.current;
+                    pendingVisitRef.current = null;
+                    isCommittingRef.current = true;
+                    router.visit(targetUrl);
+                }
+            });
+        };
 
         const handleBefore = (event: any) => {
             const url = event.detail.visit.url;
@@ -52,57 +41,30 @@ export default function PageTransition() {
                 return;
             }
 
-            if (isTransitioningRef.current) return;
+            if (isCommittingRef.current) {
+                isCommittingRef.current = false;
+                return;
+            }
 
             event.preventDefault();
-            isTransitioningRef.current = true;
-            pendingVisitRef.current = url;
 
-            gsap.set(containerRef.current, { display: 'block' });
+            if (isTransitioningRef.current) {
+                pendingVisitRef.current = url;
+                return;
+            }
 
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    if (pendingVisitRef.current) {
-                        const targetUrl = pendingVisitRef.current;
-                        pendingVisitRef.current = null;
-                        router.visit(targetUrl);
-                    }
-                },
-            });
-
-            layersRef.current.forEach((layer, index) => {
-                tl.to(
-                    layer,
-                    {
-                        x: '0%',
-                        duration: 0.32,
-                        ease: 'power4.inOut',
-                    },
-                    index === 0 ? 0 : '-=0.3'
-                );
-            });
+            startCover(url);
         };
 
         const handleNavigate = () => {
             if (!isTransitioningRef.current) return;
 
-            const subLayers = layersRef.current.slice(0, -1);
-            const topRedLayer = layersRef.current[layersRef.current.length - 1];
+            wipeRef.current?.enter(() => {
+                isTransitioningRef.current = false;
 
-            gsap.set(subLayers, { x: '160%' });
-
-            const tl = gsap.timeline({
-                onComplete: () => {
-                    gsap.set(containerRef.current, { display: 'none' });
-                    gsap.set(layersRef.current, { x: '-160%' });
-                    isTransitioningRef.current = false;
-                },
-            });
-
-            tl.to(topRedLayer, {
-                x: '160%',
-                duration: 0.38,
-                ease: 'power3.out',
+                if (pendingVisitRef.current) {
+                    startCover(pendingVisitRef.current);
+                }
             });
         };
 
@@ -116,18 +78,11 @@ export default function PageTransition() {
     }, []);
 
     return (
-        <div
-            ref={containerRef}
-            className="fixed inset-0 z-[9999] pointer-events-auto overflow-hidden"
-            style={{ display: 'none' }}
-        >
-            {TRANSITION_LAYERS.map((layer, index) => (
-                <div
-                    key={layer.id}
-                    ref={(el) => (layersRef.current[index] = el)}
-                    className={`absolute inset-0 ${layer.bg} ${layer.zIndex}`}
-                />
-            ))}
-        </div>
+        <CircleWipe
+            ref={wipeRef}
+            initialScale={20}
+            fullScale={20}
+            duration={1}
+        />
     );
 }

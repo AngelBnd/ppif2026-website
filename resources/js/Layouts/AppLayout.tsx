@@ -33,9 +33,9 @@ export default function AppLayout({
                 )}
 
                 <div className="relative z-10">
+                    <PageTransition />
                     <Navbar />
                     <BottomFrame />
-                    <PageTransition />
 
                     <main className="min-h-screen">{children}</main>
                 </div>

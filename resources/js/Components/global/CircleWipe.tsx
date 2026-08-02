@@ -17,13 +17,25 @@ type Props = {
     ease?: string;
     initialScale?: number;
     fullScale?: number;
+    /** When true, `leave` fades the cover in (fade to black) instead of
+     *  wiping the hole closed. `enter` still opens as a wipe. */
+    fadeOnLeave?: boolean;
+    /** Duration for the leave fade (defaults to `duration`). */
+    leaveDuration?: number;
 };
 
 const SHAPE_CENTER_X = 126;
 const SHAPE_CENTER_Y = 140;
 
 const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
-    { duration = 1, ease = 'power3.inOut', initialScale = 0, fullScale = 20 },
+    {
+        duration = 1,
+        ease = 'power2.inOut',
+        initialScale = 0,
+        fullScale = 20,
+        fadeOnLeave = false,
+        leaveDuration,
+    },
     ref,
 ) {
     const [size, setSize] = useState({
@@ -31,6 +43,7 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
         height: window.innerHeight,
     });
     const holeGroupRef = useRef<SVGGElement | null>(null);
+    const svgRef = useRef<SVGSVGElement | null>(null);
 
     useEffect(() => {
         function handleResize() {
@@ -52,6 +65,8 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
 
     useImperativeHandle(ref, () => ({
         enter(onComplete) {
+            // Reset opacity in case a previous fade-leave left it faded.
+            gsap.set(svgRef.current, { autoAlpha: 1 });
             gsap.to(holeGroupRef.current, {
                 scale: fullScale,
                 duration,
@@ -61,6 +76,26 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
             });
         },
         leave(onComplete) {
+            if (fadeOnLeave) {
+                // Close the hole instantly (full cover), then slowly fade the
+                // black cover in — i.e. fade the page out to black.
+                gsap.set(holeGroupRef.current, {
+                    scale: 0,
+                    transformOrigin: `${SHAPE_CENTER_X}px ${SHAPE_CENTER_Y}px`,
+                });
+                gsap.fromTo(
+                    svgRef.current,
+                    { autoAlpha: 0 },
+                    {
+                        autoAlpha: 1,
+                        duration: leaveDuration ?? duration,
+                        ease,
+                        onComplete,
+                    },
+                );
+                return;
+            }
+
             gsap.to(holeGroupRef.current, {
                 scale: 0,
                 duration,
@@ -76,6 +111,7 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
 
     return (
         <svg
+            ref={svgRef}
             className="pointer-events-none fixed inset-0 z-50 h-full w-full"
             preserveAspectRatio="none"
         >
