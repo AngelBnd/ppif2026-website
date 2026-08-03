@@ -97,7 +97,7 @@ export default function Navbar() {
         gsap.to(points[0], {
             x: 40,
             y: 30,
-            duration: 0.9,
+            duration: 0.2,
             ease: 'power1.inOut',
             repeat: -1,
             yoyo: true,
@@ -106,7 +106,7 @@ export default function Navbar() {
         gsap.to(points[1], {
             x: 240,
             y: 48,
-            duration: 1,
+            duration: 0.5,
             ease: 'power1.inOut',
             onUpdate: updatePolygon,
             yoyo: true,
@@ -116,7 +116,7 @@ export default function Navbar() {
         gsap.to(points[2], {
             x: 180,
             y: 80,
-            duration: 0.6,
+            duration: 0.3,
             ease: 'power1.inOut',
             onUpdate: updatePolygon,
             yoyo: true,
@@ -126,7 +126,7 @@ export default function Navbar() {
         gsap.to(points[3], {
             x: 70,
             y: 80,
-            duration: 1.2,
+            duration: 0.2,
             ease: 'power1.inOut',
             onUpdate: updatePolygon,
             yoyo: true,

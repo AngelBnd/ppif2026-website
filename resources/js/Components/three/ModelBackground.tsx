@@ -5,11 +5,9 @@ import {
     AmbientLight,
     AnimationMixer,
     Box3,
-    Color,
     DirectionalLight,
     Fog,
     HemisphereLight,
-    LoopRepeat,
     Mesh,
     MeshBasicMaterial,
     Object3D,
@@ -23,38 +21,13 @@ import {
     WebGLRenderer,
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js';
-
-type CameraPreset = 'home' | 'about' | 'timeline' | 'contact';
+import { cameraPresets, type CameraPreset } from './cameraPresets';
+import { createGlitchComposer, GLITCH_LAYER } from './glitchComposer';
+import { loadAnimatedModel } from './loadModels';
+import { createTrains, initTrain, updateTrain } from './trainAnimation';
 
 type ModelBackgroundProps = {
     preset?: CameraPreset;
-};
-
-const cameraPresets: Record<
-    CameraPreset,
-    { position: [number, number, number]; lookAt: [number, number, number] }
-> = {
-    home: {
-        position: [10, 4, 1],
-        lookAt: [1, 1.5, 1],
-    },
-    about: {
-        position: [3, 1.2, 5],
-        lookAt: [0, 0.2, 0],
-    },
-    timeline: {
-        position: [-3, 2, 5],
-        lookAt: [0, 0, 0],
-    },
-    contact: {
-        position: [0, 3, 4],
-        lookAt: [0, 0, 0],
-    },
 };
 
 export default function ModelBackground({
@@ -68,8 +41,6 @@ export default function ModelBackground({
     const pointerRef = useRef({ x: 0, y: 0 });
     const mixersRef = useRef<AnimationMixer[]>([]);
 
-    let mixer: AnimationMixer | undefined;
-
     useEffect(() => {
         if (!containerRef.current) return;
 
@@ -81,7 +52,7 @@ export default function ModelBackground({
         const camera = new PerspectiveCamera(
             50,
             window.innerWidth / window.innerHeight,
-            3,
+            0.1,
             100,
         );
 
@@ -104,34 +75,12 @@ export default function ModelBackground({
 
         container.appendChild(renderer.domElement);
 
-        // Selective glitch: codie2 lives on its own render layer so the glitch
-        // pass only affects it, not the whole scene.
-        const GLITCH_LAYER = 1;
-
-        // The glitch composer renders ONLY layer-1 objects (codie2) on a
-        // transparent background, glitches them, then composites the result over
-        // the normally-rendered scene via the overlay pass.
-        const glitchComposer = new EffectComposer(renderer);
-        glitchComposer.setSize(window.innerWidth, window.innerHeight);
-        glitchComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        const codieRenderPass = new RenderPass(
-            scene,
-            camera,
-            undefined,
-            new Color(0x000000),
-            0, // transparent clear so only codie2's pixels survive
-        );
-        glitchComposer.addPass(codieRenderPass);
-
-        glitchComposer.addPass(new GlitchPass());
-
-        // Alpha-composite the glitched codie2 over the base scene.
-        const overlayPass = new ShaderPass(CopyShader);
-        overlayPass.material.transparent = true;
-        overlayPass.material.depthTest = false;
-        overlayPass.material.depthWrite = false;
-        glitchComposer.addPass(overlayPass);
+        // Selective glitch + outline composer, scoped to codie2 (layer 1).
+        const {
+            composer: glitchComposer,
+            subtleGlitch,
+            outlinePass,
+        } = createGlitchComposer(renderer, scene, camera);
 
         const ambientLight = new AmbientLight(0xffffff, 1.2);
         scene.add(ambientLight);
@@ -152,6 +101,8 @@ export default function ModelBackground({
 
         // Set once codie2.glb loads; the click handler raycasts against it.
         let codie2Object: Object3D | null = null;
+
+        const { trainLeft, trainRight } = createTrains();
 
         const video = document.createElement('video');
         video.src = '/videos/trailerppif.webm';
@@ -175,31 +126,61 @@ export default function ModelBackground({
         videoTexture.repeat.set(5, 5);
         videoTexture.offset.set(0.6, 0);
 
-        loader.load(
+        // Background characters (looping animations, no special handling).
+        loadAnimatedModel(
+            loader,
             '/models/codie3.glb',
-            (gltf) => {
-                const character = gltf.scene;
-
-                scene.add(character);
-
-                // set up animation playback
-                if (gltf.animations.length > 0) {
-                    const mixer = new AnimationMixer(character);
-                    const clip = gltf.animations[0];
-                    const action = mixer.clipAction(clip);
-                    action.setLoop(LoopRepeat, Infinity);
-                    action.play();
-                    mixersRef.current.push(mixer);
-                } else {
-                    console.warn(
-                        '[codie] model loaded but no animations found',
-                    );
-                }
-            },
-            undefined,
-            (err) =>
-                console.error('[codie] failed to load /models/codie.glb', err),
+            scene,
+            mixersRef.current,
         );
+        loadAnimatedModel(
+            loader,
+            '/models/codie4.glb',
+            scene,
+            mixersRef.current,
+        );
+        loadAnimatedModel(
+            loader,
+            '/models/codie5.glb',
+            scene,
+            mixersRef.current,
+        );
+        loadAnimatedModel(
+            loader,
+            '/models/codie.glb',
+            scene,
+            mixersRef.current,
+        );
+
+        // Trains: bind each loaded model to its fly-by controller.
+        loadAnimatedModel(
+            loader,
+            '/models/trainleft.glb',
+            scene,
+            mixersRef.current,
+            (root) => initTrain(trainLeft, root),
+        );
+        loadAnimatedModel(
+            loader,
+            '/models/trainright.glb',
+            scene,
+            mixersRef.current,
+            (root) => initTrain(trainRight, root),
+        );
+
+        // codie2: the glitch/outline target — put it on the glitch layer and
+        // remember it for hover/click raycasting.
+        loadAnimatedModel(
+            loader,
+            '/models/codie2.glb',
+            scene,
+            mixersRef.current,
+            (root) => {
+                codie2Object = root;
+                root.traverse((o) => o.layers.set(GLITCH_LAYER));
+            },
+        );
+
         loader.load(
             '/models/tv.glb',
             (gltf) => {
@@ -249,64 +230,6 @@ export default function ModelBackground({
             undefined,
             (err) => console.error('[tv] failed to load /models/tv.glb', err),
         );
-        loader.load(
-            '/models/codie2.glb',
-            (gltf) => {
-                const character = gltf.scene;
-
-                scene.add(character);
-                // Remember this model so the click handler can raycast it.
-                codie2Object = character;
-
-                // Put codie2 on the glitch layer so only it gets post-processed.
-                character.traverse((o) => o.layers.set(GLITCH_LAYER));
-
-                // set up animation playback
-                if (gltf.animations.length > 0) {
-                    const mixer = new AnimationMixer(character);
-                    const clip = gltf.animations[0];
-                    const action = mixer.clipAction(clip);
-                    action.setLoop(LoopRepeat, Infinity);
-                    action.play();
-                    mixersRef.current.push(mixer);
-                } else {
-                    console.warn(
-                        '[codie] model loaded but no animations found',
-                    );
-                }
-            },
-            undefined,
-            (err) =>
-                console.error('[codie] failed to load /models/codie.glb', err),
-        );
-
-        loader.load(
-            '/models/codie.glb',
-            (gltf) => {
-                const character = gltf.scene;
-
-                scene.add(character);
-
-                // set up animation playback
-                if (gltf.animations.length > 0) {
-                    const mixer = new AnimationMixer(character);
-                    const clip = gltf.animations[0];
-                    const action = mixer.clipAction(clip);
-
-                    action.setLoop(LoopRepeat, Infinity);
-                    action.play();
-
-                    mixersRef.current.push(mixer);
-                } else {
-                    console.warn(
-                        '[codie] model loaded but no animations found',
-                    );
-                }
-            },
-            undefined,
-            (err) =>
-                console.error('[codie] failed to load /models/codie.glb', err),
-        );
 
         loader.load('/models/bg.glb', (gltf) => {
             const model = gltf.scene;
@@ -341,6 +264,10 @@ export default function ModelBackground({
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
             glitchComposer.setSize(window.innerWidth, window.innerHeight);
+            outlinePass.uniforms.uResolution.value.set(
+                window.innerWidth,
+                window.innerHeight,
+            );
         };
 
         window.addEventListener('resize', handleResize);
@@ -358,19 +285,23 @@ export default function ModelBackground({
             return raycaster.intersectObject(codie2Object, true).length > 0;
         };
 
+        // codie2 is only interactive on the /home page.
+        const onHomePage = () => window.location.pathname === '/home';
+
         const handlePointerMove = (e: PointerEvent) => {
             pointerRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
             pointerRef.current.y = (e.clientY / window.innerHeight) * 2 - 1;
 
-            // Pointer cursor while hovering codie2.
-            document.body.style.cursor = isOverCodie(e.clientX, e.clientY)
-                ? 'pointer'
-                : '';
+            // Pointer cursor while hovering codie2 (only on /home).
+            document.body.style.cursor =
+                onHomePage() && isOverCodie(e.clientX, e.clientY)
+                    ? 'pointer'
+                    : '';
         };
         window.addEventListener('pointermove', handlePointerMove);
 
         const handleClick = (e: PointerEvent) => {
-            if (isOverCodie(e.clientX, e.clientY)) {
+            if (onHomePage() && isOverCodie(e.clientX, e.clientY)) {
                 router.visit('/games');
             }
         };
@@ -394,6 +325,9 @@ export default function ModelBackground({
             lastTime = now;
 
             mixersRef.current.forEach((m) => m.update(delta));
+
+            updateTrain(trainLeft, camera, now, delta);
+            updateTrain(trainRight, camera, now, delta);
 
             const onHome = presetRef.current === 'home';
             const targetX = onHome ? pointerRef.current.x * TILT_X : 0;
@@ -427,6 +361,12 @@ export default function ModelBackground({
             // Glitched codie2 (layer 1) composited on top.
             renderer.autoClear = false;
             camera.layers.set(GLITCH_LAYER);
+
+            // Faint constant shimmer with occasional brief spikes.
+            subtleGlitch.uniforms.uTime.value = now / 1000;
+            subtleGlitch.uniforms.uAmount.value =
+                0.0015 + (Math.random() < 0.02 ? Math.random() * 0.01 : 0);
+
             glitchComposer.render();
 
             camera.layers.set(0);
@@ -445,6 +385,9 @@ export default function ModelBackground({
 
             video.pause();
             video.remove();
+
+            trainLeft.audio.pause();
+            trainRight.audio.pause();
 
             if (renderer.domElement.parentNode) {
                 renderer.domElement.parentNode.removeChild(renderer.domElement);

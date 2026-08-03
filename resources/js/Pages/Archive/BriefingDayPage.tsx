@@ -3,7 +3,6 @@
 import { useGSAP } from '@gsap/react';
 import { Head, Link } from '@inertiajs/react';
 import gsap from 'gsap';
-import ArchiveBackground from './ArchiveBackground';
 
 // assets
 import Button from '@/Components/global/Button';
@@ -478,7 +477,7 @@ export default function BriefingDayPage() {
                 className="relative flex min-h-screen select-none items-center justify-center overflow-hidden bg-transparent text-white"
                 style={{ fontFamily: "'Arsenal', sans-serif" }}
             >
-                <ArchiveBackground />
+                {/* <ArchiveBackground /> */}
 
                 {/* BACKGROUND SHAPE RED */}
                 <div

@@ -48,7 +48,10 @@ export default function MusicProvider({ children }: MusicProviderProps) {
     return (
         <MusicContext.Provider value={value}>
             <audio
-                ref={audioRef}
+                ref={(el) => {
+                    audioRef.current = el;
+                    if (el) el.volume = 0.015;
+                }}
                 loop
                 preload="auto"
                 src="/audio/backsound.mp3"

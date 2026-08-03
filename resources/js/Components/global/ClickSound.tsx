@@ -30,7 +30,10 @@ export default function ClickSound() {
 
     return (
         <audio
-            ref={audioRef}
+            ref={(el) => {
+                audioRef.current = el;
+                if (el) el.volume = 0.15;
+            }}
             preload="auto"
             className="hidden"
             src="/audio/click.wav"
