@@ -13,6 +13,7 @@ import ContactButton from '../../assets/icons/ContactButtonNBSVG.svg?react';
 import HomeButton from '../../assets/icons/HomeButtonNBSVG.svg?react';
 import MusicButton from '../../assets/icons/MusicButton.svg?react';
 import TimelineButton from '../../assets/icons/TimelineButtonNBSVG.svg?react';
+import { useMusic } from './MusicProvider';
 
 type Section = 'home' | 'about' | 'timeline' | 'contact' | 'none';
 
@@ -38,6 +39,7 @@ function NavItem({
     return (
         <Link
             href={href}
+            data-click-sound
             onClick={() => onSelect(section)}
             className={[
                 'origin-bottom transition-transform duration-200 ease-out will-change-transform',
@@ -62,6 +64,7 @@ export default function Navbar() {
     const [activeTab, setActiveTab] = useState<Section>('home');
     const isGamePage = url.startsWith('/games');
     const polygonRef = useRef<SVGPolygonElement>(null);
+    const { toggle: toggleMusic } = useMusic();
 
     const points = useRef([
         { x: 30, y: 15 }, // top-left
@@ -209,6 +212,7 @@ export default function Navbar() {
                     <div className="mx-4 flex gap-1">
                         <Link
                             href="/archive"
+                            data-click-sound
                             className={[
                                 'origin-bottom transition-transform duration-200 ease-out will-change-transform',
                                 'hover:rotate-3 hover:scale-110 active:scale-95',
@@ -218,6 +222,8 @@ export default function Navbar() {
                         </Link>
 
                         <button
+                            data-no-click-sound
+                            onClick={toggleMusic}
                             className={[
                                 'origin-bottom transition-transform duration-200 ease-out will-change-transform',
                                 'hover:rotate-3 hover:scale-110 active:scale-95',

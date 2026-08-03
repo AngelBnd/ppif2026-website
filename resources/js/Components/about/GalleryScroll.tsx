@@ -153,6 +153,7 @@ function Picture({
         <div
             style={style}
             onClick={handleClick}
+            data-click-sound={clickable ? '' : undefined}
             role={clickable ? 'button' : undefined}
             tabIndex={clickable ? 0 : undefined}
             onKeyDown={(event) => {

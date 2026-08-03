@@ -686,6 +686,7 @@ export default function BriefingDayPage() {
                 >
                     <Link
                         href="/archive"
+                        data-click-sound
                         className="group flex h-[80px] w-[180px] items-center justify-center overflow-visible transition-transform active:scale-95"
                         aria-label="Back to Archive"
                     >
@@ -704,6 +705,7 @@ export default function BriefingDayPage() {
                 {shouldRenderView && (
                     <div
                         ref={viewModalRef}
+                        data-click-sound
                         className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm transition-all"
                         onClick={handleCloseView}
                     >

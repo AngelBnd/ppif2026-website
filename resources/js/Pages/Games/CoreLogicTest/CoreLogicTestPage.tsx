@@ -1210,6 +1210,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                             {/* Coddie */}
                             <div
                                 ref={coddieRef}
+                                data-click-sound
                                 onClick={() => {
                                     if (coddieState === 'sleep')
                                         setCoddieState('idle');
