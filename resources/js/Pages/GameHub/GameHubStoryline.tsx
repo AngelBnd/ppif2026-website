@@ -49,7 +49,7 @@ import {
 } from '@/Components/about/useDivisionCamera';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -91,6 +91,7 @@ export default function GameHubStoryline({ onReady }: Props) {
 
     const scrollRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
+    const bgRef = useRef<HTMLDivElement>(null);
     const worldRef = useRef<HTMLDivElement>(null);
     const cameraRef = useRef<HTMLDivElement>(null);
     const clipRef = useRef<HTMLDivElement>(null);
@@ -197,6 +198,23 @@ export default function GameHubStoryline({ onReady }: Props) {
         { src: SLBox24, left: '3540px', top: '49%', width: '370px', beat: 8 },
         { src: SLBox25, left: '4340px', top: '50%', width: '380px', beat: 9 },
     ];
+
+    useLayoutEffect(() => {
+        const ctx = gsap.context(() => {
+            gsap.set(bgRef.current, {
+                opacity: 0,
+            });
+            gsap.to(bgRef.current, {
+                opacity: 0.6,
+                ease: 'power3.out',
+                duration: 1.2,
+            });
+        }, []);
+
+        return () => {
+            ctx.revert();
+        };
+    }, []);
 
     // Lift path traced from THIS page's panel heights — differs per page
     // because each page has different panels.
@@ -481,6 +499,11 @@ export default function GameHubStoryline({ onReady }: Props) {
 
     return (
         <div className="absolute inset-0 overflow-hidden text-white">
+            <div
+                ref={bgRef}
+                className="absolute inset-0 z-0 h-screen w-screen bg-[#0A0C0F]"
+            />
+
             {/* ini diganti ajah jujur gatau mau gimana transisi pindah pagenya wkwkwk */}
             <div
                 ref={wipeRef}

@@ -350,6 +350,9 @@ export default function ModelBackground({
         const handleNavigate = () => {
             if (window.location.pathname !== '/home') return;
 
+            // Re-arm codie2's click now that we're back on /home.
+            isZooming = false;
+
             const home = cameraPresets.home;
             gsap.killTweensOf(basePositionRef.current);
             gsap.killTweensOf(lookAtRef.current);
