@@ -64,7 +64,8 @@ export default function Navbar() {
     const [activeTab, setActiveTab] = useState<Section>('home');
     const isGamePage = url.startsWith('/games');
     const polygonRef = useRef<SVGPolygonElement>(null);
-    const { toggle: toggleMusic } = useMusic();
+    const musicIconRef = useRef<HTMLSpanElement>(null);
+    const { toggle: toggleMusic, isPlaying } = useMusic();
 
     const points = useRef([
         { x: 30, y: 15 }, // top-left
@@ -134,6 +135,39 @@ export default function Navbar() {
             delay: 0.1,
         });
     }, []);
+
+    useEffect(() => {
+        const el = musicIconRef.current;
+        if (!el) return;
+
+        gsap.killTweensOf(el);
+        gsap.set(el, { rotation: 0, scale: 1 });
+
+        let anim: gsap.core.Timeline | gsap.core.Tween;
+
+        if (isPlaying) {
+            anim = gsap.to(el, {
+                scale: 1.05,
+                duration: 1,
+                ease: 'sine.inOut',
+                repeat: -1,
+                yoyo: true,
+            });
+        } else {
+            anim = gsap
+                .timeline({ repeat: -1, repeatDelay: 1.5 })
+                .to(el, { rotation: -8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: -6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 0, duration: 0.09, ease: 'power1.inOut' });
+        }
+
+        return () => {
+            anim.kill();
+            gsap.set(el, { rotation: 0, scale: 1 });
+        };
+    }, [isPlaying]);
 
     return (
         <nav
@@ -229,7 +263,12 @@ export default function Navbar() {
                                 'hover:rotate-3 hover:scale-110 active:scale-95',
                             ].join(' ')}
                         >
-                            <MusicButton className="w-16" />
+                            <span
+                                ref={musicIconRef}
+                                className="inline-block origin-bottom will-change-transform"
+                            >
+                                <MusicButton className="w-16" />
+                            </span>
                         </button>
                     </div>
                 </div>
