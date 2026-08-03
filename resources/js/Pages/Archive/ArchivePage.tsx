@@ -39,7 +39,7 @@ export default function ArchivePage() {
         gsap.set(streak1, { clipPath: RL });
         gsap.set(streak2, { clipPath: LR });
 
-        const tl = gsap.timeline();
+        const tl = gsap.timeline({ delay: 0.4 });
         tl.to(shape, open())
             .addLabel('afterShape')
             .to(title, open(), '<+=0.4')

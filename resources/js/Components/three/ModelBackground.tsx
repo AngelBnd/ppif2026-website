@@ -300,12 +300,75 @@ export default function ModelBackground({
         };
         window.addEventListener('pointermove', handlePointerMove);
 
+        // Zoom the camera in close to codie2, then navigate to /games.
+        let isZooming = false;
         const handleClick = (e: PointerEvent) => {
-            if (onHomePage() && isOverCodie(e.clientX, e.clientY)) {
-                router.visit('/games');
+            if (isZooming) return;
+            if (
+                onHomePage() &&
+                codie2Object &&
+                isOverCodie(e.clientX, e.clientY)
+            ) {
+                isZooming = true;
+
+                const box = new Box3().setFromObject(codie2Object);
+                const center = box.getCenter(new Vector3());
+                const size = box.getSize(new Vector3());
+
+                // Sit the camera a short distance in front of codie2, facing it.
+                const dist = Math.max(size.x, size.y, size.z, 0.5) * 1.4;
+                const dir = new Vector3()
+                    .subVectors(basePositionRef.current, center)
+                    .normalize();
+                const target = center.clone().add(dir.multiplyScalar(dist));
+
+                gsap.killTweensOf(basePositionRef.current);
+                gsap.killTweensOf(lookAtRef.current);
+
+                gsap.to(basePositionRef.current, {
+                    x: target.x,
+                    y: target.y,
+                    z: target.z,
+                    duration: 0.85,
+                    ease: 'power2.in',
+                });
+                gsap.to(lookAtRef.current, {
+                    x: center.x,
+                    y: center.y,
+                    z: center.z,
+                    duration: 0.85,
+                    ease: 'power2.in',
+                    onComplete: () => router.visit('/games'),
+                });
             }
         };
         window.addEventListener('click', handleClick);
+
+        // Returning to /home resets the camera to the home preset — the zoom
+        // bypasses the preset system, and the preset prop stays 'home', so the
+        // preset effect never fires to undo it.
+        const handleNavigate = () => {
+            if (window.location.pathname !== '/home') return;
+
+            const home = cameraPresets.home;
+            gsap.killTweensOf(basePositionRef.current);
+            gsap.killTweensOf(lookAtRef.current);
+            gsap.to(basePositionRef.current, {
+                x: home.position[0],
+                y: home.position[1],
+                z: home.position[2],
+                duration: 1.2,
+                ease: 'power3.inOut',
+            });
+            gsap.to(lookAtRef.current, {
+                x: home.lookAt[0],
+                y: home.lookAt[1],
+                z: home.lookAt[2],
+                duration: 1.2,
+                ease: 'power3.inOut',
+            });
+        };
+        const unsubscribeNavigate = router.on('navigate', handleNavigate);
 
         // Cursor-tilt config: max offset (limit) and easing (0..1, lower = softer).
         const TILT_X = 0.8;
@@ -329,7 +392,7 @@ export default function ModelBackground({
             updateTrain(trainLeft, camera, now, delta);
             updateTrain(trainRight, camera, now, delta);
 
-            const onHome = presetRef.current === 'home';
+            const onHome = presetRef.current === 'home' && !isZooming;
             const targetX = onHome ? pointerRef.current.x * TILT_X : 0;
             const targetY = onHome ? -pointerRef.current.y * TILT_Y : 0;
             tiltX += (targetX - tiltX) * TILT_EASE;
@@ -378,6 +441,7 @@ export default function ModelBackground({
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('pointermove', handlePointerMove);
             window.removeEventListener('click', handleClick);
+            unsubscribeNavigate();
             document.body.style.cursor = '';
 
             renderer.dispose();
