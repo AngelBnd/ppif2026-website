@@ -122,6 +122,7 @@ export default function CustomScrollBox({ text }: Props) {
             {hasOverflow && (
                 <svg
                     ref={svgRef}
+                    data-click-sound
                     onClick={handleScrollbarClick}
                     className="absolute -top-[2rem] right-0 h-[180px] w-[42px] cursor-pointer"
                     viewBox="0 0 42 135"

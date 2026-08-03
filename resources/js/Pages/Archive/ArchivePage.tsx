@@ -228,6 +228,7 @@ export default function ArchivePage() {
                                 <div className="group relative w-fit shrink-0">
                                     <Link
                                         href="/archive/dday"
+                                        data-click-sound
                                         className="relative flex h-[auto] w-[360px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
                                     >
                                         <GlitchShape className="absolute inset-0 z-20 h-full w-full opacity-0 transition-opacity duration-200 group-hover:opacity-70" />
@@ -244,6 +245,7 @@ export default function ArchivePage() {
                                 <div className="group relative w-fit shrink-0">
                                     <Link
                                         href="/archive/briefingday"
+                                        data-click-sound
                                         className="relative flex h-auto w-[650px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
                                     >
                                         {/* HOVER EFFECT */}

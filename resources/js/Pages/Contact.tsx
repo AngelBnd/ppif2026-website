@@ -327,6 +327,7 @@ export default function Contact() {
                                             {/* WhatsApp */}
                                             <div
                                                 data-icon
+                                                data-click-sound
                                                 data-href="https://wa.me/628123456789"
                                                 className="relative flex shrink-0 cursor-pointer items-center"
                                             >
@@ -373,6 +374,7 @@ export default function Contact() {
                                             {/* Discord */}
                                             <div
                                                 data-icon
+                                                data-click-sound
                                                 data-href="https://discord.gg/ppif"
                                                 className="relative flex shrink-0 cursor-pointer items-center"
                                                 style={{
@@ -422,6 +424,7 @@ export default function Contact() {
                                             {/* Instagram */}
                                             <div
                                                 data-icon
+                                                data-click-sound
                                                 data-href="https://www.instagram.com/ppif.umn/"
                                                 className="relative mt-3 flex shrink-0 cursor-pointer items-center"
                                                 style={{
