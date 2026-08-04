@@ -1,3 +1,4 @@
+import BlackPartBottom from '@/../../public/svgs/BlackPartBottomSVG.svg';
 import { usePage } from '@inertiajs/react';
 
 export default function BottomFrame() {
@@ -6,8 +7,12 @@ export default function BottomFrame() {
 
     return (
         <div
-            className={`pointer-events-none fixed -bottom-8 left-0 block w-full overflow-hidden ${isGamePage ? 'pointer-events-none z-[0]' : ''}`}
+            className={`pointer-events-none fixed -bottom-6 left-0 block w-full overflow-hidden ${isGamePage ? 'pointer-events-none z-[0]' : ''}`}
         >
+            <img
+                src={BlackPartBottom}
+                className="absolute bottom-0 h-auto w-[100vw]"
+            />
             <div className="bottomFrame-video-mask bg-[#0A0C0F]">
                 <video
                     autoPlay

@@ -56,7 +56,7 @@ input::-webkit-input-placeholder {
 
 .bottomFrame-video-mask {
     width: 100vw;
-    aspect-ratio: 1920 / 180;
+    aspect-ratio: 1920 / 140;
     overflow: hidden;
 
     mask-image: url('/masks/BottomSVG.svg');

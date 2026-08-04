@@ -1,4 +1,4 @@
-import { AnimationMixer, LoopRepeat, Object3D, Scene } from 'three';
+import { AnimationMixer, LoopRepeat, Mesh, Object3D, Scene } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 /**
@@ -17,6 +17,14 @@ export function loadAnimatedModel(
         url,
         (gltf) => {
             const root = gltf.scene;
+
+            root.traverse((child) => {
+                if (child instanceof Mesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
             scene.add(root);
 
             if (gltf.animations.length > 0) {

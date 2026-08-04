@@ -4,12 +4,15 @@ import { useEffect, useRef } from 'react';
 import {
     AmbientLight,
     AnimationMixer,
+    BasicShadowMap,
     Box3,
+    CanvasTexture,
     DirectionalLight,
     Fog,
     HemisphereLight,
     Mesh,
     MeshBasicMaterial,
+    MeshStandardMaterial,
     Object3D,
     PerspectiveCamera,
     Raycaster,
@@ -17,11 +20,11 @@ import {
     SRGBColorSpace,
     Vector2,
     Vector3,
-    VideoTexture,
     WebGLRenderer,
 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { cameraPresets, type CameraPreset } from './cameraPresets';
+import createVideoTexture from './createVideoTexture';
 import { createGlitchComposer, GLITCH_LAYER } from './glitchComposer';
 import { loadAnimatedModel } from './loadModels';
 import { createTrains, initTrain, updateTrain } from './trainAnimation';
@@ -41,13 +44,23 @@ export default function ModelBackground({
     const pointerRef = useRef({ x: 0, y: 0 });
     const mixersRef = useRef<AnimationMixer[]>([]);
 
+    const canvas2 = document.createElement('canvas');
+    canvas2.width = 300;
+    canvas2.height = 1000;
+
+    const PADDING_X = 0;
+    const PADDING_Y = 100;
+    const ctx2 = canvas2.getContext('2d')!;
+
+    const BORDER_COLOR = '#000000';
+
     useEffect(() => {
         if (!containerRef.current) return;
 
         const container = containerRef.current;
 
         const scene = new Scene();
-        scene.fog = new Fog(0x000000, 12, 80);
+        scene.fog = new Fog(0x0a0c0f, 12, 80);
 
         const camera = new PerspectiveCamera(
             50,
@@ -57,7 +70,6 @@ export default function ModelBackground({
         );
 
         cameraRef.current = camera;
-
         const initialPreset = cameraPresets[preset];
         basePositionRef.current.set(...initialPreset.position);
         camera.position.copy(basePositionRef.current);
@@ -73,6 +85,10 @@ export default function ModelBackground({
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         renderer.setClearColor(0x000000, 1);
 
+        // Hard shadows (unfiltered = crisp, aliased edges).
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = BasicShadowMap;
+
         container.appendChild(renderer.domElement);
 
         // Selective glitch + outline composer, scoped to codie2 (layer 1).
@@ -82,14 +98,32 @@ export default function ModelBackground({
             outlinePass,
         } = createGlitchComposer(renderer, scene, camera);
 
-        const ambientLight = new AmbientLight(0xffffff, 1.2);
+        // Fill lights at 0 so shadowed surfaces receive no light → pure black
+        // shadows. (Raise these slightly to lift the darkness if it's too much.)
+        const ambientLight = new AmbientLight(0xffffff, 0);
         scene.add(ambientLight);
 
-        const directionalLight = new DirectionalLight(0xfffcf5, 2);
-        directionalLight.position.set(8, 6, -3);
+        const directionalLight = new DirectionalLight(0xfffcf5, 3);
+        directionalLight.position.set(8, 4, -2);
+        directionalLight.castShadow = true;
+        directionalLight.shadow.mapSize.set(2048, 2048);
+        // normalBias fixes self-shadow "acne" stripes (offsets the lookup along
+        // the surface normal); tighter frustum = more depth precision too.
+        directionalLight.shadow.bias = -0.0002;
+        directionalLight.shadow.normalBias = 0.08;
+        {
+            const cam = directionalLight.shadow.camera;
+            cam.near = 0.5;
+            cam.far = 120;
+            cam.left = -25;
+            cam.right = 25;
+            cam.top = 25;
+            cam.bottom = -25;
+            cam.updateProjectionMatrix();
+        }
         scene.add(directionalLight);
 
-        const hemisphereLight = new HemisphereLight(0x8899aa, 0x111111, 1);
+        const hemisphereLight = new HemisphereLight(0x8899aa, 0x111111, 0);
         scene.add(hemisphereLight);
 
         // Lights must also touch the glitch layer so codie2 stays lit there.
@@ -104,28 +138,55 @@ export default function ModelBackground({
 
         const { trainLeft, trainRight } = createTrains();
 
-        const video = document.createElement('video');
-        video.src = '/videos/trailerppif.webm';
-        video.loop = true;
-        video.muted = true;
-        video.playsInline = true;
-        video.autoplay = true;
-        video.style.display = 'none';
-        document.body.appendChild(video);
-        video.play().catch((err) => {
-            console.warn('[tv] video autoplay blocked:', err);
-        });
-        video.addEventListener('error', () =>
-            console.error('[tv] video failed to load:', video.error),
+        const { video: video1, texture: videoTexture } = createVideoTexture(
+            '/videos/trailerppif.webm',
+        );
+        const { video: video2, texture: videoTexture2 } = createVideoTexture(
+            '/videos/welcome.webm',
         );
 
-        const videoTexture = new VideoTexture(video);
-        videoTexture.colorSpace = SRGBColorSpace;
-        videoTexture.center.set(0.5, 0.5);
-        videoTexture.rotation = Math.PI / 2;
-        videoTexture.repeat.set(5, 5);
-        videoTexture.offset.set(0.6, 0);
+        function drawScreen1Frame() {
+            ctx2.save();
 
+            ctx2.translate(canvas2.width / 2, canvas2.height / 2);
+            ctx2.rotate(Math.PI / 2);
+            ctx2.translate(-canvas2.height / 2, -canvas2.width / 2);
+
+            ctx2.translate(canvas2.height, 0);
+            ctx2.scale(-1, 1);
+
+            ctx2.fillStyle = BORDER_COLOR;
+            ctx2.fillRect(0, 0, canvas2.height, canvas2.width);
+
+            const vw = video2.videoWidth;
+            const vh = video2.videoHeight;
+            if (!vw || !vh) {
+                ctx2.restore();
+                return;
+            }
+
+            const maxW = canvas2.height - PADDING_X * 2;
+            const maxH = canvas2.width - PADDING_Y * 2;
+            if (maxW <= 0 || maxH <= 0) {
+                ctx2.restore();
+                return;
+            }
+
+            const scale = Math.min(maxW / vw, maxH / vh);
+            const drawW = vw * scale;
+            const drawH = vh * scale;
+            const dx = PADDING_X;
+            const dy = (canvas2.width - drawH) / 2;
+            ctx2.drawImage(video2, dx, dy, drawW, drawH);
+
+            ctx2.restore();
+        }
+
+        const canvasTexture2 = new CanvasTexture(canvas2);
+        canvasTexture2.colorSpace = SRGBColorSpace;
+        canvasTexture2.flipY = false; // match your other textures' setting, adjust if it looks upside down
+        canvasTexture2.center.set(0.5, 0.5);
+        // canvasTexture2.rotation = Math.PI / 2;
         // Background characters (looping animations, no special handling).
         loadAnimatedModel(
             loader,
@@ -168,6 +229,56 @@ export default function ModelBackground({
             (root) => initTrain(trainRight, root),
         );
 
+        loader.load(
+            '/models/twoscreens.glb',
+            (gltf) => {
+                const ts = gltf.scene;
+
+                videoTexture2.repeat.set(15, 15);
+                videoTexture2.offset.set(0, 0);
+                videoTexture2.center.set(0.5, 0.5);
+                videoTexture2.repeat.x = -1;
+                videoTexture2.repeat.y = -1;
+                videoTexture2.rotation = Math.PI / 2;
+
+                let applied = false;
+                ts.traverse((child) => {
+                    if (child instanceof Mesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        if (
+                            !Array.isArray(child.material) &&
+                            child.material.name === 'screen1'
+                        ) {
+                            child.material = new MeshBasicMaterial({
+                                map: canvasTexture2,
+                                toneMapped: false,
+                            });
+                            applied = true;
+                        } else if (
+                            !Array.isArray(child.material) &&
+                            child.material.name === 'screen2'
+                        ) {
+                            child.material = new MeshBasicMaterial({
+                                color: 0x000000,
+                                toneMapped: false,
+                            });
+                            applied = true;
+                        }
+                    }
+                });
+
+                if (!applied) {
+                    console.warn('[tv] no material named "Screen" found');
+                }
+
+                scene.add(ts);
+            },
+            undefined,
+            (err) => console.error('[tv] failed to load /models/tv.glb', err),
+        );
+
         // codie2: the glitch/outline target — put it on the glitch layer and
         // remember it for hover/click raycasting.
         loadAnimatedModel(
@@ -189,11 +300,14 @@ export default function ModelBackground({
 
                 let applied = false;
                 tv.traverse((child) => {
-                    if (
-                        child instanceof Mesh &&
-                        !Array.isArray(child.material)
-                    ) {
-                        if (child.material.name === 'Screen') {
+                    if (child instanceof Mesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+
+                        if (
+                            !Array.isArray(child.material) &&
+                            child.material.name === 'Screen'
+                        ) {
                             child.material = new MeshBasicMaterial({
                                 map: videoTexture,
                                 toneMapped: false,
@@ -207,25 +321,7 @@ export default function ModelBackground({
                     console.warn('[tv] no material named "Screen" found');
                 }
 
-                const START = -6.50313;
-                const END = -65.3231;
-                const COUNT = 2;
-                const AXIS: 'x' | 'y' | 'z' = 'x';
-
                 scene.add(tv);
-                const step = (END - START) / (COUNT - 1);
-                for (let i = 1; i < COUNT; i++) {
-                    const clone = tv.clone();
-                    clone.position[AXIS] += i * step;
-                    scene.add(clone);
-                }
-
-                const box = new Box3().setFromObject(tv);
-                console.log('[tv] loaded ✓', {
-                    screenApplied: applied,
-                    center: box.getCenter(new Vector3()),
-                    size: box.getSize(new Vector3()),
-                });
             },
             undefined,
             (err) => console.error('[tv] failed to load /models/tv.glb', err),
@@ -238,20 +334,68 @@ export default function ModelBackground({
             model.rotation.set(0, 0, 0);
             model.scale.set(1, 1, 1);
 
+            // Names the ceiling might use — it must NOT cast, or it would block
+            // the overhead light and shadow the whole interior.
+            const CEILING_MATCH = /ceiling|roof|langit|atap|plafon|wall|/i;
+            // The dark back wall — set this to its real name from the console
+            // table. It gets self-lit (emissive) so it isn't pure black.
+            const WALL_MATCH = /wall|dinding|tembok|tracks/i;
+            const WALL_EMISSIVE = 0.5; // 0..1 self-light strength
+            const bgMeshes: {
+                name: string;
+                material: string;
+                casts: boolean;
+            }[] = [];
+
             model.traverse((child) => {
                 if (child instanceof Mesh) {
                     const materials = Array.isArray(child.material)
                         ? child.material
                         : [child.material];
+                    const matName = materials.map((m) => m.name).join(',');
+
+                    const isCeiling =
+                        CEILING_MATCH.test(child.name) ||
+                        CEILING_MATCH.test(matName);
+                    const isWall =
+                        WALL_MATCH.test(child.name) || WALL_MATCH.test(matName);
+
+                    child.castShadow = !isCeiling;
+                    child.receiveShadow = true;
+
+                    bgMeshes.push({
+                        name: child.name,
+                        material: matName,
+                        casts: child.castShadow,
+                    });
 
                     materials.forEach((material) => {
                         material.transparent = false;
                         material.opacity = 1;
                         material.depthWrite = true;
+
+                        // Self-light the dark wall so it isn't pure black, while
+                        // keeping its texture (route the map through emissiveMap).
+                        if (
+                            isWall &&
+                            material instanceof MeshStandardMaterial
+                        ) {
+                            if (material.map) {
+                                material.emissiveMap = material.map;
+                                material.emissive.setScalar(1); // white → true colors
+                            } else {
+                                material.emissive.copy(material.color);
+                            }
+                            material.emissiveIntensity = WALL_EMISSIVE;
+                        }
+
                         material.needsUpdate = true;
                     });
                 }
             });
+
+            // Look for ceiling rows here and check `casts` — it must be false.
+            console.table(bgMeshes);
 
             scene.add(model);
         });
@@ -383,11 +527,29 @@ export default function ModelBackground({
         let animationFrameId = 0;
 
         let lastTime = performance.now();
+
+        // When the tab is hidden, rAF pauses but <audio> keeps playing — so the
+        // distance fade never runs and the horn gets stuck loud. Pause it while
+        // hidden, and reset the clock on return so nothing teleports.
+        const handleVisibility = () => {
+            if (document.hidden) {
+                trainLeft.audio.pause();
+                trainRight.audio.pause();
+            } else {
+                lastTime = performance.now();
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibility);
+
         const animate = () => {
             animationFrameId = requestAnimationFrame(animate);
 
+            drawScreen1Frame();
+            canvasTexture2.needsUpdate = true;
+
             const now = performance.now();
-            const delta = (now - lastTime) / 1000;
+            // Clamp so a long-hidden tab doesn't jump everything on resume.
+            const delta = Math.min((now - lastTime) / 1000, 0.1);
             lastTime = now;
 
             mixersRef.current.forEach((m) => m.update(delta));
@@ -444,14 +606,16 @@ export default function ModelBackground({
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('pointermove', handlePointerMove);
             window.removeEventListener('click', handleClick);
+            document.removeEventListener('visibilitychange', handleVisibility);
             unsubscribeNavigate();
+            canvasTexture2.dispose();
             document.body.style.cursor = '';
 
             renderer.dispose();
             glitchComposer.dispose();
 
-            video.pause();
-            video.remove();
+            video1.pause();
+            video1.remove();
 
             trainLeft.audio.pause();
             trainRight.audio.pause();

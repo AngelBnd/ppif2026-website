@@ -1,3 +1,4 @@
+import BlackPartTopSVG from '@/../../public/svgs/BlackPartTopSVG.svg';
 import { Link, usePage } from '@inertiajs/react';
 import gsap from 'gsap';
 import {
@@ -12,6 +13,7 @@ import ArchiveButton from '../../assets/icons/ArchiveButton.svg?react';
 import ContactButton from '../../assets/icons/ContactButtonNBSVG.svg?react';
 import HomeButton from '../../assets/icons/HomeButtonNBSVG.svg?react';
 import MusicButton from '../../assets/icons/MusicButton.svg?react';
+import MusicButton2 from '../../assets/icons/MusicButton2.svg?react';
 import TimelineButton from '../../assets/icons/TimelineButtonNBSVG.svg?react';
 import { useMusic } from './MusicProvider';
 
@@ -174,7 +176,12 @@ export default function Navbar() {
             //  ${isGamePage ? 'pointer-events-none z-[0] opacity-0' : 'z-50'}
             className={`fixed -top-4 left-0 w-full ${isGamePage ? 'pointer-events-none z-[0] opacity-0' : 'z-[50]'}`}
         >
-            <div className="absolute -top-3 left-0 w-full">
+            <img
+                src={BlackPartTopSVG}
+                className="absolute -top-3 h-auto w-[100vw]"
+            />
+
+            <div className="absolu left-0 top-0 w-full">
                 <div className="navbar-video-mask bg-[#0A0C0F]">
                     <video
                         autoPlay
@@ -261,13 +268,18 @@ export default function Navbar() {
                             className={[
                                 'origin-bottom transition-transform duration-200 ease-out will-change-transform',
                                 'hover:rotate-3 hover:scale-110 active:scale-95',
+                                ,
                             ].join(' ')}
                         >
                             <span
                                 ref={musicIconRef}
                                 className="inline-block origin-bottom will-change-transform"
                             >
-                                <MusicButton className="w-16" />
+                                {isPlaying ? (
+                                    <MusicButton className="w-16" />
+                                ) : (
+                                    <MusicButton2 className="w-16" />
+                                )}
                             </span>
                         </button>
                     </div>
