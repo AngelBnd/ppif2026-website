@@ -909,6 +909,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                 className="flex min-h-screen items-center justify-center overflow-hidden text-white"
                 style={{ fontFamily: "'Arsenal', sans-serif" }}
             >
+                <div className="absolute z-[-10] h-screen w-screen bg-[#0A0C0F] opacity-30" />
                 {import.meta.env.DEV && (
                     <button
                         onClick={() => {

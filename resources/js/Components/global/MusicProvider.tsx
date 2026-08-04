@@ -53,7 +53,7 @@ export default function MusicProvider({ children }: MusicProviderProps) {
                     if (el) el.volume = 0.015;
                 }}
                 loop
-                preload="auto"
+                preload="none"
                 src="/audio/backsound.mp3"
             />
 

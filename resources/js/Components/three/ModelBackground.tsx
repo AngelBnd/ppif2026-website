@@ -22,12 +22,13 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { cameraPresets, type CameraPreset } from './cameraPresets';
 import createVideoTexture from './createVideoTexture';
 import { createGlitchComposer, GLITCH_LAYER } from './glitchComposer';
 import { loadAnimatedModel } from './loadModels';
-import { createTrains, initTrain, updateTrain } from './trainAnimation';
+import { createTrains, initTrain, parkTrain, updateTrain } from './trainAnimation';
 
 type ModelBackgroundProps = {
     preset?: CameraPreset;
@@ -131,7 +132,12 @@ export default function ModelBackground({
             light.layers.enable(GLITCH_LAYER),
         );
 
+        // Models are Draco-compressed — attach the decoder (served from /draco).
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('/draco/');
+
         const loader = new GLTFLoader();
+        loader.setDRACOLoader(dracoLoader);
 
         // Set once codie2.glb loads; the click handler raycasts against it.
         let codie2Object: Object3D | null = null;
@@ -482,7 +488,7 @@ export default function ModelBackground({
                     z: center.z,
                     duration: 0.85,
                     ease: 'power2.in',
-                    onComplete: () => router.visit('/games'),
+                    onComplete: () => router.visit('/games/story'),
                 });
             }
         };
@@ -554,8 +560,15 @@ export default function ModelBackground({
 
             mixersRef.current.forEach((m) => m.update(delta));
 
-            updateTrain(trainLeft, camera, now, delta);
-            updateTrain(trainRight, camera, now, delta);
+            // Trains only run on /home, /about, /contact.
+            const path = window.location.pathname;
+            if (path === '/home' || path === '/about' || path === '/contact') {
+                updateTrain(trainLeft, camera, now, delta);
+                updateTrain(trainRight, camera, now, delta);
+            } else {
+                parkTrain(trainLeft);
+                parkTrain(trainRight);
+            }
 
             const onHome = presetRef.current === 'home' && !isZooming;
             const targetX = onHome ? pointerRef.current.x * TILT_X : 0;
@@ -613,6 +626,7 @@ export default function ModelBackground({
 
             renderer.dispose();
             glitchComposer.dispose();
+            dracoLoader.dispose();
 
             video1.pause();
             video1.remove();

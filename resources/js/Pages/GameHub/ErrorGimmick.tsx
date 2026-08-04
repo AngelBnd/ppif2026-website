@@ -1,24 +1,26 @@
-import { useEffect, useState } from 'react';
 import Button from '@/Components/global/Button';
-import StartR from '../../assets/games/finalPage/start.svg';
 import { getRevealedName } from '@/services/gameApi';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import StartR from '../../assets/games/finalPage/start.svg';
 
-import backgroundFinal from '../../assets/games/finalPage/finalPage.webp';
 import logo from '../../assets/games/finalPage/eror.webp';
+import backgroundFinal from '../../assets/games/finalPage/finalPage.webp';
 import starLogo from '../../assets/games/finalPage/starEror.webp';
 
 // aset rantai pojok + garis sobekan diagonal
-import cornerTL from '../../assets/games/finalPage/chain-corner-tl.webp';
-import cornerTR from '../../assets/games/finalPage/chain-corner-tr.webp';
 import cornerBL from '../../assets/games/finalPage/chain-corner-bl.webp';
 import cornerBR from '../../assets/games/finalPage/chain-corner-br.webp';
-import edgeStripeTop from '../../assets/games/finalPage/edge-stripe-top.webp';
+import cornerTL from '../../assets/games/finalPage/chain-corner-tl.webp';
+import cornerTR from '../../assets/games/finalPage/chain-corner-tr.webp';
 import edgeStripeBottom from '../../assets/games/finalPage/edge-stripe-bottom.webp';
+import edgeStripeTop from '../../assets/games/finalPage/edge-stripe-top.webp';
 
 // aset judul "DATA CorruPTED / RECOVERY REQUIRED"
-import dataCard from '../../assets/games/finalPage/Group.webp';
 import corruptedText from '../../assets/games/finalPage/corrupted.webp';
+import dataCard from '../../assets/games/finalPage/Group.webp';
 import recoveryRequiredText from '../../assets/games/finalPage/RECOVERY_REQUIRED.webp';
+
+import gsap from 'gsap';
 
 type Props = {
     onJoined: () => void;
@@ -32,7 +34,7 @@ const FULLSCREEN_SHARD_COUNT = 14;
 // - EDGE_AT    : edge-stripe atas & bawah muncul di posisi
 // - CHAIN_AT   : 4 rantai pojok meluncur masuk dari luar layar
 // - TEXT_AT    : DATA / CorruPTED / RECOVERY REQUIRED jatuh ke posisi
-const GLITCH_AT = 3000;
+const GLITCH_AT = 2000;
 const EDGE_AT = GLITCH_AT + 3000;
 const CHAIN_AT = EDGE_AT + 1000;
 const TEXT_AT = CHAIN_AT + 1400;
@@ -58,12 +60,19 @@ type GlitchImageProps = {
 };
 
 /** Satu gambar glitch: 16 salinan shard + layer merah + layer dasar + noise, semua meloncat-loncat di dalam box yang teleport. */
-function GlitchImage({ src, alt = '', width, height, routeClass = '', shardSize }: GlitchImageProps) {
+function GlitchImage({
+    src,
+    alt = '',
+    width,
+    height,
+    routeClass = '',
+    shardSize,
+}: GlitchImageProps) {
     return (
         <section className="flex items-center justify-center gap-6">
             <FullscreenShards />
             <div
-                className={`logo-position-jump ${routeClass} absolute -rotate-9 overflow-hidden`}
+                className={`logo-position-jump ${routeClass} -rotate-9 absolute overflow-hidden`}
                 style={{ width, height }}
             >
                 {Array.from({ length: SHARD_COUNT }, (_, i) => (
@@ -73,11 +82,24 @@ function GlitchImage({ src, alt = '', width, height, routeClass = '', shardSize 
                         alt=""
                         aria-hidden="true"
                         className={`glitch-layer b-glitch-shard b-shard-${i + 1} object-contain ${shardSize ? '' : 'h-full w-full'}`}
-                        style={shardSize ? { width: shardSize, height: shardSize } : undefined}
+                        style={
+                            shardSize
+                                ? { width: shardSize, height: shardSize }
+                                : undefined
+                        }
                     />
                 ))}
-                <img src={src} alt="" aria-hidden="true" className="glitch-layer b-glitch-r h-full w-full object-contain" />
-                <img src={src} alt={alt} className="glitch-layer b-glitch-base h-full w-full object-contain" />
+                <img
+                    src={src}
+                    alt=""
+                    aria-hidden="true"
+                    className="glitch-layer b-glitch-r h-full w-full object-contain"
+                />
+                <img
+                    src={src}
+                    alt={alt}
+                    className="glitch-layer b-glitch-base h-full w-full object-contain"
+                />
                 <div className="b-glitch-noise absolute inset-0" />
             </div>
         </section>
@@ -159,11 +181,17 @@ export default function ErrorGimmick({ onJoined }: Props) {
     const [showEdges, setShowEdges] = useState(false);
     const [showChains, setShowChains] = useState(false);
     const [showText, setShowText] = useState(false);
+    const mainRef = useRef(null);
 
     useEffect(() => {
         getRevealedName()
             .then((name) => setTargetWord(name.toUpperCase()))
             .catch(() => setTargetWord(''));
+    }, []);
+
+    useLayoutEffect(() => {
+        gsap.set(mainRef.current, { opacity: 0 });
+        gsap.to(mainRef.current, { opacity: 1, duration: 1.4 });
     }, []);
 
     // Timeline staged reveal: edge -> rantai -> judul (DATA / CorruPTED / RECOVERY REQUIRED)
@@ -182,6 +210,7 @@ export default function ErrorGimmick({ onJoined }: Props) {
 
     return (
         <main
+            ref={mainRef}
             className="relative flex min-h-screen items-end justify-end overflow-hidden bg-black text-white"
             style={{
                 backgroundImage: `url(${backgroundFinal})`,
@@ -189,11 +218,12 @@ export default function ErrorGimmick({ onJoined }: Props) {
                 backgroundPosition: 'center',
             }}
         >
-            <Button 
-                onClick={onJoined} 
-                Icon={StartR} 
-                className="absolute w-[14%] z-[10000] right-[20px] bottom-[20px]" 
-                iconClassName="w-full h-full block" />
+            <Button
+                onClick={onJoined}
+                Icon={StartR}
+                className="absolute bottom-[20px] right-[20px] z-[10000] w-[14%]"
+                iconClassName="w-full h-full block"
+            />
 
             {/* logo & starLogo: glitch/error baru nyala abis GLITCH_AT (delay ~3 detik dulu) */}
             {showGlitch && (
@@ -223,7 +253,9 @@ export default function ErrorGimmick({ onJoined }: Props) {
                 alt=""
                 aria-hidden="true"
                 className={`pointer-events-none absolute right-0 top-0 z-40 w-[70%] transition-all duration-700 ease-out ${
-                    showEdges ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+                    showEdges
+                        ? 'translate-y-0 opacity-100'
+                        : '-translate-y-full opacity-0'
                 }`}
             />
             <img
@@ -231,7 +263,9 @@ export default function ErrorGimmick({ onJoined }: Props) {
                 alt=""
                 aria-hidden="true"
                 className={`pointer-events-none absolute bottom-0 left-0 z-40 w-[70%] transition-all delay-[100ms] duration-700 ease-out ${
-                    showEdges ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+                    showEdges
+                        ? 'translate-y-0 opacity-100'
+                        : '-translate-y-full opacity-0'
                 }`}
             />
 
@@ -243,17 +277,25 @@ export default function ErrorGimmick({ onJoined }: Props) {
                     alt=""
                     aria-hidden="true"
                     className={`pointer-events-none absolute z-50 ${c.sizeClass} ${c.positionClass} ${c.originClass} ${c.flipClass} transition-all ${c.delayClass} duration-700 ease-out ${
-                        showChains ? `${c.revealedTranslateClass} opacity-100` : `${c.hiddenTranslateClass} opacity-0`
+                        showChains
+                            ? `${c.revealedTranslateClass} opacity-100`
+                            : `${c.hiddenTranslateClass} opacity-0`
                     }`}
                 />
             ))}
 
             {/* judul: DATA / CorruPTED / RECOVERY REQUIRED — jatuh dari arah user ke posisi di TEXT_AT */}
             {/* Posisi (left/top/w) masih kira-kira ngikutin referensi JPEG — tinggal edit angkanya di sini kalau belum pas */}
+            {showText ? (
+                <div className="absolute inset-0 z-[10] bg-[#0A0C0F] opacity-70" />
+            ) : (
+                <></>
+            )}
+
             <img
                 src={dataCard}
                 alt="DATA"
-                className={`pointer-events-none absolute left-[13%] top-[13%] z-[60] w-[37%] transition-all delay-[0ms] duration-700 ease-out -rotate-2 ${
+                className={`pointer-events-none absolute left-[13%] top-[13%] z-[60] w-[37%] -rotate-2 transition-all delay-[0ms] duration-700 ease-out ${
                     showText ? 'scale-100 opacity-100' : 'scale-[2.6] opacity-0'
                 }`}
             />

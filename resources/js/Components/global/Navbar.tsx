@@ -174,7 +174,7 @@ export default function Navbar() {
     return (
         <nav
             //  ${isGamePage ? 'pointer-events-none z-[0] opacity-0' : 'z-50'}
-            className={`fixed -top-4 left-0 w-full ${isGamePage ? 'pointer-events-none z-[0] opacity-0' : 'z-[50]'}`}
+            className={`fixed -top-4 left-0 w-full ${isGamePage ? 'pointer-events-none z-[0]' : 'z-[50]'}`}
         >
             <img
                 src={BlackPartTopSVG}
@@ -190,7 +190,10 @@ export default function Navbar() {
                         playsInline
                         className="h-full w-full object-cover opacity-5"
                     >
-                        <source src="/videos/StarsLoop.mp4" type="video/mp4" />
+                        <source
+                            src="/videos/StarsLoop.webm"
+                            type="video/webm"
+                        />
                     </video>
                 </div>
             </div>

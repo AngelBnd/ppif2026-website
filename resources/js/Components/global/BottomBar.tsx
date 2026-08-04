@@ -7,7 +7,7 @@ export default function BottomFrame() {
 
     return (
         <div
-            className={`pointer-events-none fixed -bottom-6 left-0 block w-full overflow-hidden ${isGamePage ? 'pointer-events-none z-[0]' : ''}`}
+            className={`pointer-events-none fixed -bottom-6 left-0 block w-full overflow-hidden ${isGamePage ? 'pointer-events-none z-[-1]' : 'z-[0]'}`}
         >
             <img
                 src={BlackPartBottom}
@@ -21,7 +21,7 @@ export default function BottomFrame() {
                     playsInline
                     className="block w-full object-cover opacity-5"
                 >
-                    <source src="/videos/StarsLoop.mp4" type="video/mp4" />
+                    <source src="/videos/StarsLoop.webm" type="video/webm" />
                 </video>
             </div>
         </div>

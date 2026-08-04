@@ -13,7 +13,7 @@ import titleID from '../../../assets/games/reconstructIdentity/titleID.webp';
 import type { GamePageChildProps } from '../GamePage';
 
 const INPUT_CLASSES =
-    "relative z-10 h-full w-full appearance-none border-0 bg-transparent pt-3 text-center text-9xl text-white caret-white font-noto " +
+    'relative z-10 h-full w-full appearance-none border-0 bg-transparent pt-3 text-center text-9xl text-white caret-white font-noto ' +
     'font-bold outline-none ring-0 shadow-none focus:outline-none focus:ring-0 ' +
     'focus:border-0 focus-visible:outline-none focus-visible:ring-0 active:outline-none [-webkit-tap-highlight-color:transparent]';
 
@@ -239,7 +239,9 @@ export default function ReconstructIdentityPage({
     };
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-[#0A0C0F] text-white">
+        <main className="flex min-h-screen items-center justify-center text-white">
+            {' '}
+            <div className="absolute z-[-10] h-screen w-screen bg-[#0A0C0F] opacity-30" />
             <section className="relative flex flex-col items-center justify-center -space-y-40 text-center">
                 <div
                     className={`z-10 flex items-center justify-center transition-all duration-700 ease-out ${
@@ -274,7 +276,8 @@ export default function ReconstructIdentityPage({
                             className="flex -rotate-6 items-center justify-center"
                         >
                             {letters.map((letter, index) => {
-                                const revealed = revealedIndices.includes(index);
+                                const revealed =
+                                    revealedIndices.includes(index);
                                 return (
                                     <div
                                         key={index}
@@ -330,7 +333,6 @@ export default function ReconstructIdentityPage({
                     </div>
                 </div>
             </section>
-
             <div className="pointer-events-none fixed inset-x-0 bottom-24 z-50 flex justify-center">
                 <p
                     className={`font-noto text-2xl font-bold text-red-500 transition-opacity duration-200 ${
