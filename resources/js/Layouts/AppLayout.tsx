@@ -1,6 +1,7 @@
 import BottomFrame from '@/Components/global/BottomBar';
 import Navbar from '@/Components/global/Navbar';
 import OrientationLayout from '@/Components/global/OrientationLayout';
+import PageTransition from '@/Components/global/PageTransition';
 import { Suspense, lazy, type ReactNode } from 'react';
 
 // Lazy so three.js + GLTFLoader split into their own chunk instead of riding
@@ -32,11 +33,12 @@ export default function AppLayout({
                 )}
 
                 <div className="relative z-10">
+                    <PageTransition />
                     <Navbar />
+                    <BottomFrame />
 
                     <main className="min-h-screen">{children}</main>
                 </div>
-                <BottomFrame />
             </div>
         </OrientationLayout>
     );

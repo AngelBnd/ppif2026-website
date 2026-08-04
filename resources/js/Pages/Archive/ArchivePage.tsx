@@ -1,18 +1,75 @@
 ﻿// @ts-ignore
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
+import gsap from 'gsap';
+import { useLayoutEffect, useRef } from 'react';
 
 // assets
-import ArchiveShape from '@/assets/archive/ArchiveShape.svg?react';
+import ArchiveTitle from '@/assets/archive/ArchiveTitle.svg';
+import BGStreakArchive1 from '@/assets/archive/BGStreakArchive1.svg';
+import BGStreakArchive2 from '@/assets/archive/BGStreakArchive2.svg';
 import BriefingDayButton from '@/assets/archive/BriefingDayButton.svg?react';
 import DDayButton from '@/assets/archive/DDayButton.svg?react';
 import GalleryScroll from '@/Components/about/GalleryScroll';
-import ArchiveBackground from './ArchiveBackground';
+import GlitchShape from '@/Components/global/GlitchShape';
 
 import ArchiveWaitInfo from '@/Pages/Archive/ArchiveWaitInfo';
 
 export default function ArchivePage() {
     const [showOverlay, setShowOverlay] = useState(true);;
+    const shapeRef = useRef<HTMLDivElement>(null);
+    const titleRef = useRef<HTMLImageElement>(null);
+    const streak1Ref = useRef<HTMLImageElement>(null);
+    const streak2Ref = useRef<HTMLImageElement>(null);
+    const buttonsRef = useRef<HTMLDivElement>(null);
+
+    useLayoutEffect(() => {
+        const shape = shapeRef.current;
+        const title = titleRef.current;
+        const streak1 = streak1Ref.current;
+        const streak2 = streak2Ref.current;
+        if (!shape || !title || !streak1 || !streak2) return;
+
+        const LR = 'inset(0% 100% 0% 0%)';
+        const RL = 'inset(0% 0% 0% 100%)';
+        const open = () => ({
+            clipPath: 'inset(0% 0% 0% 0%)',
+            duration: 0.5,
+            ease: 'power3.out',
+        });
+
+        gsap.set(shape, { clipPath: LR });
+        gsap.set(title, { clipPath: LR });
+        gsap.set(streak1, { clipPath: RL });
+        gsap.set(streak2, { clipPath: LR });
+
+        const tl = gsap.timeline();
+        tl.to(shape, open())
+            .addLabel('afterShape')
+            .to(title, open(), '<+=0.4')
+            .to(streak1, open(), 'afterShape')
+            .to(streak2, open());
+
+        const buttons = buttonsRef.current;
+        if (buttons) {
+            tl.from(
+                buttons.children,
+                {
+                    xPercent: -20,
+                    rotation: -14,
+                    autoAlpha: 0,
+                    duration: 0.4,
+                    ease: 'back.out(1.6)',
+                    stagger: 0.14,
+                },
+                'afterShape',
+            );
+        }
+
+        return () => {
+            tl.kill();
+        };
+    }, []);
 
     const dummyPhotos = [
         'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=400',
@@ -103,7 +160,7 @@ export default function ArchivePage() {
                 className="relative flex min-h-screen select-none overflow-hidden bg-transparent text-white"
                 style={{ fontFamily: "'Arsenal', sans-serif" }}
             >
-                <ArchiveBackground />
+                {/* <ArchiveBackground /> */}
 
                 {/* AUTOMATED CAROUSEL FOTO (Slide In dari Kanan Atas) */}
                 {/* <div className="perspective-wrapper animate-entrance-right absolute right-[0px] top-[-20px] z-0 ml-auto flex h-screen w-1/2 items-center justify-center overflow-hidden px-0 py-0 opacity-0">
@@ -125,6 +182,16 @@ export default function ArchivePage() {
                         </div>
                     </div>
                 </div> */}
+                <img
+                    ref={streak1Ref}
+                    className="absolute -right-[14%] top-[29.5%] z-0 h-auto w-[60%]"
+                    src={BGStreakArchive1}
+                />
+                <img
+                    ref={streak2Ref}
+                    className="absolute right-[15%] top-[1%] z-0 h-auto w-[31%]"
+                    src={BGStreakArchive2}
+                />
                 <div className="absolute right-12">
                     <GalleryScroll
                         images={dummyPhotos}
@@ -135,59 +202,68 @@ export default function ArchivePage() {
                 </div>
 
                 {/* SHAPE BACKGROUND (Slide In dari Kiri Bawah barengan dengan Menu) */}
-                <div className="z-5 animate-entrance-left pointer-events-none absolute -bottom-[18%] -left-[25%] flex h-[158vh] w-[135vw] items-end text-[#BF1E2E] opacity-0">
-                    <ArchiveShape className="h-full w-full object-contain" />
+                <div
+                    ref={shapeRef}
+                    className="z-5 pointer-events-none absolute -bottom-[53%] flex h-auto w-screen items-end text-[#BF1E2E]"
+                >
+                    <svg
+                        viewBox="0 0 1891.5 1503.5"
+                        className="h-full w-full object-contain"
+                        preserveAspectRatio="xMidYMid meet"
+                    >
+                        <path
+                            xmlns="http://www.w3.org/2000/svg"
+                            d="M1445.51 1033.81L1891.5 729V916.5L1671.5 1199H1670.62L1488.5 1390.5L0 832.5V0L1445.51 1033.81Z"
+                            fill="#BF1E2E"
+                        />
+                    </svg>
                 </div>
 
+                <img
+                    ref={titleRef}
+                    className="absolute left-[9%] top-[17%] z-40 h-auto w-[45%] mix-blend-difference"
+                    src={ArchiveTitle}
+                />
                 {/* STRUKTUR MENU UTAMA (Ikut Slide In dari Kiri Bawah) */}
-                <div className="z-15 animate-entrance-left pointer-events-none absolute left-0 top-0 flex h-full w-1/2 flex-col justify-between bg-transparent p-12 opacity-0 [animation-delay:100ms]">
+                <div className="z-15 pointer-events-none absolute left-0 top-0 flex h-full w-1/2 flex-col justify-between bg-transparent p-12">
                     {/* Navigasi & Headline */}
-                    <div className="pointer-events-auto absolute left-[10%] top-[22%] shrink-0 origin-left -rotate-[-20deg] transform items-start">
-                        <div className="items-starts flex shrink-0 flex-col">
-                            {/* Sub-route: D-Day */}
-                            <div className="group relative w-fit shrink-0">
-                                <Link
-                                    href="/archive/dday"
-                                    className="relative flex h-[auto] w-[400px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
-                                >
-                                    {/* HOVER EFFECT */}
-                                    <div
-                                        className="z-12 pointer-events-none absolute inset-0 scale-105 bg-[#189FD9] opacity-0 transition-all duration-200 group-hover:opacity-100"
-                                        style={{
-                                            clipPath:
-                                                'polygon(4% 0%, 100% 8%, 94% 92%, 0% 100%)',
-                                            mixBlendMode: 'screen',
-                                        }}
-                                    />
+                    <div className="pointer-events-auto absolute left-[32%] top-[33%] shrink-0 origin-left -rotate-[-24deg] transform items-start">
+                        <div className="[perspective:960px]">
+                            <div
+                                ref={buttonsRef}
+                                className="items-starts flex shrink-0 origin-center flex-col -space-y-4 [transform:rotateY(50deg)_scaleX(1.38)_scaleY(1.08)]"
+                            >
+                                {/* Sub-route: D-Day */}
+                                <div className="group relative w-fit shrink-0">
+                                    <Link
+                                        href="/archive/dday"
+                                        className="relative flex h-[auto] w-[360px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
+                                    >
+                                        <GlitchShape className="absolute inset-0 z-20 h-full w-full opacity-0 transition-opacity duration-200 group-hover:opacity-70" />
+                                        {/* HOVER EFFECT */}
 
-                                    {/* BUTTON ASSET */}
-                                    <div className="z-11 relative flex h-full w-full origin-center transform items-center justify-center transition-all duration-300 group-hover:scale-105">
-                                        <DDayButton className="h-full w-full object-contain" />
-                                    </div>
-                                </Link>
-                            </div>
+                                        {/* BUTTON ASSET */}
+                                        <div className="z-11 relative flex h-full w-full origin-center transform items-center justify-center transition-all duration-300 group-hover:rotate-3 group-hover:scale-105">
+                                            <DDayButton className="h-full w-full object-contain" />
+                                        </div>
+                                    </Link>
+                                </div>
 
-                            {/* Sub-route: BriefingDay */}
-                            <div className="group relative w-fit shrink-0">
-                                <Link
-                                    href="/archive/briefingday"
-                                    className="relative flex h-auto w-[700px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
-                                >
-                                    {/* HOVER EFFECT */}
-                                    <div
-                                        className="z-12 pointer-events-none absolute inset-0 scale-105 bg-[#189FD9] opacity-0 transition-all duration-200 group-hover:opacity-100"
-                                        style={{
-                                            clipPath:
-                                                'polygon(4% 0%, 100% 8%, 94% 92%, 0% 100%)',
-                                            mixBlendMode: 'screen',
-                                        }}
-                                    />
+                                {/* Sub-route: BriefingDay */}
+                                <div className="group relative w-fit shrink-0">
+                                    <Link
+                                        href="/archive/briefingday"
+                                        className="relative flex h-auto w-[650px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
+                                    >
+                                        {/* HOVER EFFECT */}
+                                        <GlitchShape className="absolute inset-0 !-left-20 z-20 h-full w-full opacity-0 transition-opacity duration-200 group-hover:opacity-70" />
 
-                                    {/* BUTTON ASSET */}
-                                    <div className="z-11 relative flex h-full w-full origin-center transform items-center justify-center transition-all duration-300 group-hover:scale-105">
-                                        <BriefingDayButton className="h-full w-full object-contain" />
-                                    </div>
-                                </Link>
+                                        {/* BUTTON ASSET */}
+                                        <div className="z-11 relative flex h-full w-full origin-center transform items-center justify-center transition-all duration-300 group-hover:rotate-3 group-hover:scale-105">
+                                            <BriefingDayButton className="h-full w-full object-contain" />
+                                        </div>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     </div>

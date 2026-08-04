@@ -12,10 +12,12 @@ import InstagramText from '../assets/contact/Instagram.svg';
 import PhoneBack3 from '../assets/contact/Phone.svg?react';
 import Vector1 from '../assets/contact/Vector1.svg';
 // import Vector2 from '../assets/contact/Vector2.svg';
+import Shape1 from '@/assets/games/dataTrace/svgs/Shape1.svg';
 import Fingers3 from '../assets/contact/Fingers3.svg';
 import Vector406 from '../assets/contact/Vector406.svg';
 import ArrowLeft from '../assets/contact/Vector8.svg';
 import WhatsAppText from '../assets/contact/WhatsApp.svg';
+import { DecorShape } from './Games/DataTrace/DataTracePage';
 
 const REF_WIDTH = 1920;
 const REF_HEIGHT = 1080;
@@ -27,6 +29,9 @@ export default function Contact() {
     const bubbleTextRef = useRef<HTMLDivElement>(null);
     const handPhoneRef = useRef<HTMLDivElement>(null);
     const phoneBodyRef = useRef<HTMLDivElement>(null);
+    const bubbleAjaRef = useRef<HTMLImageElement>(null);
+    const shape1Ref = useRef<HTMLDivElement>(null);
+    const streakRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -39,8 +44,10 @@ export default function Contact() {
                     '[data-arrow]',
                 );
             const bubble = bubbleRef.current;
+            const bubbleAja = bubbleAjaRef.current;
             const hand = handPhoneRef.current;
             const phone = phoneBodyRef.current;
+            const streak = streakRef.current;
             if (!icons || !bubble || !arrow || !hand || !phone) return;
 
             const startY = window.innerHeight + 120;
@@ -60,6 +67,23 @@ export default function Contact() {
             masterTl.set(icons, { opacity: 0, x: 80 });
             masterTl.set(arrow, { opacity: 0, x: 60 });
             masterTl.set(bubble, { scale: 0, opacity: 0 });
+            masterTl.set(streak, { clipPath: 'inset(0% 0% 100% 0%)' });
+
+            masterTl.fromTo(
+                bubbleAja,
+                {
+                    skewX: 3,
+                    skewY: 0,
+                },
+                {
+                    repeat: -1,
+                    yoyo: true,
+                    skewX: 4,
+                    skewY: 2,
+                    duration: 0.55,
+                    ease: 'linear',
+                },
+            );
 
             masterTl.to(
                 phone,
@@ -86,6 +110,8 @@ export default function Contact() {
             masterTl.to(
                 bubble,
                 {
+                    skewX: 3,
+                    skewY: 0,
                     scale: 1,
                     opacity: 1,
                     duration: 0.55,
@@ -106,6 +132,14 @@ export default function Contact() {
             );
 
             masterTl.to(
+                streak,
+                {
+                    clipPath: 'inset(0% 0% 0% 0%)',
+                },
+                0.88,
+            );
+
+            masterTl.to(
                 icons,
                 {
                     opacity: 1,
@@ -116,6 +150,14 @@ export default function Contact() {
                 },
                 0.88,
             );
+
+            gsap.to(shape1Ref.current, {
+                scale: 1.28,
+                duration: 1.8,
+                repeat: -1,
+                yoyo: true,
+                ease: 'sine.inOut',
+            });
         });
 
         return () => ctx.revert();
@@ -428,6 +470,7 @@ export default function Contact() {
                                         </div>
 
                                         <img
+                                            ref={streakRef}
                                             data-arrow
                                             src={ArrowLeft}
                                             className="absolute -left-4 -z-10 scale-x-[0.8] scale-y-[0.8]"
@@ -452,9 +495,17 @@ export default function Contact() {
                                 width: `calc(var(--vu)*72)`,
                             }}
                         >
+                            <DecorShape
+                                ref={shape1Ref}
+                                src={Shape1}
+                                alt=""
+                                className="left-16 top-4 z-50"
+                                imageClassName="-scale-y-100"
+                            />
                             <div className="relative h-auto w-full">
                                 {/* Bubble background */}
                                 <img
+                                    ref={bubbleAjaRef}
                                     src={BubbleChat}
                                     className="block h-auto w-full"
                                 />
@@ -464,8 +515,8 @@ export default function Contact() {
                                     ref={bubbleTextRef}
                                     className="absolute z-20 flex flex-col items-start -space-y-20"
                                     style={{
-                                        top: `calc(var(--vu)*22)`,
-                                        left: '49.5%',
+                                        top: `calc(var(--vu)*13)`,
+                                        left: '47.7%',
                                         transform: 'translateX(-55%)',
                                         width: `calc(var(--vu)*48)`,
                                     }}
