@@ -1,5 +1,6 @@
 ﻿// @ts-ignore
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 import gsap from 'gsap';
 import { useLayoutEffect, useRef } from 'react';
 
@@ -12,7 +13,10 @@ import DDayButton from '@/assets/archive/DDayButton.svg?react';
 import GalleryScroll from '@/Components/about/GalleryScroll';
 import GlitchShape from '@/Components/global/GlitchShape';
 
+import ArchiveWaitInfo from '@/Pages/Archive/ArchiveWaitInfo';
+
 export default function ArchivePage() {
+    const [showOverlay, setShowOverlay] = useState(true);;
     const shapeRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLImageElement>(null);
     const streak1Ref = useRef<HTMLImageElement>(null);
@@ -146,6 +150,11 @@ export default function ArchivePage() {
                     100% { transform: translateY(-50%); }
                 }
             `}</style>
+
+            {/* Render Overlay Info */}
+            {showOverlay && (
+                <ArchiveWaitInfo onClose={() => setShowOverlay(false)} />
+            )}
 
             <div
                 className="relative flex min-h-screen select-none overflow-hidden bg-transparent text-white"
