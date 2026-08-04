@@ -3,7 +3,6 @@
 import { useGSAP } from '@gsap/react';
 import { Head, Link } from '@inertiajs/react';
 import gsap from 'gsap';
-import ArchiveBackground from './ArchiveBackground';
 
 // assets
 import Button from '@/Components/global/Button';
@@ -478,7 +477,7 @@ export default function BriefingDayPage() {
                 className="relative flex min-h-screen select-none items-center justify-center overflow-hidden bg-transparent text-white"
                 style={{ fontFamily: "'Arsenal', sans-serif" }}
             >
-                <ArchiveBackground />
+                {/* <ArchiveBackground /> */}
 
                 {/* BACKGROUND SHAPE RED */}
                 <div
@@ -686,6 +685,7 @@ export default function BriefingDayPage() {
                 >
                     <Link
                         href="/archive"
+                        data-click-sound
                         className="group flex h-[80px] w-[180px] items-center justify-center overflow-visible transition-transform active:scale-95"
                         aria-label="Back to Archive"
                     >
@@ -704,6 +704,7 @@ export default function BriefingDayPage() {
                 {shouldRenderView && (
                     <div
                         ref={viewModalRef}
+                        data-click-sound
                         className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm transition-all"
                         onClick={handleCloseView}
                     >

@@ -1,5 +1,4 @@
 ﻿import knife from '@/assets/timeline/knife.svg';
-import titleTimeline from '@/assets/timeline/title-timeline.webp';
 import AboutDDayModal from '@/Components/timeline/AboutDDayModal';
 import DateSticker from '@/Components/timeline/DateSticker';
 import DDayPanel from '@/Components/timeline/DDayPanel';
@@ -344,12 +343,12 @@ export default function Timeline() {
                     </div>
                 </div>
 
-                {/* These stay outside the shaking group */}
+                {/* These stay outside the shaking group
                 <img
                     src={titleTimeline}
                     alt="Timeline"
                     className="absolute left-[0%] top-[14%] z-20 w-[34%]"
-                />
+                /> */}
 
                 <img
                     ref={knifeRef}

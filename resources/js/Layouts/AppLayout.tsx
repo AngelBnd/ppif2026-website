@@ -1,4 +1,6 @@
 import BottomFrame from '@/Components/global/BottomBar';
+import ClickSound from '@/Components/global/ClickSound';
+import MusicProvider from '@/Components/global/MusicProvider';
 import Navbar from '@/Components/global/Navbar';
 import OrientationLayout from '@/Components/global/OrientationLayout';
 import PageTransition from '@/Components/global/PageTransition';
@@ -34,10 +36,13 @@ export default function AppLayout({
 
                 <div className="relative z-10">
                     <PageTransition />
-                    <Navbar />
-                    <BottomFrame />
+                    <MusicProvider>
+                        <ClickSound />
+                        <Navbar />
+                        <BottomFrame />
 
-                    <main className="min-h-screen">{children}</main>
+                        <main className="min-h-screen">{children}</main>
+                    </MusicProvider>
                 </div>
             </div>
         </OrientationLayout>

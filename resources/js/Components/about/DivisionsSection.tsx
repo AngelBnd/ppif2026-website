@@ -186,6 +186,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                                     {divisionData.map((division) => (
                                         <div
                                             key={division.name}
+                                            data-click-sound
                                             className="pointer-events-auto absolute cursor-pointer"
                                             style={{
                                                 left: division.left,

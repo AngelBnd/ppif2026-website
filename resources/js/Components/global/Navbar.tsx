@@ -1,3 +1,4 @@
+import BlackPartTopSVG from '@/../../public/svgs/BlackPartTopSVG.svg';
 import { Link, usePage } from '@inertiajs/react';
 import gsap from 'gsap';
 import {
@@ -12,7 +13,9 @@ import ArchiveButton from '../../assets/icons/ArchiveButton.svg?react';
 import ContactButton from '../../assets/icons/ContactButtonNBSVG.svg?react';
 import HomeButton from '../../assets/icons/HomeButtonNBSVG.svg?react';
 import MusicButton from '../../assets/icons/MusicButton.svg?react';
+import MusicButton2 from '../../assets/icons/MusicButton2.svg?react';
 import TimelineButton from '../../assets/icons/TimelineButtonNBSVG.svg?react';
+import { useMusic } from './MusicProvider';
 
 type Section = 'home' | 'about' | 'timeline' | 'contact' | 'none';
 
@@ -38,6 +41,7 @@ function NavItem({
     return (
         <Link
             href={href}
+            data-click-sound
             onClick={() => onSelect(section)}
             className={[
                 'origin-bottom transition-transform duration-200 ease-out will-change-transform',
@@ -62,6 +66,8 @@ export default function Navbar() {
     const [activeTab, setActiveTab] = useState<Section>('home');
     const isGamePage = url.startsWith('/games');
     const polygonRef = useRef<SVGPolygonElement>(null);
+    const musicIconRef = useRef<HTMLSpanElement>(null);
+    const { toggle: toggleMusic, isPlaying } = useMusic();
 
     const points = useRef([
         { x: 30, y: 15 }, // top-left
@@ -94,7 +100,7 @@ export default function Navbar() {
         gsap.to(points[0], {
             x: 40,
             y: 30,
-            duration: 0.9,
+            duration: 0.2,
             ease: 'power1.inOut',
             repeat: -1,
             yoyo: true,
@@ -103,7 +109,7 @@ export default function Navbar() {
         gsap.to(points[1], {
             x: 240,
             y: 48,
-            duration: 1,
+            duration: 0.5,
             ease: 'power1.inOut',
             onUpdate: updatePolygon,
             yoyo: true,
@@ -113,7 +119,7 @@ export default function Navbar() {
         gsap.to(points[2], {
             x: 180,
             y: 80,
-            duration: 0.6,
+            duration: 0.3,
             ease: 'power1.inOut',
             onUpdate: updatePolygon,
             yoyo: true,
@@ -123,7 +129,7 @@ export default function Navbar() {
         gsap.to(points[3], {
             x: 70,
             y: 80,
-            duration: 1.2,
+            duration: 0.2,
             ease: 'power1.inOut',
             onUpdate: updatePolygon,
             yoyo: true,
@@ -132,12 +138,50 @@ export default function Navbar() {
         });
     }, []);
 
+    useEffect(() => {
+        const el = musicIconRef.current;
+        if (!el) return;
+
+        gsap.killTweensOf(el);
+        gsap.set(el, { rotation: 0, scale: 1 });
+
+        let anim: gsap.core.Timeline | gsap.core.Tween;
+
+        if (isPlaying) {
+            anim = gsap.to(el, {
+                scale: 1.05,
+                duration: 1,
+                ease: 'sine.inOut',
+                repeat: -1,
+                yoyo: true,
+            });
+        } else {
+            anim = gsap
+                .timeline({ repeat: -1, repeatDelay: 1.5 })
+                .to(el, { rotation: -8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: -6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 0, duration: 0.09, ease: 'power1.inOut' });
+        }
+
+        return () => {
+            anim.kill();
+            gsap.set(el, { rotation: 0, scale: 1 });
+        };
+    }, [isPlaying]);
+
     return (
         <nav
             //  ${isGamePage ? 'pointer-events-none z-[0] opacity-0' : 'z-50'}
             className={`fixed -top-4 left-0 w-full ${isGamePage ? 'pointer-events-none z-[0] opacity-0' : 'z-[50]'}`}
         >
-            <div className="absolute -top-3 left-0 w-full">
+            <img
+                src={BlackPartTopSVG}
+                className="absolute -top-3 h-auto w-[100vw]"
+            />
+
+            <div className="absolu left-0 top-0 w-full">
                 <div className="navbar-video-mask bg-[#0A0C0F]">
                     <video
                         autoPlay
@@ -209,6 +253,7 @@ export default function Navbar() {
                     <div className="mx-4 flex gap-1">
                         <Link
                             href="/archive"
+                            data-click-sound
                             className={[
                                 'origin-bottom transition-transform duration-200 ease-out will-change-transform',
                                 'hover:rotate-3 hover:scale-110 active:scale-95',
@@ -218,12 +263,24 @@ export default function Navbar() {
                         </Link>
 
                         <button
+                            data-no-click-sound
+                            onClick={toggleMusic}
                             className={[
                                 'origin-bottom transition-transform duration-200 ease-out will-change-transform',
                                 'hover:rotate-3 hover:scale-110 active:scale-95',
+                                ,
                             ].join(' ')}
                         >
-                            <MusicButton className="w-16" />
+                            <span
+                                ref={musicIconRef}
+                                className="inline-block origin-bottom will-change-transform"
+                            >
+                                {isPlaying ? (
+                                    <MusicButton className="w-16" />
+                                ) : (
+                                    <MusicButton2 className="w-16" />
+                                )}
+                            </span>
                         </button>
                     </div>
                 </div>

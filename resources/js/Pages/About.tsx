@@ -89,6 +89,15 @@ export default function About() {
     const codieRef = useRef<HTMLDivElement>(null);
     const morphBoxRef = useRef<HTMLDivElement>(null);
     const tabRef = useRef<HTMLDivElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            videoRef.current?.play();
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, []);
 
     const [renderDivisions, setRenderDivisions] = useState(false);
     const [divisionsReady, setDivisionsReady] = useState(false);
@@ -379,10 +388,11 @@ export default function About() {
             >
                 {!codieIntroDone ? (
                     <video
+                        ref={videoRef}
                         key="intro"
-                        autoPlay
                         muted
                         playsInline
+                        preload="auto"
                         className="block h-auto w-full"
                         onEnded={() => setCodieIntroDone(true)}
                     >
