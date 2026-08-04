@@ -54,24 +54,6 @@ export default function ReconstructIdentityPage({
         loadTarget();
     }, []);
 
-    useEffect(() => {
-        const countToReveal = 2; 
-        const indices: number[] = [];
-        
-        while (indices.length < countToReveal && indices.length < WORD_LENGTH) {
-            const randomIndex = Math.floor(Math.random() * WORD_LENGTH);
-            if (!indices.includes(randomIndex)) {
-                indices.push(randomIndex);
-            }
-        }
-        
-        setRevealedIndices(indices);
-
-        setLetters(Array.from({ length: WORD_LENGTH }, (_, i) =>
-            indices.includes(i) ? TARGET_WORD[i] : '',
-        ));
-    }, []);
-
     function findNextEditable(from: number, direction: 1 | -1) {
         let i = from + direction;
         while (i >= 0 && i < nameLength) {
