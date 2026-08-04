@@ -316,6 +316,7 @@ export default function Timeline() {
                     ref={layoutRef}
                     className="pointer-events-none absolute inset-0"
                 >
+                    <div className="absolute inset-0 z-0 bg-[#BF1E2E] opacity-70" />
                     <TimelineBackground />
 
                     <div

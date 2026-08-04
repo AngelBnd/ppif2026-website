@@ -373,9 +373,10 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
             }
         `}</style>
             <main
-                className="relative z-[2] flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#BE202F] px-4 text-zinc-300 selection:bg-zinc-800 selection:text-white"
+                className="relative z-[5] flex min-h-screen w-full flex-col items-center justify-center overflow-hidden px-4 text-zinc-300 selection:bg-zinc-800 selection:text-white"
                 style={{ fontFamily: "'Arsenal', monospace" }}
             >
+                <div className="absolute z-[-10] h-screen w-screen bg-[#0A0C0F] opacity-30" />
                 {import.meta.env.DEV && (
                     <button
                         onClick={() => finishGame()}
@@ -385,7 +386,7 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                     </button>
                 )}
                 {/* MAIN WRAPPER CONTAINER */}
-                <div className="absolute z-[40] flex h-[620px] w-full max-w-[1440px] flex-col items-center justify-between border-dashed border-yellow-400 p-8 sm:p-10">
+                <div className="absolute z-[50] flex h-[620px] w-full max-w-[1440px] flex-col items-center justify-between border-dashed border-yellow-400 p-8 sm:p-10">
                     {/* QUESTION CONTAINER */}
                     <div className="absolute z-10 flex w-full flex-col items-center">
                         {/* paper asset */}

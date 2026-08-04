@@ -103,7 +103,7 @@ export default function AboutBackground() {
             />
 
             <video
-                src="/videos/StarsLoop.mp4"
+                src="/videos/StarsLoop.webm"
                 autoPlay
                 loop
                 muted

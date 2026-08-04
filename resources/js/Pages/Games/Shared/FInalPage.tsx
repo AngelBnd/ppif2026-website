@@ -14,7 +14,7 @@ type Props = {
     onJoined: () => void;
 };
 
-export default function ErrorGimmick({ onJoined }: Props) {
+export default function ErrorGimmick({  }: Props) {
     const [targetWord, setTargetWord] = useState('');
     useEffect(() => {
         async function loadTargetWord() {

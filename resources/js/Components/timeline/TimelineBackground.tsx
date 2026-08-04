@@ -8,10 +8,12 @@
  */
 export default function TimelineBackground() {
     return (
-        <img
-            src={timelineBg}
-            alt=""
-            className="absolute inset-0 z-0 h-full w-[-10] object-contain object-bottom"
-        />
+        <div className="h-screen w-screen">
+            <img
+                src={timelineBg}
+                alt=""
+                className="absolute z-0 h-[140%] object-contain object-bottom"
+            />
+        </div>
     );
 }

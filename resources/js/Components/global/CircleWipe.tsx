@@ -2,6 +2,7 @@ import gsap from 'gsap';
 import {
     forwardRef,
     useEffect,
+    useId,
     useImperativeHandle,
     useRef,
     useState,
@@ -44,6 +45,9 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
     });
     const holeGroupRef = useRef<SVGGElement | null>(null);
     const svgRef = useRef<SVGSVGElement | null>(null);
+    // Unique per instance — multiple CircleWipes can be mounted at once
+    // (PageTransition + a page-level one), and a shared mask id would collide.
+    const maskId = `wipe-mask-${useId().replace(/:/g, '')}`;
 
     useEffect(() => {
         function handleResize() {
@@ -116,7 +120,7 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
             preserveAspectRatio="none"
         >
             <defs>
-                <mask id="wipe-mask" maskUnits="userSpaceOnUse">
+                <mask id={maskId} maskUnits="userSpaceOnUse">
                     <rect
                         x="-5000"
                         y="-5000"
@@ -141,7 +145,7 @@ const CircleWipe = forwardRef<CircleWipeHandle, Props>(function CircleWipe(
                 width="10000"
                 height="10000"
                 fill="black"
-                mask="url(#wipe-mask)"
+                mask={`url(#${maskId})`}
             />
         </svg>
     );

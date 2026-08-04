@@ -47,6 +47,11 @@ Route::get('/games', function () {
     return Inertia::render('GameHub/GameHubPage');
 });
 
+// Must be registered before the /games/{gameSlug} wildcard below.
+Route::get('/games/story', function () {
+    return Inertia::render('GameHub/StoryPage');
+});
+
 Route::get('/games/{gameSlug}', function ($gameSlug) {
     return Inertia::render('Games/GamePage', [
         'gameSlug' => $gameSlug,

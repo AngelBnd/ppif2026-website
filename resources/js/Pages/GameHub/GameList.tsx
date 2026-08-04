@@ -178,15 +178,30 @@ export default function GameList() {
                         {loadingGameTitle ? (
                             <></>
                         ) : (
-                            <img src={PhoneScreen} alt="" draggable={false} className="absolute block h-auto w-full select-none" />
+                            <img
+                                src={PhoneScreen}
+                                alt=""
+                                draggable={false}
+                                className="absolute block h-auto w-full select-none"
+                            />
                         )}
 
-                        <img src={Phone} alt="" draggable={false} className="block h-auto w-full select-none" />
+                        <img
+                            src={Phone}
+                            alt=""
+                            draggable={false}
+                            className="block h-auto w-full select-none"
+                        />
 
                         {/* Game buttons on top of phone */}
                         {loadingGameTitle ? (
                             <div className="absolute left-[20%] top-[20%] z-30 flex h-[28rem] w-[42rem] rotate-[8deg] flex-col items-center justify-center">
-                                <img src={CodieLoading} alt="" draggable={false} className="select-none" />
+                                <img
+                                    src={CodieLoading}
+                                    alt=""
+                                    draggable={false}
+                                    className="select-none"
+                                />
 
                                 <p className="mt-2 text-center font-arsenal text-4xl font-bold tracking-widest text-white">
                                     Loading {loadingGameTitle} {dots}
@@ -244,15 +259,30 @@ export default function GameList() {
                         className="pointer-events-none absolute inset-0 z-40"
                     >
                         <div className="absolute -bottom-[7.2rem] right-[2.5rem] z-30 w-[53rem]">
-                            <img src={Thumb} alt="" draggable={false} className="block h-auto w-full select-none" />
+                            <img
+                                src={Thumb}
+                                alt=""
+                                draggable={false}
+                                className="block h-auto w-full select-none"
+                            />
                         </div>
 
                         <div className="absolute right-[12rem] top-[-0.5rem] z-40 w-[24.5rem]">
-                            <img src={Fingers} alt="" draggable={false} className="block h-auto w-full select-none" />
+                            <img
+                                src={Fingers}
+                                alt=""
+                                draggable={false}
+                                className="block h-auto w-full select-none"
+                            />
                         </div>
 
                         <div className="absolute -top-[2rem] left-[18rem] z-10 w-[9rem]">
-                            <img src={Finger} alt="" draggable={false} className="block h-auto w-full select-none" />
+                            <img
+                                src={Finger}
+                                alt=""
+                                draggable={false}
+                                className="block h-auto w-full select-none"
+                            />
                         </div>
                     </div>
                 </div>

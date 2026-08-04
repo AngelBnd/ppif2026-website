@@ -89,6 +89,16 @@ export const initTrain = (state: TrainState, object: Object3D) => {
     state.resumeAt = performance.now() + randomWaitMs();
 };
 
+/** Parks a train off-screen and silences it (used on pages where it shouldn't run). */
+export const parkTrain = (state: TrainState) => {
+    if (state.object) state.object.position.x = state.startX;
+    state.idle = true;
+    state.soundPlayed = false;
+    state.audio.pause();
+    // Fresh delay so it doesn't fire the instant we return to an allowed page.
+    state.resumeAt = performance.now() + randomWaitMs();
+};
+
 /** Advances a train one frame: eased motion + distance-based horn volume. */
 export const updateTrain = (
     state: TrainState,

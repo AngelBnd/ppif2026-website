@@ -286,7 +286,9 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
 
     const currentClues = isVertical ? CWdata.down : CWdata.across;
     return (
-        <main className="flex h-screen w-screen items-center justify-start bg-[#BE202F] text-white">
+        <main className="flex h-screen w-screen items-center justify-start text-white">
+            <div className="absolute z-[-10] h-screen w-screen bg-[#0A0C0F] opacity-30" />
+
             <CircleWipe ref={wipeRef} duration={1} />
 
             {/* testing button */}
@@ -295,7 +297,7 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
                 onClick={finishGame}
                 className="absolute left-4 top-4 z-50 rounded bg-black px-4 py-2 text-white"
             >
-                Skip
+            
             </button> */}
             <section className="relative flex h-full w-full items-center justify-start">
                 <div className="-mt-24 ml-36 h-[570px] w-[900px] shrink-0">
@@ -364,7 +366,7 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
                             ref={switchButtonRef}
                             type="button"
                             onClick={handleDirectionChange}
-                            className="absolute bottom-12 right-8 z-40 w-[10rem] origin-center hover:scale-105 active:scale-95"
+                            className="absolute right-8 top-0 z-40 w-[10rem] origin-center opacity-70 transition ease-out hover:rotate-[5deg] hover:scale-105 hover:opacity-100 active:scale-95"
                             aria-label={
                                 isVertical
                                     ? 'Switch to horizontal clues'
