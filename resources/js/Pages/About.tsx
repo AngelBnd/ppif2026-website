@@ -111,7 +111,7 @@ export default function About() {
     useEffect(() => {
         const timer = setTimeout(() => {
             videoRef.current?.play();
-        }, 300);
+        }, 350);
 
         return () => clearTimeout(timer);
     }, []);
@@ -224,7 +224,7 @@ export default function About() {
 
         if (activeTab === 'gallery') {
             video.pause();
-        } else {
+        } else if (!video.paused || video.currentTime > 0) {
             video.play().catch(() => {});
         }
     }, [activeTab, codieIntroDone]);
