@@ -72,10 +72,7 @@ export default function ArchivePage() {
     }, []);
 
     const dummyPhotos = [
-        'https://images.unsplash.com/photo-1511578314322-379afb476865?q=80&w=400',
-        'https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=400',
-        'https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=400',
-        'https://images.unsplash.com/photo-1505232458627-a72317fac728?q=80&w=400',
+        '/pngs/archive/archivePlaceHolder.svg',
     ];
 
     return (
