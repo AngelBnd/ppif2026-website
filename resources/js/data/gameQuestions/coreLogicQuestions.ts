@@ -73,7 +73,7 @@ export const MCQ = [
             'Mengulang instruksi selama kondisi bernilai True',
             'Menyimpan data ke database',
             'Melakukan percabangan kondisi',
-            'Memanggil paus',
+            'Memanggil pause',
         ],
         ans: 0,
         exp: 'Ini adalah mesin pengulang otomatis. Selama kondisi masih benar, dia akan terus bekerja.',

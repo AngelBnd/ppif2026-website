@@ -18,14 +18,17 @@ import Interface from '@/assets/about/divisions/divNames/INTERFACE.svg';
 import Module from '@/assets/about/divisions/divNames/MODULE.svg';
 import PM from '@/assets/about/divisions/divNames/PM.svg';
 import Snapshot from '@/assets/about/divisions/divNames/SNAPSHOT.svg';
-import placeholderGuy1 from '@/assets/about/divisions/divPics/placeholderguy1.webp';
-import placeholderGuy2 from '@/assets/about/divisions/divPics/placeholderguy2.webp';
-
 type DivisionMember = {
     picture: string;
     name: string;
     role: string;
 };
+
+// Member photos live in public/webp/divisi/<DIVISION>/<file>. They are served
+// from the site root, so we reference them by URL (Vite does not transform
+// files under public/ via import). encodeURI keeps the spaces in filenames safe.
+const pic = (division: string, file: string) =>
+    encodeURI(`/webp/divisi/${division}/${file}`);
 
 export type DivisionData = {
     name: string;
@@ -51,9 +54,6 @@ export type DivisionData = {
     widthPopup: string;
 };
 
-const memberPicture = (index: number) =>
-    index % 2 === 0 ? placeholderGuy1 : placeholderGuy2;
-
 const shortenName = (name: string) => {
     const words = name.trim().split(/\s+/);
 
@@ -66,138 +66,496 @@ const shortenName = (name: string) => {
 };
 const makeMembers = (
     members: {
+        picture: string;
         name: string;
         role: string;
     }[],
 ): DivisionMember[] =>
-    members.map((member, index) => ({
-        picture: memberPicture(index),
+    members.map((member) => ({
+        picture: member.picture,
         name: shortenName(member.name),
         role: member.role,
     }));
 
 const divisionMembers = {
     Acara: makeMembers([
-        { name: 'Jessy Valentine', role: 'Koordinator' },
-        { name: 'William Asabha Purnamadjaja', role: 'Koordinator' },
-        { name: 'Muhammad Ashfa', role: 'Anggota' },
-        { name: 'Ritz Kevin Heryanto', role: 'Anggota' },
-        { name: 'Jonah Matthew Santoso', role: 'Anggota' },
-        { name: 'Desslyn Marcela', role: 'Anggota' },
+        {
+            picture: pic('DEVELOPER', 'Jessy 1.webp'),
+            name: 'Jessy Valentine',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('DEVELOPER', 'Will 1.webp'),
+            name: 'William Asabha Purnamadjaja',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('DEVELOPER', 'Ashfa 1.webp'),
+            name: 'M. Ashfa',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('DEVELOPER', 'Kevin 1.webp'),
+            name: 'Ritz Kevin Heryanto',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('DEVELOPER', 'Jon 1.webp'),
+            name: 'Jonah Matthew Santoso',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('DEVELOPER', 'Des 1.webp'),
+            name: 'Desslyn Marcela',
+            role: 'Anggota',
+        },
     ]),
 
     Visual: makeMembers([
-        { name: 'Alfred Wilson Kwan', role: 'Koordinator' },
-        { name: 'Vanessa Laurensia', role: 'Koordinator' },
-        { name: 'Dhita Paramita Citra', role: 'Anggota' },
-        { name: 'Daniel Kurnia Gunawan', role: 'Anggota' },
-        { name: 'Riani Freefina Arifin', role: 'Anggota' },
-        { name: 'Eldo Sanders', role: 'Anggota' },
+        {
+            picture: pic('BITMAP', 'wilson 1.webp'),
+            name: 'Alfred Wilson Kwan',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('BITMAP', 'Vanessa 1.webp'),
+            name: 'Vanessa Laurensia',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('BITMAP', 'dhita 2.webp'),
+            name: 'Dhita Paramita Citra',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('BITMAP', 'Daniel 1.webp'),
+            name: 'Daniel Kurnia Gunawan',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('BITMAP', 'Riani 1.webp'),
+            name: 'Riani Freefina Arifin',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('BITMAP', 'eldo 1.webp'),
+            name: 'Eldo Sanders',
+            role: 'Anggota',
+        },
     ]),
 
     'Person in Charge': makeMembers([
-        { name: 'Dheryl Christofer Yahya', role: 'Koordinator' },
-        { name: 'Sebastian Benaya', role: 'Koordinator' },
-        { name: 'Sielyne Dwi Putri', role: 'Koordinator' },
-        { name: 'Sindhi Ananta', role: 'Anggota' },
-        { name: 'Jonathan Kent Wijaya', role: 'Anggota' },
-        { name: 'Carlos Limanto', role: 'Anggota' },
-        { name: 'Devyna Dhamawany Kusuma', role: 'Anggota' },
-        { name: 'Muhammad Reivan Febriano', role: 'Anggota' },
-        { name: 'Steven Ong Gunawan', role: 'Anggota' },
-        { name: 'Andika Syahfutra', role: 'Anggota' },
-        { name: 'Dimas Pradhitya', role: 'Anggota' },
         {
+            picture: pic('MODULE', 'dheryl 1.webp'),
+            name: 'Dheryl Christofer Yahya',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('MODULE', 'sebastian 1.webp'),
+            name: 'Sebastian Benaya',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('MODULE', 'sielyne 1.webp'),
+            name: 'Sielyne Dwi Putri',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('MODULE', 'sindhi 1.webp'),
+            name: 'Sindhi Ananta',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'jonathan kent 1.webp'),
+            name: 'Jonathan Kent Wijaya',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'carlos 1.webp'),
+            name: 'Carlos Limanto',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'devyna 1.webp'),
+            name: 'Devyna Dhamawany Kusuma',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'reivan 1.webp'),
+            name: 'Muhammad Reivan Febriano',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'steven ong 1.webp'),
+            name: 'Steven Ong Gunawan',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'andika 1.webp'),
+            name: 'Andika Syahfutra',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'dimas 1.webp'),
+            name: 'Dimas Pradhitya',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'christoper yogis 1.webp'),
             name: 'Christopher Yogiswara Leandro Sandyajati',
             role: 'Anggota',
         },
-        { name: 'Gavin Tanzil', role: 'Anggota' },
-        { name: 'Dustin Nathaniel Bernadi', role: 'Anggota' },
-        { name: 'Rivera Manuela Tamba', role: 'Anggota' },
-        { name: 'Yoga Valentino Samputra', role: 'Anggota' },
-        { name: 'Muhammad Rassya', role: 'Anggota' },
-        { name: 'Christian Surya Themadja', role: 'Anggota' },
-        { name: 'Michael Sahala', role: 'Anggota' },
+        {
+            picture: pic('MODULE', 'gavin 1.webp'),
+            name: 'Gavin Tanzil',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'dustin 1.webp'),
+            name: 'Dustin Nathaniel Bernadi',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'rivera 1.webp'),
+            name: 'Rivera Manuela Tamba',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'yoga 1.webp'),
+            name: 'Yoga Valentino Samputra',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'rassya 1.webp'),
+            name: 'M. Rassya',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'christian surya 1.webp'),
+            name: 'Christian Surya Themadja',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('MODULE', 'michael 1.webp'),
+            name: 'Michael Sahala',
+            role: 'Anggota',
+        },
     ]),
 
     Keamanan: makeMembers([
-        { name: 'Muhandis Jundi Rabbani', role: 'Koordinator' },
-        { name: 'Victor Chandra', role: 'Koordinator' },
-        { name: 'Clifton Adriel Surya', role: 'Anggota' },
-        { name: 'Danielson Athami', role: 'Anggota' },
-        { name: 'Evan Jeconia Hansel', role: 'Anggota' },
-        { name: 'Muhammad Fairuuz Bahii Syah', role: 'Anggota' },
-        { name: 'Shiffa Qalbian Alfarysi', role: 'Anggota' },
-        { name: 'Awang Raditya Pratama', role: 'Anggota' },
-        { name: 'Andreas Rahardian', role: 'Anggota' },
-        { name: 'Kaizha Fauzi Susanto', role: 'Anggota' },
-        { name: 'Andre Liauwnardo', role: 'Anggota' },
-        { name: 'Andreas Prihasnolo Waseso Dewo', role: 'Anggota' },
         {
+            picture: pic('ENCRYPTOR', 'Muhandis Jundi Rabbani 1.webp'),
+            name: 'Muhandis Jundi Rabbani',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Victor Chandra 1.webp'),
+            name: 'Victor Chandra',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Cecillia Wijaya 1.webp'),
+            name: 'Cecilia Wijaya',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Clifton Adriel 1.webp'),
+            name: 'Clifton Adriel Surya',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Danielson 1.webp'),
+            name: 'Danielson Athami',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Evan Jeconia 1.webp'),
+            name: 'Evan Jeconia Hansel',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Muhammad Fairuuz Bahii Syah 1.webp'),
+            name: 'M. Fairuuz Bahii Syah',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Shiffa Qalbian Alfarysi 1.webp'),
+            name: 'Shiffa Qalbian Alfarysi',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'awang raditya 1.webp'),
+            name: 'Awang Raditya Pratama',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'andreas rahardian 1.webp'),
+            name: 'Andreas Rahardian',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Kaizha Fauzi susanto 1.webp'),
+            name: 'Kaizha Fauzi Susanto',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'andre liauw 1.webp'),
+            name: 'Andre Liauwnardo',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'andreas prihasolo 1.webp'),
+            name: 'Andreas Prihasnolo Waseso Dewo',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Cleverly Victoria 1.webp'),
             name: 'Cleverly Victori Aurselia Langitan',
             role: 'Anggota',
         },
-        { name: 'Gerald Fedorian', role: 'Anggota' },
-        { name: 'Jessiska', role: 'Anggota' },
-        { name: 'Jesslyn Kirsten Antonia Supit', role: 'Anggota' },
-        { name: 'Kevin Ivan Setiadi Phang', role: 'Anggota' },
-        { name: 'Kevin Mikael', role: 'Anggota' },
-        { name: 'Nadine Kay Ludony', role: 'Anggota' },
-        { name: 'Nathanael Aegidius Widjaja', role: 'Anggota' },
-        { name: 'Rizky Mahardika Adiguna Putra', role: 'Anggota' },
-        { name: 'Roane Adzani Sukmayadi Jaya Putra', role: 'Anggota' },
-        { name: 'Russell James Ryan', role: 'Anggota' },
-        { name: 'Wilbert Lincoln', role: 'Anggota' },
-        { name: 'Cecilia Wijaya', role: 'Koordinator' },
+        {
+            picture: pic('ENCRYPTOR', 'Gerald Fedorian 1.webp'),
+            name: 'Gerald Fedorian',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Jessiska 1.webp'),
+            name: 'Jessiska',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Jesslyn Kirsten Antonia Supit 1.webp'),
+            name: 'Jesslyn Kirsten Antonia Supit',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Kevin Ivan Setiadi Phang 1.webp'),
+            name: 'Kevin Ivan Setiadi Phang',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'kevin mikael 1.webp'),
+            name: 'Kevin Mikael',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Nadine Kay Ludony 1.webp'),
+            name: 'Nadine Kay Ludony',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Nathanael Aegidius Widjaja 1.webp'),
+            name: 'Nathanael Aegidius Widjaja',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Rizky Mahardika Adiguna Putra 1.webp'),
+            name: 'Rizky Mahardika Adiguna Putra',
+            role: 'Anggota',
+        },
+        {
+            picture: pic(
+                'ENCRYPTOR',
+                'Roane Adzani Sukmayadi Jaya Putra 1.webp',
+            ),
+            name: 'Roane Adzani Sukmayadi Jaya Putra',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Russel James Ryan 1.webp'),
+            name: 'Russell James Ryan',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ENCRYPTOR', 'Wilbert Lincoln 1.webp'),
+            name: 'Wilbert Lincoln',
+            role: 'Anggota',
+        },
     ]),
 
     Website: makeMembers([
-        { name: 'Aditya Zianur Rahman Setiadi', role: 'Koordinator' },
-        { name: 'Angela Benedictin Sunny', role: 'Koordinator' },
-        { name: 'Vincent', role: 'Anggota' },
-        { name: 'Rezie Andriano', role: 'Anggota' },
-        { name: 'Marvel Valenxius Gunawan', role: 'Anggota' },
-        { name: 'Willbert Budi Lian', role: 'Anggota' },
-        { name: 'Eryel Maseya', role: 'Anggota' },
-        { name: 'Muhammad Daniel Azmi', role: 'Anggota' },
+        {
+            picture: pic('INTERFACE', 'zian 1.webp'),
+            name: 'Aditya Zianur Rahman Setiadi',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('INTERFACE', 'angela 1.webp'),
+            name: 'Angela Benedictin Sunny',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('INTERFACE', 'vincent 1.webp'),
+            name: 'Vincent',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('INTERFACE', 'rezie 1.webp'),
+            name: 'Rezie Andriano',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('INTERFACE', 'marvel 1.webp'),
+            name: 'Marvel Valenxius Gunawan',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('INTERFACE', 'william 1.webp'),
+            name: 'Willbert Budi Lian',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('INTERFACE', 'eryel 1.webp'),
+            name: 'Eryel Maseya',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('INTERFACE', 'muhammad daniel 1.webp'),
+            name: 'M. Daniel Azmi',
+            role: 'Anggota',
+        },
     ]),
 
     Perlengkapan: makeMembers([
-        { name: 'Aurick Tantyrone', role: 'Koordinator' },
-        { name: 'Josiah Maximus Suryadi', role: 'Koordinator' },
-        { name: 'Eligrah Philip Mapa Kogoya', role: 'Anggota' },
-        { name: 'Fauzi Andrian', role: 'Anggota' },
-        { name: 'George Michael Sally', role: 'Anggota' },
-        { name: 'Given Julian', role: 'Anggota' },
-        { name: 'Jonathan Andilinata', role: 'Anggota' },
-        { name: 'Lucas Stevanus Noel Siahaan', role: 'Anggota' },
-        { name: 'Nelson Saputra', role: 'Anggota' },
-        { name: 'Surya Nanda Destiawan', role: 'Anggota' },
+        {
+            picture: pic('EXTENSION', 'AURICK.webp'),
+            name: 'Aurick Tantyrone',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('EXTENSION', 'JOSIAH.webp'),
+            name: 'Josiah Maximus Suryadi',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('EXTENSION', 'ELIGRAH.webp'),
+            name: 'Eligrah Philip Mapa Kogoya',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('EXTENSION', 'FAUZI.webp'),
+            name: 'Fauzi Andrian',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('EXTENSION', 'GEORGE.webp'),
+            name: 'George Michael Sally',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('EXTENSION', 'GIVEN.webp'),
+            name: 'Given Julian',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('EXTENSION', 'JONATHAN.webp'),
+            name: 'Jonathan Andilinata',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('EXTENSION', 'LUCAS.webp'),
+            name: 'Lucas Stevanus Noel Siahaan',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('EXTENSION', 'NELSON.webp'),
+            name: 'Nelson Saputra',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('EXTENSION', 'SURYA.webp'),
+            name: 'Surya Nanda Destiawan',
+            role: 'Anggota',
+        },
     ]),
 
     Administrator: makeMembers([
-        { name: 'Rorensia Verisca', role: 'Koordinator' },
-        { name: 'Claudia Vidya', role: 'Koordinator' },
-        { name: 'Widya Ayu Safitri', role: 'Anggota' },
-        { name: 'Dian Fajrina Rahmatunisa', role: 'Anggota' },
-        { name: 'Aurelio Atthaya Suwisar', role: 'Anggota' },
-        { name: 'Lexion Rafael', role: 'Anggota' },
+        {
+            picture: pic('ADMIN', 'Roren 1.webp'),
+            name: 'Rorensia Verisca',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('ADMIN', 'Claudia 1.webp'),
+            name: 'Claudia Vidya',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('ADMIN', 'Widya 1.webp'),
+            name: 'Widya Ayu Safitri',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ADMIN', 'Dian 1.webp'),
+            name: 'Dian Fajrina Rahmatunisa',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ADMIN', 'Aurelio 1.webp'),
+            name: 'Aurelio Atthaya Suwisar',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('ADMIN', 'Lexi 1.webp'),
+            name: 'Lexion Rafael',
+            role: 'Anggota',
+        },
     ]),
 
     'Public Relation': makeMembers([
-        { name: 'Nadine Angeline', role: 'Koordinator' },
-        { name: 'Jesslyn Claresta Sanders', role: 'Koordinator' },
-        { name: 'Shifra Massie', role: 'Anggota' },
-        { name: 'Brilliant Timotheos Watuseke', role: 'Anggota' },
-        { name: 'Kelyn Sorensia', role: 'Anggota' },
-        { name: 'Christian Valentino', role: 'Anggota' },
+        {
+            picture: pic('CONSOLE', 'nadine 1.webp'),
+            name: 'Nadine Angeline',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('CONSOLE', 'clares 1.webp'),
+            name: 'Jesslyn Claresta Sanders',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('CONSOLE', 'shifra 1.webp'),
+            name: 'Shifra Massie',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('CONSOLE', 'brilliant 1.webp'),
+            name: 'Brilliant Timotheos Watuseke',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('CONSOLE', 'kelyn 1.webp'),
+            name: 'Kelyn Sorensia',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('CONSOLE', 'valentino 1.webp'),
+            name: 'Christian Valentino',
+            role: 'Anggota',
+        },
     ]),
 
     Dokumentasi: makeMembers([
-        { name: 'Abraham Immanuel Soerjana', role: 'Koordinator' },
-        { name: 'Muhammad Faathin Naufal', role: 'Koordinator' },
-        { name: 'Britney Jessica', role: 'Anggota' },
-        { name: 'Revand Anrian Putra', role: 'Anggota' },
+        {
+            picture: pic('SNAPSHOT', 'Abraham.webp'),
+            name: 'Abraham Immanuel Soerjana',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('SNAPSHOT', 'Faathin.webp'),
+            name: 'M. Faathin Naufal',
+            role: 'Koordinator',
+        },
+        {
+            picture: pic('SNAPSHOT', 'Britney.webp'),
+            name: 'Britney Jessica',
+            role: 'Anggota',
+        },
+        {
+            picture: pic('SNAPSHOT', 'Revand.webp'),
+            name: 'Revand Anrian Putra',
+            role: 'Anggota',
+        },
     ]),
 };
 export const divisionData: DivisionData[] = [
@@ -209,24 +567,29 @@ export const divisionData: DivisionData[] = [
         image: PMPlain,
         members: [
             {
-                picture: placeholderGuy1,
+                picture: pic('PM', 'Alvina 1.webp'),
                 name: 'Alvina',
                 role: 'Ketua ',
             },
             {
-                picture: placeholderGuy2,
+                picture: pic('PM', 'Fellix.webp'),
                 name: 'Fellix Fernando W. L.',
                 role: 'Wakil Ketua',
             },
             {
-                picture: placeholderGuy2,
+                picture: pic('PM', 'Titus.webp'),
                 name: 'Titus Ericson B.',
                 role: 'Sekretaris',
             },
             {
-                picture: placeholderGuy1,
+                picture: pic('PM', 'Amanda.webp'),
                 name: 'Amanda',
                 role: 'Bendahara',
+            },
+            {
+                picture: pic('PM', 'Gege.webp'),
+                name: 'Gerald Alfons',
+                role: 'Supervisi',
             },
         ],
         direction: 'right',

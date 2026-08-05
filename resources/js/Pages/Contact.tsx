@@ -1,23 +1,19 @@
-import { gsap } from 'gsap';
-import { useEffect, useRef } from 'react';
-import BubbleChat from '../assets/contact/BubbleChat.svg';
+import gsap from 'gsap';
+import { useEffect, useRef, useState } from 'react';
 import DiscordText from '../assets/contact/Discord.svg';
 import Fingers from '../assets/contact/Fingers.svg';
 import Whatsapp from '../assets/contact/Frame180.svg';
 import Discord from '../assets/contact/Frame181.svg';
 import Instagram from '../assets/contact/Frame182.svg';
-import ContactText from '../assets/contact/Frame185.svg';
-import UsText from '../assets/contact/Frame186.svg';
 import InstagramText from '../assets/contact/Instagram.svg';
 import PhoneBack3 from '../assets/contact/Phone.svg?react';
 import Vector1 from '../assets/contact/Vector1.svg';
 // import Vector2 from '../assets/contact/Vector2.svg';
-import Shape1 from '@/assets/games/dataTrace/svgs/Shape1.svg';
+import ContactUsText from '../assets/contact/CONTACTUS.svg';
 import Fingers3 from '../assets/contact/Fingers3.svg';
 import Vector406 from '../assets/contact/Vector406.svg';
 import ArrowLeft from '../assets/contact/Vector8.svg';
 import WhatsAppText from '../assets/contact/WhatsApp.svg';
-import { DecorShape } from './Games/DataTrace/DataTracePage';
 
 const REF_WIDTH = 1920;
 const REF_HEIGHT = 1080;
@@ -25,13 +21,15 @@ const SHIFT_VU = 13;
 
 export default function Contact() {
     const iconGroupsRef = useRef<HTMLDivElement>(null);
-    const bubbleRef = useRef<HTMLDivElement>(null);
-    const bubbleTextRef = useRef<HTMLDivElement>(null);
     const handPhoneRef = useRef<HTMLDivElement>(null);
     const phoneBodyRef = useRef<HTMLDivElement>(null);
-    const bubbleAjaRef = useRef<HTMLImageElement>(null);
     const shape1Ref = useRef<HTMLDivElement>(null);
     const streakRef = useRef<HTMLImageElement>(null);
+    const contactUsRef = useRef<HTMLImageElement>(null);
+    const decor1Ref = useRef<SVGSVGElement>(null);
+    const decor2Ref = useRef<SVGSVGElement>(null);
+    const decor3Ref = useRef<SVGSVGElement>(null);
+    const [scale, setScale] = useState(1);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -43,14 +41,85 @@ export default function Contact() {
                 iconGroupsRef.current?.querySelector<HTMLElement>(
                     '[data-arrow]',
                 );
-            const bubble = bubbleRef.current;
-            const bubbleAja = bubbleAjaRef.current;
             const hand = handPhoneRef.current;
             const phone = phoneBodyRef.current;
             const streak = streakRef.current;
-            if (!icons || !bubble || !arrow || !hand || !phone) return;
+            const contactUs = contactUsRef.current;
 
-            const startY = window.innerHeight + 120;
+            if (contactUs) {
+                gsap.fromTo(
+                    contactUs,
+                    { x: 80, opacity: 0, yPercent: -50, rotation: 3 },
+                    {
+                        x: 0,
+                        opacity: 1,
+                        yPercent: -50,
+                        rotation: 3,
+                        duration: 0.6,
+                        delay: 0.6,
+                        ease: 'bounce.out',
+                    },
+                );
+            }
+            const buildD = (pts: { x: number; y: number }[]) =>
+                `M${pts[0].x} ${pts[0].y}` +
+                pts
+                    .slice(1)
+                    .map((p) => `L${p.x} ${p.y}`)
+                    .join('') +
+                'Z';
+
+            const morphLeftEdge = (
+                tl: gsap.core.Timeline,
+                svg: SVGSVGElement | null,
+                pts: { x: number; y: number }[],
+                dx: number,
+                dy: number,
+                position: gsap.Position = '+=0',
+            ) => {
+                const path = svg?.querySelector('path');
+                if (!path) return;
+
+                const work = pts.map((p) => ({ ...p }));
+                const leftIdx = [0, 3];
+
+                leftIdx.forEach((i) => {
+                    work[i].x += dx;
+                    work[i].y += dy;
+                });
+
+                path.setAttribute('d', buildD(work));
+
+                tl.fromTo(
+                    svg,
+                    { opacity: 0 },
+                    {
+                        opacity: 1,
+                        duration: 0.35,
+                        ease: 'power2.out',
+                    },
+                    position,
+                );
+
+                leftIdx.forEach((i) => {
+                    tl.to(
+                        work[i],
+                        {
+                            x: pts[i].x,
+                            y: pts[i].y,
+                            duration: 0.5,
+                            ease: 'back.out(1.7)',
+                            onUpdate: () =>
+                                path.setAttribute('d', buildD(work)),
+                        },
+                        position,
+                    );
+                });
+            };
+
+            if (!icons || !arrow || !hand || !phone) return;
+
+            const startY = REF_HEIGHT + 120;
 
             const masterTl = gsap.timeline();
 
@@ -66,24 +135,7 @@ export default function Contact() {
             });
             masterTl.set(icons, { opacity: 0, x: 80 });
             masterTl.set(arrow, { opacity: 0, x: 60 });
-            masterTl.set(bubble, { scale: 0, opacity: 0 });
             masterTl.set(streak, { clipPath: 'inset(0% 0% 100% 0%)' });
-
-            masterTl.fromTo(
-                bubbleAja,
-                {
-                    skewX: 3,
-                    skewY: 0,
-                },
-                {
-                    repeat: -1,
-                    yoyo: true,
-                    skewX: 4,
-                    skewY: 2,
-                    duration: 0.55,
-                    ease: 'linear',
-                },
-            );
 
             masterTl.to(
                 phone,
@@ -108,19 +160,6 @@ export default function Contact() {
             );
 
             masterTl.to(
-                bubble,
-                {
-                    skewX: 3,
-                    skewY: 0,
-                    scale: 1,
-                    opacity: 1,
-                    duration: 0.55,
-                    ease: 'elastic.out(1, 0.6)',
-                },
-                0.78,
-            );
-
-            masterTl.to(
                 arrow,
                 {
                     opacity: 1,
@@ -142,7 +181,7 @@ export default function Contact() {
             masterTl.to(
                 icons,
                 {
-                    opacity: 1,
+                    opacity: 100,
                     x: 0,
                     duration: 0.45,
                     stagger: 0.12,
@@ -158,6 +197,48 @@ export default function Contact() {
                 yoyo: true,
                 ease: 'sine.inOut',
             });
+
+            morphLeftEdge(
+                masterTl,
+                decor1Ref.current,
+                [
+                    { x: 220.639, y: 0 },
+                    { x: 546.139, y: 265 },
+                    { x: 498.873, y: 292.689 },
+                    { x: -0.000456216, y: 51.281 },
+                ],
+                -200,
+                -660,
+                '<=0.1',
+            );
+
+            morphLeftEdge(
+                masterTl,
+                decor2Ref.current,
+                [
+                    { x: 0, y: 0 },
+                    { x: 904.5, y: 207.5 },
+                    { x: 827, y: 367 },
+                    { x: 79.5, y: 390 },
+                ],
+                -200,
+                -120,
+                '<0.05',
+            );
+
+            morphLeftEdge(
+                masterTl,
+                decor3Ref.current,
+                [
+                    { x: 0, y: 30.8652 },
+                    { x: 555.575, y: 0 },
+                    { x: 555.575, y: 60.5 },
+                    { x: 136.5, y: 177.229 },
+                ],
+                -300,
+                580,
+                '<0.05',
+            );
         });
 
         return () => ctx.revert();
@@ -208,14 +289,20 @@ export default function Contact() {
     }, []);
 
     useEffect(() => {
+        // --vu is now a fixed design unit (1% of the reference width). Instead
+        // of scaling the unit, the whole 1920×1080 stage is uniformly scaled to
+        // fit the viewport, so the composition stays exact on any aspect ratio.
+        document.documentElement.style.setProperty(
+            '--vu',
+            `${REF_WIDTH / 100}px`,
+        );
+
         function update() {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const effectiveWidth = Math.min(w, h * (REF_WIDTH / REF_HEIGHT));
-            const cappedWidth = Math.min(effectiveWidth, REF_WIDTH);
-            document.documentElement.style.setProperty(
-                '--vu',
-                `${cappedWidth / 100}px`,
+            setScale(
+                Math.min(
+                    window.innerWidth / REF_WIDTH,
+                    window.innerHeight / REF_HEIGHT,
+                ),
             );
         }
         update();
@@ -228,321 +315,375 @@ export default function Contact() {
     }, []);
 
     return (
-        <div className="bg h-screen w-screen overflow-hidden">
-            <div className="transition-300 absolute z-0 h-full w-full ease-in"></div>
-            <div className="relative z-30 flex h-full w-full flex-col items-center justify-between pt-24 lg:flex-row lg:pt-0">
-                {/* Tangan + Handphone */}
-                <div className="bg h-screen w-screen overflow-hidden">
-                    <div className="transition-300 absolute z-0 h-full w-full bg-[#0A0C0F] opacity-70 ease-in"></div>
+        <div className="relative h-screen w-screen overflow-hidden">
+            <div className="absolute inset-0 z-0 bg-[#0A0C0F] opacity-40" />
 
-                    <div className="relative z-30 flex h-full w-full flex-col items-center justify-between pt-20 lg:flex-row lg:pt-0">
-                        {/* Combined Hand + Phone */}
+            {/* Fixed 1920×1080 stage, uniformly scaled to fit any viewport. */}
+            <div className="absolute inset-0 z-30 flex items-center justify-center">
+                <div
+                    className="relative shrink-0"
+                    style={{
+                        width: REF_WIDTH,
+                        height: REF_HEIGHT,
+                        transform: `scale(${scale})`,
+                        transformOrigin: 'center',
+                    }}
+                >
+                    <svg
+                        ref={decor1Ref}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="547"
+                        height="293"
+                        className="absolute right-[50%] top-[18%] scale-125 overflow-visible"
+                        viewBox="0 0 547 293"
+                        fill="none"
+                    >
+                        <path
+                            d="M194.639 -4.84054e-06L546.139 265L498.873 292.689L-0.000456216 51.281L194.639 -4.84054e-06Z"
+                            fill="#BF1E2E"
+                        />
+                    </svg>
+
+                    <svg
+                        ref={decor2Ref}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="905"
+                        height="390"
+                        className="absolute right-[55%] top-[35%] overflow-visible"
+                        viewBox="0 0 905 390"
+                        fill="none"
+                    >
+                        <path
+                            d="M0 0L904.5 207.5L827 367L79.5 390L0 0Z"
+                            fill="#BF1E2E"
+                        />
+                    </svg>
+
+                    <svg
+                        ref={decor3Ref}
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="556"
+                        height="178"
+                        className="absolute right-[62%] top-[80%] overflow-visible"
+                        viewBox="0 0 556 178"
+                        fill="none"
+                    >
+                        <path
+                            d="M0 30.8652L555.575 1.85321e-05L555.575 60.5L136.5 177.229L0 30.8652Z"
+                            fill="#BF1E2E"
+                        />
+                    </svg>
+                    <img
+                        ref={contactUsRef}
+                        className="r absolute -left-4 top-1/2 z-50 w-[50%] opacity-0"
+                        src={ContactUsText}
+                    />
+                    {/* Tangan + Handphone */}
+                    {/* Combined Hand + Phone */}
+                    <div
+                        ref={handPhoneRef}
+                        className="absolute bottom-0 z-30"
+                        style={{
+                            width: `calc(var(--vu)*70)`,
+                            height: `calc(var(--vu)*60)`,
+                            right: `calc(var(--vu)*(28 + ${SHIFT_VU}))`,
+                        }}
+                    >
+                        {/* Hand layer 2 */}
                         <div
-                            ref={handPhoneRef}
-                            className="absolute bottom-0 z-30"
+                            className="absolute bottom-0 z-20"
                             style={{
-                                width: `calc(var(--vu)*70)`,
-                                height: `calc(var(--vu)*60)`,
-                                right: `calc(var(--vu)*(28 + ${SHIFT_VU}))`,
+                                right: `calc(var(--vu)*0.8)`,
+                                bottom: `calc(var(--vu)*-2)`,
                             }}
                         >
-                            {/* Hand layer 2 */}
-                            <div
-                                className="absolute -bottom-5 z-20"
-                                style={{
-                                    right: `calc(var(--vu)*0.8)`,
-                                    bottom: `calc(var(--vu)*-2)`,
-                                }}
-                            >
-                                <img
-                                    src={Vector1}
-                                    style={{ width: `calc(var(--vu)*25)` }}
-                                    className="h-auto"
-                                />
-                            </div>
-
-                            {/* Fingers */}
-                            <div
-                                className="absolute bottom-0 z-50"
-                                style={{ right: `calc(var(--vu)*-40)` }}
-                            >
-                                <img
-                                    src={Fingers}
-                                    style={{ width: `calc(var(--vu)*13.021)` }}
-                                    className="h-auto"
-                                />
-                            </div>
-
-                            {/* Small finger */}
-                            <div
-                                className="absolute z-50"
-                                style={{
-                                    top: `calc(var(--vu)*27)`,
-                                    right: `calc(var(--vu)*-45.5)`,
-                                }}
-                            >
-                                <img
-                                    src={Fingers3}
-                                    style={{ width: `calc(var(--vu)*8.6)` }}
-                                    className="h-auto"
-                                />
-                            </div>
-
-                            {/* Phone body */}
-                            <div
-                                ref={phoneBodyRef}
-                                className="absolute z-10"
-                                style={{
-                                    bottom: `calc(var(--vu)*-6)`,
-                                    right: `calc(var(--vu)*-47)`,
-                                    width: `calc(var(--vu)*65)`,
-                                    height: `calc(var(--vu)*72)`,
-                                }}
-                            >
-                                <div className="relative h-full w-full">
-                                    {/* Main phone background */}
-                                    <PhoneBack3 className="block h-auto w-full" />
-
-                                    {/* Icon group */}
-                                    <div
-                                        ref={iconGroupsRef}
-                                        className="absolute z-40"
-                                        style={{
-                                            width: `calc(var(--vu)*36)`,
-                                            height: `calc(var(--vu)*42)`,
-                                            top: `calc(var(--vu)*22)`,
-                                            left: `calc(var(--vu)*16)`,
-                                        }}
-                                    >
-                                        <div
-                                            className="absolute flex h-full origin-top-left flex-col"
-                                            style={{
-                                                left: `calc(var(--vu)*2)`,
-                                                width: `calc(var(--vu)*25)`,
-
-                                                transform:
-                                                    'rotate(0deg) scale(1.06)',
-                                            }}
-                                        >
-                                            {/* WhatsApp */}
-                                            <div
-                                                data-icon
-                                                data-click-sound
-                                                data-href="https://wa.me/628123456789"
-                                                className="relative flex shrink-0 cursor-pointer items-center"
-                                            >
-                                                <img
-                                                    data-hover-bg
-                                                    src={Vector406}
-                                                    className="pointer-events-none absolute"
-                                                    style={{
-                                                        width: `calc(var(--vu)*28)`,
-                                                        top: '45%',
-                                                        left: `calc(var(--vu)*6.5)`,
-                                                        transform:
-                                                            'translateY(-50%)',
-                                                        opacity: 0,
-                                                    }}
-                                                />
-
-                                                <img
-                                                    src={Whatsapp}
-                                                    className="relative h-auto shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*13.021)`,
-                                                    }}
-                                                />
-
-                                                <div
-                                                    className="shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*1)`,
-                                                    }}
-                                                />
-
-                                                <img
-                                                    src={WhatsAppText}
-                                                    className="relative h-auto shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*18)`,
-                                                        marginTop: `calc(var(--vu)*0.5)`,
-                                                        marginLeft: `calc(var(--vu)*-0.9)`,
-                                                    }}
-                                                />
-                                            </div>
-
-                                            {/* Discord */}
-                                            <div
-                                                data-icon
-                                                data-click-sound
-                                                data-href="https://discord.gg/ppif"
-                                                className="relative flex shrink-0 cursor-pointer items-center"
-                                                style={{
-                                                    left: `calc(var(--vu)*-2.4)`,
-                                                }}
-                                            >
-                                                <img
-                                                    data-hover-bg
-                                                    src={Vector406}
-                                                    className="pointer-events-none absolute"
-                                                    style={{
-                                                        width: `calc(var(--vu)*35)`,
-                                                        top: '45%',
-                                                        left: `calc(var(--vu)*6.5)`,
-                                                        transform:
-                                                            'translateY(-50%)',
-                                                        opacity: 0,
-                                                    }}
-                                                />
-
-                                                <img
-                                                    src={Discord}
-                                                    className="relative h-auto shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*13.021)`,
-                                                    }}
-                                                />
-
-                                                <div
-                                                    className="shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*1)`,
-                                                    }}
-                                                />
-
-                                                <img
-                                                    src={DiscordText}
-                                                    className="relative h-auto shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*14)`,
-                                                        marginTop: `calc(var(--vu)*1.5)`,
-                                                        marginLeft: `calc(var(--vu)*-0.9)`,
-                                                    }}
-                                                />
-                                            </div>
-
-                                            {/* Instagram */}
-                                            <div
-                                                data-icon
-                                                data-click-sound
-                                                data-href="https://www.instagram.com/ppif.umn/"
-                                                className="relative mt-3 flex shrink-0 cursor-pointer items-center"
-                                                style={{
-                                                    left: `calc(var(--vu)*-3.9)`,
-                                                }}
-                                            >
-                                                <img
-                                                    data-hover-bg
-                                                    src={Vector406}
-                                                    className="pointer-events-none absolute"
-                                                    style={{
-                                                        width: `calc(var(--vu)*27.5)`,
-                                                        top: '45%',
-                                                        left: `calc(var(--vu)*6.5)`,
-                                                        transform:
-                                                            'translateY(-50%)',
-                                                        opacity: 0,
-                                                    }}
-                                                />
-
-                                                <img
-                                                    src={Instagram}
-                                                    className="relative h-auto shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*13.021)`,
-                                                    }}
-                                                />
-
-                                                <div
-                                                    className="shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*1)`,
-                                                    }}
-                                                />
-
-                                                <img
-                                                    src={InstagramText}
-                                                    className="relative h-auto shrink-0"
-                                                    style={{
-                                                        width: `calc(var(--vu)*18)`,
-                                                        marginTop: `calc(var(--vu)*0.7)`,
-                                                        marginLeft: `calc(var(--vu)*-0.9)`,
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <img
-                                            ref={streakRef}
-                                            data-arrow
-                                            src={ArrowLeft}
-                                            className="absolute -left-4 -z-10 scale-x-[0.8] scale-y-[0.8]"
-                                            style={{
-                                                width: `calc(var(--vu)*15.625)`,
-                                                height: `calc(var(--vu)*33.854)`,
-                                            }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                            <img
+                                src={Vector1}
+                                style={{ width: `calc(var(--vu)*25)` }}
+                                className="h-auto"
+                            />
                         </div>
 
-                        {/* Bubble Chat */}
+                        {/* Fingers */}
                         <div
-                            ref={bubbleRef}
-                            className="absolute"
+                            className="absolute bottom-0 z-50"
+                            style={{ right: `calc(var(--vu)*-40)` }}
+                        >
+                            <img
+                                src={Fingers}
+                                style={{ width: `calc(var(--vu)*13.021)` }}
+                                className="h-auto"
+                            />
+                        </div>
+
+                        {/* Small finger */}
+                        <div
+                            className="absolute z-50"
                             style={{
-                                bottom: `calc(var(--vu)*1)`,
-                                right: '10%',
-                                transform: 'translateX(-50%)',
-                                width: `calc(var(--vu)*72)`,
+                                top: `calc(var(--vu)*27)`,
+                                right: `calc(var(--vu)*-45.5)`,
                             }}
                         >
-                            <DecorShape
-                                ref={shape1Ref}
-                                src={Shape1}
-                                alt=""
-                                className="left-16 top-4 z-50"
-                                imageClassName="-scale-y-100"
+                            <img
+                                src={Fingers3}
+                                style={{ width: `calc(var(--vu)*8.6)` }}
+                                className="h-auto"
                             />
-                            <div className="relative h-auto w-full">
-                                {/* Bubble background */}
-                                <img
-                                    ref={bubbleAjaRef}
-                                    src={BubbleChat}
-                                    className="block h-auto w-full"
-                                />
+                        </div>
 
-                                {/* Text wrapper */}
+                        {/* Phone body */}
+                        <div
+                            ref={phoneBodyRef}
+                            className="absolute z-10"
+                            style={{
+                                bottom: `calc(var(--vu)*-6)`,
+                                right: `calc(var(--vu)*-47)`,
+                                width: `calc(var(--vu)*65)`,
+                                height: `calc(var(--vu)*72)`,
+                            }}
+                        >
+                            <div className="relative h-full w-full">
+                                {/* Main phone background */}
+                                <PhoneBack3 className="block h-auto w-full" />
+
+                                {/* Icon group */}
                                 <div
-                                    ref={bubbleTextRef}
-                                    className="absolute z-20 flex flex-col items-start -space-y-20"
+                                    ref={iconGroupsRef}
+                                    className="absolute z-40"
                                     style={{
-                                        top: `calc(var(--vu)*13)`,
-                                        left: '47.7%',
-                                        transform: 'translateX(-55%)',
-                                        width: `calc(var(--vu)*48)`,
+                                        width: `calc(var(--vu)*36)`,
+                                        height: `calc(var(--vu)*42)`,
+                                        top: `calc(var(--vu)*22)`,
+                                        left: `calc(var(--vu)*16)`,
                                     }}
                                 >
-                                    {/* CONTACT */}
-                                    <img
-                                        src={ContactText}
-                                        className="block h-auto w-full"
-                                    />
-
-                                    {/* US */}
-                                    <img
-                                        src={UsText}
-                                        className="block h-auto"
+                                    <div
+                                        className="absolute flex h-full origin-top-left flex-col"
                                         style={{
-                                            width: `calc(var(--vu)*19)`,
-                                            marginLeft: `calc(var(--vu)*20)`,
+                                            left: `calc(var(--vu)*2)`,
+                                            width: `calc(var(--vu)*25)`,
+
+                                            transform:
+                                                'rotate(0deg) scale(1.06)',
+                                        }}
+                                    >
+                                        {/* WhatsApp */}
+                                        <div
+                                            data-icon
+                                            data-click-sound
+                                            data-href="https://wa.me/628123456789"
+                                            className="relative flex shrink-0 cursor-pointer items-center"
+                                        >
+                                            <img
+                                                data-hover-bg
+                                                src={Vector406}
+                                                className="pointer-events-none absolute"
+                                                style={{
+                                                    width: `calc(var(--vu)*28)`,
+                                                    top: '45%',
+                                                    left: `calc(var(--vu)*6.5)`,
+                                                    transform:
+                                                        'translateY(-50%)',
+                                                    opacity: 0,
+                                                }}
+                                            />
+
+                                            <img
+                                                src={Whatsapp}
+                                                className="relative h-auto shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*13.021)`,
+                                                }}
+                                            />
+
+                                            <div
+                                                className="shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*1)`,
+                                                }}
+                                            />
+
+                                            <img
+                                                src={WhatsAppText}
+                                                className="relative h-auto shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*18)`,
+                                                    marginTop: `calc(var(--vu)*0.5)`,
+                                                    marginLeft: `calc(var(--vu)*-0.9)`,
+                                                }}
+                                            />
+                                        </div>
+
+                                        {/* Discord */}
+                                        <div
+                                            data-icon
+                                            data-click-sound
+                                            data-href="https://discord.gg/ppif"
+                                            className="relative flex shrink-0 cursor-pointer items-center"
+                                            style={{
+                                                left: `calc(var(--vu)*-2.4)`,
+                                            }}
+                                        >
+                                            <img
+                                                data-hover-bg
+                                                src={Vector406}
+                                                className="pointer-events-none absolute"
+                                                style={{
+                                                    width: `calc(var(--vu)*35)`,
+                                                    top: '45%',
+                                                    left: `calc(var(--vu)*6.5)`,
+                                                    transform:
+                                                        'translateY(-50%)',
+                                                    opacity: 0,
+                                                }}
+                                            />
+
+                                            <img
+                                                src={Discord}
+                                                className="relative h-auto shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*13.021)`,
+                                                }}
+                                            />
+
+                                            <div
+                                                className="shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*1)`,
+                                                }}
+                                            />
+
+                                            <img
+                                                src={DiscordText}
+                                                className="relative h-auto shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*14)`,
+                                                    marginTop: `calc(var(--vu)*1.5)`,
+                                                    marginLeft: `calc(var(--vu)*-0.9)`,
+                                                }}
+                                            />
+                                        </div>
+
+                                        {/* Instagram */}
+                                        <div
+                                            data-icon
+                                            data-click-sound
+                                            data-href="https://www.instagram.com/ppif.umn/"
+                                            className="relative mt-3 flex shrink-0 cursor-pointer items-center"
+                                            style={{
+                                                left: `calc(var(--vu)*-3.9)`,
+                                            }}
+                                        >
+                                            <img
+                                                data-hover-bg
+                                                src={Vector406}
+                                                className="pointer-events-none absolute"
+                                                style={{
+                                                    width: `calc(var(--vu)*27.5)`,
+                                                    top: '45%',
+                                                    left: `calc(var(--vu)*6.5)`,
+                                                    transform:
+                                                        'translateY(-50%)',
+                                                    opacity: 0,
+                                                }}
+                                            />
+
+                                            <img
+                                                src={Instagram}
+                                                className="relative h-auto shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*13.021)`,
+                                                }}
+                                            />
+
+                                            <div
+                                                className="shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*1)`,
+                                                }}
+                                            />
+
+                                            <img
+                                                src={InstagramText}
+                                                className="relative h-auto shrink-0"
+                                                style={{
+                                                    width: `calc(var(--vu)*18)`,
+                                                    marginTop: `calc(var(--vu)*0.7)`,
+                                                    marginLeft: `calc(var(--vu)*-0.9)`,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <img
+                                        ref={streakRef}
+                                        data-arrow
+                                        src={ArrowLeft}
+                                        className="absolute -left-4 -z-10 scale-x-[0.8] scale-y-[0.8]"
+                                        style={{
+                                            width: `calc(var(--vu)*15.625)`,
+                                            height: `calc(var(--vu)*33.854)`,
                                         }}
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    {/* Bubble Chat */}
+                    {/* <div
+                        ref={bubbleRef}
+                        className="absolute"
+                        style={{
+                            bottom: `calc(var(--vu)*1)`,
+                            right: '0%',
+                            transform: 'translateX(-50%)',
+                            width: `calc(var(--vu)*68)`,
+                        }}
+                    >
+                        <DecorShape
+                            ref={shape1Ref}
+                            src={Shape1}
+                            alt=""
+                            className="left-16 top-4 z-50"
+                            imageClassName="-scale-y-100"
+                        />
+                        <div className="relative h-auto w-full">
+                        
+                            <img
+                                ref={bubbleAjaRef}
+                                src={BubbleChat}
+                                className="block h-auto w-full"
+                            />
+
+                        
+                            <div
+                                ref={bubbleTextRef}
+                                className="absolute z-20 flex flex-col items-start -space-y-20"
+                                style={{
+                                    top: `calc(var(--vu)*13)`,
+                                    left: '47.7%',
+                                    transform: 'translateX(-55%)',
+                                    width: `calc(var(--vu)*48)`,
+                                }}
+                            >
+                              
+                                <img
+                                    src={ContactText}
+                                    className="block h-auto w-full"
+                                />
+                           
+                                <img
+                                    src={UsText}
+                                    className="block h-auto"
+                                    style={{
+                                        width: `calc(var(--vu)*19)`,
+                                        marginLeft: `calc(var(--vu)*20)`,
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div> */}
                 </div>
             </div>
         </div>

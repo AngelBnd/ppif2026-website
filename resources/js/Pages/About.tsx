@@ -39,10 +39,11 @@ const informationPlaceholder: {
         topic: 'ppif',
         tabs: {
             information:
-                'ya lorem lorem ppiflah lorem h lorem lorem ppiflah lorem lorem ppiflah lorem lorem ppiflah lore h lorem lorem ppiflah lorem lorem ppiflah lorem lorem ppiflah lore h lorem lorem ppiflah lorem lorem ppiflah lorem lorem ppiflah lore h lorem lorem ppiflah lorem lorem ppiflah lorem lorem ppiflah lore lorem ppiflah lorem lorem ppiflah lorem lorem ppiflah lorem lorem ppiflah lorem lorem ppiflah orem lorem ppiflah lorem lorem ppiflah orem lorem ppiflah lorem lorem ppiflah',
+                'Perkenalan Prodi Informatika (PPIF) merupakan rangkaian kegiatan orientasi bagi mahasiswa baru Program Studi Informatika Universitas Multimedia Nusantara. PPIF bertujuan membantu mahasiswa mengenal lingkungan perkuliahan, budaya akademik, dosen, kakak tingkat, serta berbagai organisasi dan komunitas yang ada di Program Studi Informatika. Melalui berbagai kegiatan yang interaktif dan menyenangkan, peserta diajak membangun relasi, memahami nilai-nilai kebersamaan, serta mempersiapkan diri untuk menjalani kehidupan sebagai mahasiswa Informatika UMN. PPIF menjadi langkah awal untuk membentuk rasa kekeluargaan dan semangat bertumbuh bersama selama masa perkuliahan.',
             gallery:
-                'Here are the gallery pictures for PPIF 2025. Scroll through the gallery to explore the moments, and click on any picture to view it in more detail.',
-            divisions: 'Here are the divisions in PPIF 2026.',
+                'Berikut adalah dokumentasi kegiatan yang berkaitan dengan Perkenalan Prodi Informatika. Jelajahi galeri untuk melihat berbagai momen, lalu klik pada gambar yang diinginkan untuk melihatnya dalam ukuran yang lebih besar.',
+            divisions:
+                'Berikut adalah divisi-divisi yang berperan dalam penyelenggaraan Perkenalan Prodi Informatika 2026.',
         },
         images: [
             '/pngs/placeholderImg3.webp',
@@ -61,9 +62,9 @@ const informationPlaceholder: {
         topic: 'informatics',
         tabs: {
             information:
-                'SY SGT SUKA SAMA SMEMUA MATKU LDI NFORATMATIAK KAJWJADASDKADSSAS LOREM IPSUM APALAGI KALAU DOSENNYA KEREN KWKWKWKWKWKWKSY SGT SUKA SAMA SMEMUA MATKU LDI NFORATMATIAK KAJWJADASDKADSSAS LOREM IPSUM APALAGI KALAU DOSENNYA KEREN KWKWKWKWKWKWK',
+                'Program Studi Informatika Universitas Multimedia Nusantara mempersiapkan mahasiswa untuk menguasai ilmu komputer sekaligus mampu menerapkannya dalam berbagai bidang industri. Mahasiswa akan mempelajari dasar-dasar pemrograman, struktur data, algoritma, basis data, rekayasa perangkat lunak, kecerdasan buatan, pengembangan aplikasi, keamanan siber, hingga komputasi awan. Selain pembelajaran di kelas, mahasiswa juga didorong untuk mengembangkan kemampuan berpikir kritis, bekerja sama dalam tim, berinovasi, serta memperoleh pengalaman melalui proyek nyata, kompetisi, penelitian, dan program magang. Dengan kurikulum yang terus mengikuti perkembangan teknologi, Program Studi Informatika UMN bertujuan menghasilkan lulusan yang siap menghadapi tantangan dunia digital dan memberikan kontribusi bagi masyarakat.',
             gallery:
-                'Here are the gallery pictures for Informatics. Scroll through the gallery to explore the moments, and click on any picture to view it in more detail.',
+                'Berikut adalah dokumentasi kegiatan yang berkaitan dengan Informatika UMN. Jelajahi galeri untuk melihat berbagai momen, lalu klik pada gambar yang diinginkan untuk melihatnya dalam ukuran yang lebih besar.',
             divisions: '',
         },
         images: [
@@ -90,6 +91,7 @@ export default function About() {
     const morphBoxRef = useRef<HTMLDivElement>(null);
     const tabRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const staticVideoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -199,6 +201,18 @@ export default function About() {
             setRenderMainContent(true);
         }
     }, [activeTab]);
+
+    // Pause the codie background videos on the gallery tab, resume otherwise.
+    useEffect(() => {
+        const video = videoRef.current ?? staticVideoRef.current;
+        if (!video) return;
+
+        if (activeTab === 'gallery') {
+            video.pause();
+        } else {
+            video.play().catch(() => {});
+        }
+    }, [activeTab, codieIntroDone]);
 
     useEffect(() => {
         const main = mainWrapperInfo.current;
@@ -382,10 +396,7 @@ export default function About() {
     return (
         <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden">
             <div className="transition-300 pointer-events-none absolute z-0 h-full w-full bg-[#7C131E] opacity-70 ease-in" />
-            <div
-                ref={codieRef}
-                className="absolute -bottom-2 left-0 z-0 h-auto"
-            >
+            <div ref={codieRef} className="absolute inset-0 z-0">
                 {!codieIntroDone ? (
                     <video
                         ref={videoRef}
@@ -393,7 +404,7 @@ export default function About() {
                         muted
                         playsInline
                         preload="auto"
-                        className="block h-auto w-full"
+                        className="block h-full w-full object-cover object-bottom"
                         onEnded={() => setCodieIntroDone(true)}
                     >
                         <source
@@ -403,12 +414,13 @@ export default function About() {
                     </video>
                 ) : (
                     <video
+                        ref={staticVideoRef}
                         key="static"
                         autoPlay
                         loop
                         muted
                         playsInline
-                        className="block h-auto w-full"
+                        className="block h-full w-full object-cover object-bottom"
                     >
                         <source
                             src="/videos/CODIESTATIC1.webm"
