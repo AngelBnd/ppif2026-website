@@ -49,12 +49,13 @@ export default function Contact() {
             if (contactUs) {
                 gsap.fromTo(
                     contactUs,
-                    { x: 80, opacity: 0, yPercent: -50, rotation: 3 },
+                    { x: 80, opacity: 0, yPercent: -50, rotation: -3 },
                     {
                         x: 0,
                         opacity: 1,
                         yPercent: -50,
-                        rotation: 3,
+                        rotation: 6,
+                        transformOrigin: 'right center',
                         duration: 0.6,
                         delay: 0.6,
                         ease: 'bounce.out',
@@ -101,16 +102,34 @@ export default function Contact() {
                     position,
                 );
 
-                leftIdx.forEach((i) => {
+                const startIdle = () => {
+                    leftIdx.forEach((i, k) => {
+                        gsap.to(work[i], {
+                            x: pts[i].x + (k === 0 ? 15 : -15),
+                            y: pts[i].y + (k === 0 ? -8 : 10),
+                            duration: 0.6 + k * 0.6,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: 'sine.inOut',
+                            onUpdate: () =>
+                                path.setAttribute('d', buildD(work)),
+                        });
+                    });
+                };
+
+                leftIdx.forEach((i, k) => {
+                    const isLast = k === leftIdx.length - 1;
                     tl.to(
                         work[i],
                         {
                             x: pts[i].x,
                             y: pts[i].y,
-                            duration: 0.5,
+                            duration: 0.3,
                             ease: 'back.out(1.7)',
                             onUpdate: () =>
                                 path.setAttribute('d', buildD(work)),
+                            // kick off the idle drift when the last point lands
+                            onComplete: isLast ? startIdle : undefined,
                         },
                         position,
                     );
@@ -375,7 +394,7 @@ export default function Contact() {
                     </svg>
                     <img
                         ref={contactUsRef}
-                        className="r absolute -left-4 top-1/2 z-50 w-[50%] opacity-0"
+                        className="absolute -left-4 top-1/2 z-50 w-[50%] opacity-0"
                         src={ContactUsText}
                     />
                     {/* Tangan + Handphone */}
@@ -629,61 +648,6 @@ export default function Contact() {
                             </div>
                         </div>
                     </div>
-
-                    {/* Bubble Chat */}
-                    {/* <div
-                        ref={bubbleRef}
-                        className="absolute"
-                        style={{
-                            bottom: `calc(var(--vu)*1)`,
-                            right: '0%',
-                            transform: 'translateX(-50%)',
-                            width: `calc(var(--vu)*68)`,
-                        }}
-                    >
-                        <DecorShape
-                            ref={shape1Ref}
-                            src={Shape1}
-                            alt=""
-                            className="left-16 top-4 z-50"
-                            imageClassName="-scale-y-100"
-                        />
-                        <div className="relative h-auto w-full">
-                        
-                            <img
-                                ref={bubbleAjaRef}
-                                src={BubbleChat}
-                                className="block h-auto w-full"
-                            />
-
-                        
-                            <div
-                                ref={bubbleTextRef}
-                                className="absolute z-20 flex flex-col items-start -space-y-20"
-                                style={{
-                                    top: `calc(var(--vu)*13)`,
-                                    left: '47.7%',
-                                    transform: 'translateX(-55%)',
-                                    width: `calc(var(--vu)*48)`,
-                                }}
-                            >
-                              
-                                <img
-                                    src={ContactText}
-                                    className="block h-auto w-full"
-                                />
-                           
-                                <img
-                                    src={UsText}
-                                    className="block h-auto"
-                                    style={{
-                                        width: `calc(var(--vu)*19)`,
-                                        marginLeft: `calc(var(--vu)*20)`,
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </div> */}
                 </div>
             </div>
         </div>
