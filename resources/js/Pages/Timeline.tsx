@@ -68,6 +68,8 @@ export default function Timeline() {
     const satAnimationRef = useRef<HTMLDivElement | null>(null);
     const tueAnimationRef = useRef<HTMLDivElement | null>(null);
     const layoutRef = useRef<HTMLDivElement | null>(null);
+    const knifeAudioRef = useRef<HTMLAudioElement | null>(null);
+    const dropAudioRef = useRef<HTMLAudioElement | null>(null);
 
     const [view, setView] = useState<TimelineView>(2);
     const [modalOpen, setModalOpen] = useState(false);
@@ -77,6 +79,39 @@ export default function Timeline() {
     const currentInfo = timelineInformation[view];
     const HeaderSVG = currentInfo.header;
     const hasMountedRef = useRef(false);
+
+    useEffect(() => {
+        const knifeAudio = new Audio('/audio/knife.wav');
+        knifeAudio.volume = 0.24;
+        knifeAudio.preload = 'auto';
+        knifeAudioRef.current = knifeAudio;
+
+        const dropAudio = new Audio('/audio/drop.mp3');
+        dropAudio.preload = 'auto';
+        dropAudio.volume = 0.2;
+        dropAudioRef.current = dropAudio;
+
+        return () => {
+            knifeAudio.pause();
+            knifeAudioRef.current = null;
+            dropAudio.pause();
+            dropAudioRef.current = null;
+        };
+    }, []);
+
+    const playKnife = () => {
+        const audio = knifeAudioRef.current;
+        if (!audio) return;
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+    };
+
+    const playDrop = () => {
+        const audio = dropAudioRef.current;
+        if (!audio) return;
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+    };
 
     useLayoutEffect(() => {
         const stickers = [
@@ -100,6 +135,7 @@ export default function Timeline() {
                     },
                     {
                         y: 0,
+                        onStart: playDrop,
                         duration: 0.6,
                         ease: 'power4.in',
                     },
@@ -151,6 +187,7 @@ export default function Timeline() {
 
                         duration: 0.07,
                         ease: 'power3.out',
+                        onStart: playKnife,
                     },
                     '+=0.1',
                 )
@@ -221,6 +258,7 @@ export default function Timeline() {
                         delay: 0.3,
                         duration: 0.07,
                         ease: 'power3.out',
+                        onStart: playKnife,
                     },
                 )
                 .to(knife, {

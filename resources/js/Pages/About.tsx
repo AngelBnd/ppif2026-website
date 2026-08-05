@@ -63,7 +63,7 @@ const informationPlaceholder: {
             '/pngs/ppif/15.webp',
             '/pngs/ppif/16.webp',
             '/pngs/ppif/17.webp',
-            '/pngs/ppif/18.webp'
+            '/pngs/ppif/18.webp',
         ],
     },
     {
@@ -92,7 +92,7 @@ const informationPlaceholder: {
             '/pngs/informatics/14.webp',
             '/pngs/informatics/15.webp',
             '/pngs/informatics/16.webp',
-            '/pngs/informatics/17.webp'
+            '/pngs/informatics/17.webp',
         ],
     },
 ];
@@ -457,7 +457,7 @@ export default function About() {
                             {/* bg-blue-600 */}
                             <div className="absolute bottom-0 left-[16%] right-0 top-[4%] z-20">
                                 <Heading
-                                    className=""
+                                    className="z-[0]"
                                     currentInfo={currentInfo}
                                 />
                                 <div

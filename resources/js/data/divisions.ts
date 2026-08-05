@@ -603,7 +603,7 @@ export const divisionData: DivisionData[] = [
             bottom: '2%',
         },
         namePositionPopup: {
-            left: '2%',
+            left: '12%',
             bottom: '-12%',
         },
         widthPopup: '120%',
@@ -626,8 +626,8 @@ export const divisionData: DivisionData[] = [
             bottom: '5%',
         },
         namePositionPopup: {
-            left: '0%',
-            bottom: '-11%',
+            left: '10%',
+            bottom: '-8%',
         },
         widthPopup: '120%',
     },
@@ -695,7 +695,7 @@ export const divisionData: DivisionData[] = [
             bottom: '5%',
         },
         namePositionPopup: {
-            left: '5%',
+            left: '12%',
             bottom: '-9%',
         },
         widthPopup: '118%',
@@ -718,7 +718,7 @@ export const divisionData: DivisionData[] = [
             bottom: '7%',
         },
         namePositionPopup: {
-            left: '0%',
+            left: '12%',
             bottom: '-8%',
         },
         widthPopup: '120%',
@@ -741,8 +741,8 @@ export const divisionData: DivisionData[] = [
             bottom: '4%',
         },
         namePositionPopup: {
-            left: '0%',
-            bottom: '-10%',
+            left: '14%',
+            bottom: '-7%',
         },
         widthPopup: '120%',
     },
@@ -810,8 +810,8 @@ export const divisionData: DivisionData[] = [
             bottom: '6%',
         },
         namePositionPopup: {
-            left: '6%',
-            bottom: '-6%',
+            left: '13%',
+            bottom: '-5%',
         },
         widthPopup: '116%',
     },
