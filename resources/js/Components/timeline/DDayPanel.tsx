@@ -204,7 +204,7 @@ export default function DDayPanel({
 
                 <div
                     ref={contentRef}
-                    className="absolute left-[30%] top-[15%] mt-4 flex h-[33rem] w-[56%] flex-col items-start gap-[1vmin]"
+                    className="absolute left-[28%] top-[15%] mt-4 flex h-[33rem] w-[56%] flex-col items-start gap-[1vmin]"
                 >
                     {/* 1. D-DAY PPIF title */}
                     {/* Removed absolute positioning; it now takes 100% of the wrapper's width */}
@@ -231,7 +231,7 @@ export default function DDayPanel({
                     {/* 2. Description */}
                     {/* Swapped absolute positioning for margin-left (ml-[12%]) to keep the staggered look */}
                     <div className="my-6 [perspective:380px]">
-                        <div className="mb-[0vmin] ml-[12%] -rotate-6 space-y-2 font-arsenal text-[2.5vmin] leading-snug [transform:rotateZ(-4deg)_rotateY(-9deg)_scaleY(1.12)_scaleX(1.22)_skewX(2deg)]">
+                        <div className="mb-[0vmin] ml-[12%] -rotate-6 space-y-2 font-arsenal text-[2.5vmin] leading-snug [transform:rotateZ(-4deg)_rotateY(-9deg)_scaleY(1.12)_scaleX(1.1)_skewX(2deg)]">
                             <p>{informationDisplayed}</p>
                         </div>
                     </div>

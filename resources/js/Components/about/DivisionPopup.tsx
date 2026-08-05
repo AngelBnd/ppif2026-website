@@ -13,6 +13,7 @@ import IdentityBox from '@/assets/about/divisions/IdentityBox.svg?react';
 import LeftArrow from '@/assets/svgs/LeftArrow.svg?react';
 import RightArrow from '@/assets/svgs/RightArrow.svg?react';
 
+import divbg from '@/assets/about/divisions/divbg.webp';
 import BackButtonSVG from '@/assets/icons/BackButtonSVG.svg';
 import Button from '../global/Button';
 
@@ -609,6 +610,7 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
             <div ref={wrapperRef} className="absolute z-40 h-screen w-screen">
                 <div className="absolute z-0 h-screen w-screen bg-[#7C131E] opacity-65" />
 
+                <img className="absolute left-0 z-[0]" src={divbg} />
                 <div className="absolute -left-[10%] top-12">
                     <DivPopupBG className="block h-auto w-[85rem]" />
                 </div>
@@ -653,7 +655,7 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                                         src={data?.picture}
                                         alt={data?.name}
                                         draggable={false}
-                                        className="absolute bottom-0 left-1/2 z-10 h-full w-auto -translate-x-1/2 select-none object-contain"
+                                        className="absolute -bottom-3 left-1/2 z-10 -translate-x-1/2 select-none object-contain"
                                     />
                                 </div>
                             ))}

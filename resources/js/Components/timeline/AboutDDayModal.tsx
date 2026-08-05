@@ -160,7 +160,7 @@ export default function AboutDDayModal({
     return (
         <div
             ref={modalWrapperRef}
-            className="fixed inset-0 z-[60] flex items-center justify-center"
+            className="fixed inset-0 z-[60] flex h-screen w-screen items-center justify-center"
             role="dialog"
             aria-modal="true"
             aria-label={`About ${displayName}`}
@@ -281,20 +281,20 @@ export default function AboutDDayModal({
                         </div>
 
                         {/* Back button */}
-                        <button
-                            type="button"
-                            onClick={handleClose}
-                            className="absolute bottom-[-1%] right-[-14%] -rotate-2 transition duration-200 hover:scale-105 active:scale-95"
-                        >
-                            <img
-                                src={backButtonImg}
-                                alt="Back"
-                                className="h-[13vmin] w-auto object-contain"
-                            />
-                        </button>
                     </div>
                 </div>
             </div>
+            <button
+                type="button"
+                onClick={handleClose}
+                className="absolute bottom-6 right-6 transition duration-200 hover:scale-105 active:scale-95"
+            >
+                <img
+                    src={backButtonImg}
+                    alt="Back"
+                    className="h-[13vmin] w-auto object-contain"
+                />
+            </button>
         </div>
     );
 }

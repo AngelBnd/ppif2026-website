@@ -1,21 +1,31 @@
 ﻿import Button from '@/Components/global/Button';
 
+import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import { getRevealedName } from '@/services/gameApi';
+import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import backgroundFinal from '../../../assets/games/finalPage/finalPage.webp';
-import BackButton from '@/assets/icons/BackButtonSVG.svg';
-import { router } from '@inertiajs/react';
 
-import logo from '../../../assets/games/finalPage/logoStella.webp';
-// import logo from '../../../assets/games/finalPage/logoNexus.webp';
-// import logo from '../../../assets/games/finalPage/logoCosmo.webp';
+import Sparkle from '@/Components/game/Sparkle';
+// Per-team logos live in public/webp/logotim/<teamId>.webp (served from root).
+import fallbackLogo from '../../../assets/games/finalPage/logoStella.webp';
 
 type Props = {
     onJoined: () => void;
 };
 
-export default function ErrorGimmick({  }: Props) {
+export default function ErrorGimmick({}: Props) {
     const [targetWord, setTargetWord] = useState('');
+
+    // Resolve the team logo from the joined team's id (same key GameHub sets).
+    const [logo, setLogo] = useState(fallbackLogo);
+    useEffect(() => {
+        const teamId = sessionStorage.getItem('teamId');
+        if (teamId) {
+            setLogo(`/webp/logotim/${teamId}.webp`);
+        }
+    }, []);
+
     useEffect(() => {
         async function loadTargetWord() {
             try {
@@ -38,7 +48,6 @@ export default function ErrorGimmick({  }: Props) {
                 backgroundPosition: 'center',
             }}
         >
-
             <Button
                 onClick={() => {
                     router.visit('/');
@@ -48,28 +57,36 @@ export default function ErrorGimmick({  }: Props) {
                 iconClassName="w-full"
             />
 
-            <section className="right-[3%] bottom-[32%] flex items-center justify-center gap-6">
-                <div className="logo-fade-in absolute top-[40%] left-[39%] h-[670px] w-[1067.5008px] -rotate-9 overflow-hidden">
+            <Sparkle size={120} left="12%" top="18%" startDelay={0.4} />
+            <Sparkle size={300} left="32%" top="32%" startDelay={0.4} />
+            <Sparkle size={120} left="40%" top="22%" startDelay={0.4} />
+            <Sparkle size={120} left="30%" top="82%" startDelay={0.4} />
+
+            <Sparkle size={320} left="80%" top="25%" startDelay={2.8} />
+
+            <Sparkle size={45} left="45%" top="65%" startDelay={5.1} />
+
+            <section className="relative flex h-screen w-screen items-center justify-center">
+                <div className="logo-fade-in absolute bottom-[55%] right-[-20%] w-[50%] -translate-x-1/2 -rotate-12">
                     <img
                         src={logo}
                         alt=""
                         aria-hidden="true"
-                        className="glitch-layer glitch-r h-full w-full object-contain"
+                        className="glitch-layer glitch-r block h-auto w-full object-contain"
                     />
                     <img
                         src={logo}
                         alt=""
                         aria-hidden="true"
-                        className="glitch-layer glitch-b h-full w-full object-contain"
+                        className="glitch-layer glitch-b block h-auto w-full object-contain"
                     />
                     <img
                         src={logo}
                         alt="logo"
-                        className="glitch-layer glitch-base h-full w-full object-contain"
+                        className="glitch-layer glitch-base block h-auto w-full object-contain"
                     />
                 </div>
             </section>
-
             <style>{`
                 .logo-fade-in {
                     opacity: 0;
