@@ -11,7 +11,7 @@ import Sparkle from '@/Components/game/Sparkle';
 import fallbackLogo from '../../../assets/games/finalPage/logoStella.webp';
 
 type Props = {
-    onJoined: () => void;
+    onJoined?: () => void;
 };
 
 export default function ErrorGimmick({}: Props) {
