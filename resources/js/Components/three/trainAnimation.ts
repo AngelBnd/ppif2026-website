@@ -6,11 +6,11 @@ import { Object3D, PerspectiveCamera } from 'three';
 // trainRight toward -X. The two run on independent timers (async).
 const TRAIN_LEFT_START_X = -20; // parked off-screen; slides toward +X
 const TRAIN_LEFT_END_X = 400; // resets once X passes this
-const TRAIN_LEFT_SPEED = 100; // units per second
+const TRAIN_LEFT_SPEED = 90; // units per second
 
 const TRAIN_RIGHT_START_X = 20; // parked off-screen; slides toward -X
 const TRAIN_RIGHT_END_X = -400; // resets once X passes this
-const TRAIN_RIGHT_SPEED = 100; // units per second
+const TRAIN_RIGHT_SPEED = 90; // units per second
 
 const TRAIN_MIN_WAIT = 5; // seconds between passes (min)
 const TRAIN_MAX_WAIT = 10; // seconds between passes (max)

@@ -490,8 +490,8 @@ export default function Contact() {
                                         <div
                                             data-icon
                                             data-click-sound
-                                            data-href="https://wa.me/628123456789"
-                                            className="relative flex shrink-0 cursor-pointer items-center"
+                                            // data-href="https://wa.me/628123456789"
+                                            className="relative flex shrink-0 items-center"
                                         >
                                             <img
                                                 data-hover-bg
@@ -509,7 +509,7 @@ export default function Contact() {
 
                                             <img
                                                 src={Whatsapp}
-                                                className="relative h-auto shrink-0"
+                                                className="relative h-auto shrink-0 opacity-50"
                                                 style={{
                                                     width: `calc(var(--vu)*13.021)`,
                                                 }}
@@ -524,7 +524,7 @@ export default function Contact() {
 
                                             <img
                                                 src={WhatsAppText}
-                                                className="relative h-auto shrink-0"
+                                                className="relative h-auto shrink-0 opacity-50"
                                                 style={{
                                                     width: `calc(var(--vu)*18)`,
                                                     marginTop: `calc(var(--vu)*0.5)`,
@@ -533,12 +533,11 @@ export default function Contact() {
                                             />
                                         </div>
 
-                                        {/* Discord */}
                                         <div
                                             data-icon
                                             data-click-sound
-                                            data-href="https://discord.gg/ppif"
-                                            className="relative flex shrink-0 cursor-pointer items-center"
+                                            // data-href="https://discord.gg/ppif"
+                                            className="relative flex shrink-0 items-center"
                                             style={{
                                                 left: `calc(var(--vu)*-2.4)`,
                                             }}
@@ -559,7 +558,7 @@ export default function Contact() {
 
                                             <img
                                                 src={Discord}
-                                                className="relative h-auto shrink-0"
+                                                className="relative h-auto shrink-0 opacity-50"
                                                 style={{
                                                     width: `calc(var(--vu)*13.021)`,
                                                 }}
@@ -574,7 +573,7 @@ export default function Contact() {
 
                                             <img
                                                 src={DiscordText}
-                                                className="relative h-auto shrink-0"
+                                                className="relative h-auto shrink-0 opacity-50"
                                                 style={{
                                                     width: `calc(var(--vu)*14)`,
                                                     marginTop: `calc(var(--vu)*1.5)`,
@@ -583,7 +582,6 @@ export default function Contact() {
                                             />
                                         </div>
 
-                                        {/* Instagram */}
                                         <div
                                             data-icon
                                             data-click-sound

@@ -28,7 +28,12 @@ import { cameraPresets, type CameraPreset } from './cameraPresets';
 import createVideoTexture from './createVideoTexture';
 import { createGlitchComposer, GLITCH_LAYER } from './glitchComposer';
 import { loadAnimatedModel } from './loadModels';
-import { createTrains, initTrain, parkTrain, updateTrain } from './trainAnimation';
+import {
+    createTrains,
+    initTrain,
+    parkTrain,
+    updateTrain,
+} from './trainAnimation';
 
 type ModelBackgroundProps = {
     preset?: CameraPreset;
@@ -399,9 +404,6 @@ export default function ModelBackground({
                     });
                 }
             });
-
-            // Look for ceiling rows here and check `casts` — it must be false.
-            console.table(bgMeshes);
 
             scene.add(model);
         });
