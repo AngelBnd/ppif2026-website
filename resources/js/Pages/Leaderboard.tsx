@@ -44,8 +44,8 @@ export default function Leaderboard({
                         <a
                             href={
                                 includeInProgress
-                                    ? '/panitia/leaderboard'
-                                    : '/panitia/leaderboard?all=1'
+                                    ? window.location.pathname
+                                    : `${window.location.pathname}?all=1`
                             }
                             className="text-sm text-white/60 underline hover:text-white"
                         >
