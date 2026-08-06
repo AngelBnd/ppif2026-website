@@ -39,7 +39,7 @@ const informationPlaceholder: {
         topic: 'ppif',
         tabs: {
             information:
-                'Perkenalan Prodi Informatika (PPIF) merupakan rangkaian kegiatan orientasi bagi mahasiswa baru Program Studi Informatika Universitas Multimedia Nusantara. PPIF bertujuan membantu mahasiswa mengenal lingkungan perkuliahan, budaya akademik, dosen, kakak tingkat, serta berbagai organisasi dan komunitas yang ada di Program Studi Informatika. Melalui berbagai kegiatan yang interaktif dan menyenangkan, peserta diajak membangun relasi, memahami nilai-nilai kebersamaan, serta mempersiapkan diri untuk menjalani kehidupan sebagai mahasiswa Informatika UMN. PPIF menjadi langkah awal untuk membentuk rasa kekeluargaan dan semangat bertumbuh bersama selama masa perkuliahan.',
+                'Perkenalan Prodi Informatika (PPIF) merupakan rangkaian kegiatan orientasi bagi mahasiswa baru Program Studi Informatika Universitas Multimedia Nusantara. PPIF bertujuan membantu mahasiswa mengenal lingkungan perkuliahan, budaya akademik, dosen, kakak tingkat, serta berbagai organisasi dan komunitas yang ada di Program Studi Informatika. Melalui berbagai kegiatan yang interaktif dan menyenangkan, peserta diajak membangun relasi, memahami nilai-nilai kebersamaan, serta mempersiapkan diri untuk menjalani kehidupan sebagai mahasiswa Informatika UMN.  Mengusung tema "Altering Your Inner Universe" dan tagline "Aim, Act, Alternate!", PPIF 2026 mengajak setiap mahasiswa baru untuk memulai perjalanan mengenali serta mengembangkan Inner Universe mereka. Aim melambangkan keberanian menentukan arah dan tujuan, Act menekankan pentingnya mengambil langkah nyata untuk berkembang, sedangkan Alternate menggambarkan proses bertransformasi menjadi versi diri yang lebih baik. Sejalan dengan tema tersebut, tagline ini mengajak teman-teman untuk berani menentukan tujuan, bertindak, dan membuka berbagai kemungkinan baru bersama PPIF 2026.',
             gallery:
                 'Berikut adalah dokumentasi kegiatan yang berkaitan dengan Perkenalan Prodi Informatika. Jelajahi galeri untuk melihat berbagai momen, lalu klik pada gambar yang diinginkan untuk melihatnya dalam ukuran yang lebih besar.',
             divisions:
@@ -451,18 +451,27 @@ export default function About() {
                     {/* bg-red-400 */}
                     <div
                         ref={mainWrapperInfo}
-                        className="pointer-events-none relative z-20 ml-[16rem] mt-[5rem] h-[84%] w-[73%] min-w-[20rem]"
+                        className="pointer-events-none relative z-20 ml-[16rem] mt-[5rem] h-[84%] w-[75%] min-w-[20rem]"
                     >
                         <div className="absolute bottom-0 z-10">
                             {/* bg-blue-600 */}
-                            <div className="absolute bottom-0 left-[16%] right-0 top-[4%] z-20">
+                            <div
+                                className="absolute bottom-0 right-0 z-20 h-[20vh]"
+                                style={{
+                                    top: 'clamp(-15%, calc(40vh - 200px), 4%)',
+                                    left: 'clamp(10%, calc(40vh - 90px), 16%)',
+                                }}
+                            >
                                 <Heading
                                     className="z-[0]"
                                     currentInfo={currentInfo}
                                 />
                                 <div
                                     ref={tabRef}
-                                    className="absolute -top-[30%] w-full"
+                                    className="absolute w-full"
+                                    style={{
+                                        top: 'clamp(-40vh, -8vh - 4vh, -19vh)',
+                                    }}
                                 >
                                     <InfoTabs
                                         className={` ${activeTab === 'divisions' ? 'pointer-events-none' : 'pointer-events-auto'} absolute right-0`}
@@ -473,7 +482,7 @@ export default function About() {
                                 {renderDivisionButton && (
                                     <div
                                         ref={divisionButtonRef}
-                                        className="pointer-events-auto absolute -right-8 top-6 origin-bottom"
+                                        className="pointer-events-auto absolute -right-1 top-6 origin-bottom"
                                     >
                                         <Button
                                             Icon={DivisionButtonSVG}
@@ -483,13 +492,16 @@ export default function About() {
                                                 setActiveTab('divisions');
                                             }}
                                             className="h-auto origin-bottom transition-transform hover:rotate-[9deg]"
-                                            iconClassName="h-auto w-[15rem] "
+                                            iconClassName="h-auto"
+                                            iconStyle={{
+                                                width: 'clamp(6rem, 40vh, 15rem)',
+                                            }}
                                         />
                                     </div>
                                 )}
                             </div>
 
-                            <div ref={morphBoxRef}>
+                            <div ref={morphBoxRef} className="h-full w-full">
                                 <div className="absolute bottom-[14%] right-[23.7%] z-20 h-[42%] w-[48%] origin-top-left [perspective:380px]">
                                     {/* bg-green-400 */}
                                     <div className="pointer-events-auto h-full w-full origin-left [transform:rotateZ(-4deg)_rotateY(-11deg)_skewX(2deg)]">
@@ -499,11 +511,14 @@ export default function About() {
                                     </div>
                                 </div>
                                 {/* bg-red-200 */}
-                                <MorphingAboutBox activeTab={activeTab} />
+                                <MorphingAboutBox
+                                    className=""
+                                    activeTab={activeTab}
+                                />
                             </div>
 
                             <InfoSwitcher
-                                className={`${activeTab === 'divisions' ? 'pointer-events-none' : 'pointer-events-auto'} absolute -bottom-6 -right-12 z-20`}
+                                className={`${activeTab === 'divisions' ? 'pointer-events-none' : 'pointer-events-auto'} absolute -right-4 bottom-3 z-20`}
                                 currentInfo={currentInfo}
                                 setCurrentInfo={handleChangeInfo}
                             />

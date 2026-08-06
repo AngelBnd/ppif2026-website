@@ -71,7 +71,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
             { left: 29, top: 20, inset: 64 },
             { left: 45, top: 20, inset: 43 },
             { left: 63, top: 20, inset: 32 },
-            { left: 77, top: 20, inset: 0 },
+            { left: 80, top: 20, inset: 0 },
         ];
 
         const CAMERA_CONFIG: Partial<CameraConfig> = {
@@ -120,16 +120,17 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
             >
                 <div
                     ref={divisionScrollRef}
-                    className="absolute inset-0 top-16 z-20 h-screen overflow-x-auto overflow-y-hidden overscroll-contain pl-[24px] pr-[4px]"
+                    className="absolute inset-0 z-20 h-screen overflow-y-auto overflow-x-visible pl-[24px] pr-[4px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                    style={{ top: 'clamp(-4rem, calc(15vh - 4rem), 4rem)' }}
                 >
                     <div
                         ref={panelRef}
                         className="relative"
                         style={{
-                            width: '3400px',
-                            height: '856px',
-                            minWidth: '3400px',
-                            minHeight: '856px',
+                            width: 'clamp(1700px, 461.43vh, 3400px)',
+                            height: 'clamp(350px, 95vh, 700px)',
+                            minWidth: 'clamp(1700px, 461.43vh, 3400px)',
+                            minHeight: 'clamp(350px, 95vh, 700px)',
                         }}
                     >
                         {/* <CameraPathDebug
@@ -164,8 +165,12 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
 
                         <div
                             ref={cameraRef}
-                            className="relative h-[690px] w-[3400px]"
-                            style={{ perspective: '900px' }}
+                            className="relative"
+                            style={{
+                                width: 'clamp(1700px, 461.43vh, 3400px)',
+                                height: 'clamp(350px, 95vh, 700px)',
+                                perspective: '900px',
+                            }}
                         >
                             <div
                                 ref={worldRef}
@@ -182,7 +187,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                                     <DivisionStreak className="relative z-20 h-full w-auto max-w-none drop-shadow-[0px_8px_0px_#0A0C0F]" />
                                 </div>
 
-                                <div className="absolute inset-0 z-30 h-full w-full">
+                                <div className="absolute inset-0 z-30 h-full">
                                     {divisionData.map((division) => (
                                         <div
                                             key={division.name}
@@ -218,7 +223,8 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                     <Button
                         className="fixed bottom-6 left-6 z-40 w-60"
                         Icon={BackButtonSVG2}
-                        iconClassName="w-60 h-fit"
+                        iconClassName="h-fit"
+                        iconStyle={{ width: 'clamp(8rem, 30vh, 15rem)' }}
                         onClick={() => {
                             setRenderMainContent(true);
                             setActiveTab('information');

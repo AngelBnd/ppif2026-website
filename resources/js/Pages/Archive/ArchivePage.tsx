@@ -1,8 +1,7 @@
 ﻿// @ts-ignore
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
 import gsap from 'gsap';
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 // assets
 import ArchiveTitle from '@/assets/archive/ArchiveTitle.svg';
@@ -13,10 +12,8 @@ import DDayButton from '@/assets/archive/DDayButton.svg?react';
 import GalleryScroll from '@/Components/about/GalleryScroll';
 import GlitchShape from '@/Components/global/GlitchShape';
 
-import ArchiveWaitInfo from '@/Pages/Archive/ArchiveWaitInfo';
-
 export default function ArchivePage() {
-    const [showOverlay, setShowOverlay] = useState(true);;
+    const [showOverlay, setShowOverlay] = useState(true);
     const shapeRef = useRef<HTMLDivElement>(null);
     const titleRef = useRef<HTMLImageElement>(null);
     const streak1Ref = useRef<HTMLImageElement>(null);
@@ -71,9 +68,7 @@ export default function ArchivePage() {
         };
     }, []);
 
-    const dummyPhotos = [
-        '/pngs/archive/archivePlaceHolder.svg',
-    ];
+    const dummyPhotos = ['/pngs/archive/archivePlaceHolder.svg'];
 
     return (
         <>
@@ -149,9 +144,9 @@ export default function ArchivePage() {
             `}</style>
 
             {/* Render Overlay Info */}
-            {showOverlay && (
+            {/* {showOverlay && (
                 <ArchiveWaitInfo onClose={() => setShowOverlay(false)} />
-            )}
+            )} */}
 
             <div
                 className="relative flex min-h-screen select-none overflow-hidden bg-transparent text-white"
@@ -224,7 +219,10 @@ export default function ArchivePage() {
                 {/* STRUKTUR MENU UTAMA (Ikut Slide In dari Kiri Bawah) */}
                 <div className="z-15 pointer-events-none absolute left-0 top-0 flex h-full w-1/2 flex-col justify-between bg-transparent p-12">
                     {/* Navigasi & Headline */}
-                    <div className="pointer-events-auto absolute left-[32%] top-[33%] shrink-0 origin-left -rotate-[-24deg] transform items-start">
+                    <div
+                        className="pointer-events-auto absolute left-[32%] shrink-0 origin-left -rotate-[-24deg] transform items-start"
+                        style={{ top: 'clamp(12%, 35vh, 33%)' }}
+                    >
                         <div className="[perspective:960px]">
                             <div
                                 ref={buttonsRef}
@@ -235,7 +233,10 @@ export default function ArchivePage() {
                                     <Link
                                         href="/archive/dday"
                                         data-click-sound
-                                        className="relative flex h-[auto] w-[360px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
+                                        className="relative flex h-[auto] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
+                                        style={{
+                                            width: 'clamp(162px, 45vh, 360px)',
+                                        }}
                                     >
                                         <GlitchShape className="absolute inset-0 z-20 h-full w-full opacity-0 transition-opacity duration-200 group-hover:opacity-70" />
                                         {/* HOVER EFFECT */}
@@ -252,10 +253,13 @@ export default function ArchivePage() {
                                     <Link
                                         href="/archive/briefingday"
                                         data-click-sound
-                                        className="relative flex h-auto w-[650px] cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
+                                        className="relative flex h-auto cursor-pointer items-center justify-center overflow-visible border-none bg-transparent p-0 text-left text-white outline-none"
+                                        style={{
+                                            width: 'clamp(292.5px, 95.5vh, 700px)',
+                                        }}
                                     >
                                         {/* HOVER EFFECT */}
-                                        <GlitchShape className="absolute inset-0 !-left-20 z-20 h-full w-full opacity-0 transition-opacity duration-200 group-hover:opacity-70" />
+                                        <GlitchShape className="absolute inset-0 z-20 h-full w-full opacity-0 transition-opacity duration-200 group-hover:opacity-70" />
 
                                         {/* BUTTON ASSET */}
                                         <div className="z-11 relative flex h-full w-full origin-center transform items-center justify-center transition-all duration-300 group-hover:rotate-3 group-hover:scale-105">

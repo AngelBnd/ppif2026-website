@@ -6,14 +6,13 @@ import ChainFG2 from '@/assets/about/divisions/ChainFG2.svg?react';
 import BottomTriangle from '@/assets/about/divisions/BottomTriangle.svg?react';
 import CardBGPlain from '@/assets/about/divisions/CardBGPlain.svg?react';
 import CardBGPlain2 from '@/assets/about/divisions/CardBGPlain2.svg?react';
-import DivPopupBG from '@/assets/about/divisions/DivisionPopUpBG.svg?react';
+import divPopupBG from '@/assets/about/divisions/DivisionPopUpBG.webp';
 import DivisionCardPopup from '@/assets/about/divisions/DivisionPopupCard.svg?react';
 
 import IdentityBox from '@/assets/about/divisions/IdentityBox.svg?react';
 import LeftArrow from '@/assets/svgs/LeftArrow.svg?react';
 import RightArrow from '@/assets/svgs/RightArrow.svg?react';
 
-import divbg from '@/assets/about/divisions/divbg.webp';
 import BackButtonSVG from '@/assets/icons/BackButtonSVG.svg';
 import Button from '../global/Button';
 
@@ -610,36 +609,58 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
             <div ref={wrapperRef} className="absolute z-40 h-screen w-screen">
                 <div className="absolute z-0 h-screen w-screen bg-[#7C131E] opacity-65" />
 
-                <img className="absolute left-0 z-[0]" src={divbg} />
-                <div className="absolute -left-[10%] top-12">
-                    <DivPopupBG className="block h-auto w-[85rem]" />
-                </div>
+                <img
+                    className="absolute z-[20] h-auto w-[60%]"
+                    src={divPopupBG}
+                />
 
-                <div className="absolute bottom-0 left-0 z-20 h-auto w-[30rem]">
+                <div
+                    className="pointer-events-none absolute left-0 z-30 h-auto"
+                    style={{
+                        bottom: 'clamp(-1rem, 0vh, 38rem)',
+                        width: 'clamp(13.5rem, 60vh, 30rem)',
+                    }}
+                >
                     <BottomTriangle className="z-0 block h-auto w-full" />
-                    <p className="absolute bottom-4 left-2 z-20 scale-x-90 scale-y-150 font-noto text-5xl font-bold text-[#282829]">
+                    <p
+                        className="absolute z-20 scale-x-90 scale-y-150 font-noto font-bold text-[#282829]"
+                        style={{
+                            bottom: 'clamp(0.5rem, 2.2vh, 1rem)',
+                            left: 'clamp(0.25rem, 1.1vh, 0.5rem)',
+                            fontSize: 'clamp(1.8rem, 6vh, 3rem)',
+                        }}
+                    >
                         {division.members.length} Anggota
                     </p>
                 </div>
 
-                <div className="pointer-events-auto absolute bottom-0 left-0 z-10 flex h-full w-[55%] items-end">
-                    <div className="pointer-events-auto absolute bottom-[35%] z-20 flex h-fit w-full justify-between px-4">
+                <div className="pointer-events-auto absolute bottom-0 left-0 z-20 flex h-full w-[55%] items-end">
+                    <div
+                        className="pointer-events-auto absolute z-[999] flex h-fit w-full justify-between"
+                        style={{
+                            bottom: '35%',
+                            paddingLeft: 'clamp(0.5rem, 2.2vh, 1rem)',
+                            paddingRight: 'clamp(0.5rem, 2.2vh, 1rem)',
+                        }}
+                    >
                         <Button
                             Icon={LeftArrow}
                             onClick={handlePrev}
                             className="block cursor-pointer transition hover:-translate-x-3"
-                            iconClassName="h-auto w-[5rem]"
+                            iconClassName="h-auto"
+                            iconStyle={{ width: 'clamp(2.5rem, 11vh, 5rem)' }}
                         />
 
                         <Button
                             Icon={RightArrow}
                             onClick={handleNext}
                             className="block cursor-pointer transition hover:translate-x-3"
-                            iconClassName="h-auto w-[5rem]"
+                            iconClassName="h-auto"
+                            iconStyle={{ width: 'clamp(2.5rem, 11vh, 5rem)' }}
                         />
                     </div>
 
-                    <div className="pointer-events-none absolute bottom-0 right-0 z-10 flex h-screen w-full items-end">
+                    <div className="pointer-events-none absolute bottom-0 right-0 z-[11] flex h-screen w-full items-end">
                         <div className="flex h-[90%] w-full items-start justify-start">
                             {memberSlots.map((data, index) => (
                                 <div
@@ -663,7 +684,7 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                     </div>
                 </div>
 
-                <div className="pointer-events-none absolute bottom-20 left-0 z-20 flex h-full w-[55%] items-end justify-end gap-16 px-5">
+                <div className="pointer-events-none absolute bottom-20 left-0 z-40 flex h-full w-[55%] items-end justify-end gap-16 px-5">
                     {memberSlots.map((data, index) => (
                         <div
                             key={`identity-${division.name}-${idxImgDisplay}-${index}`}
@@ -682,12 +703,38 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                                         }`}
                                     />
 
-                                    <div className="absolute bottom-4 left-0 z-20 h-[5rem] w-full px-9 py-4">
-                                        <h3 className="font-noto text-2xl font-bold">
+                                    <div
+                                        className="absolute left-0 z-20 w-full"
+                                        style={{
+                                            bottom: 'clamp(0.5rem, 2.2vh, 1rem)',
+                                            height: 'clamp(2.5rem, 11vh, 5rem)',
+                                            paddingLeft:
+                                                'clamp(1.1rem, 5vh, 2.25rem)',
+                                            paddingRight:
+                                                'clamp(1.1rem, 5vh, 2.25rem)',
+                                            paddingTop:
+                                                'clamp(0.5rem, 2.2vh, 1rem)',
+                                            paddingBottom:
+                                                'clamp(0.5rem, 2.2vh, 1rem)',
+                                        }}
+                                    >
+                                        <h3
+                                            className="font-noto font-bold"
+                                            style={{
+                                                fontSize:
+                                                    'clamp(0.3rem, 3vh, 1.5rem)',
+                                            }}
+                                        >
                                             {data.name}
                                         </h3>
 
-                                        <p className="font-md font-arsenal text-lg">
+                                        <p
+                                            className="font-md font-arsenal"
+                                            style={{
+                                                fontSize:
+                                                    'clamp(0.6rem, 2vh, 1.125rem)',
+                                            }}
+                                        >
                                             {data.role}
                                         </p>
                                     </div>
@@ -697,7 +744,13 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                     ))}
                 </div>
 
-                <div className="absolute right-0 top-[6%] h-full w-[45rem]">
+                <div
+                    className="absolute right-0 z-[9] h-full"
+                    style={{
+                        top: '6%',
+                        width: 'clamp(28rem, 100vh, 45rem)',
+                    }}
+                >
                     <div
                         ref={cardBGPlainRef}
                         className="absolute left-[2%] top-1/2 z-10 w-full -translate-y-1/2"
@@ -713,12 +766,23 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                             <DivisionCardPopup className="block h-fit w-full" />
 
                             <div className="absolute left-[20%] top-[16%] z-10 flex w-[70%] justify-center">
-                                <h1 className="mt-3 origin-center -rotate-[6deg] scale-x-90 scale-y-150 font-noto text-3xl font-black leading-relaxed text-[#0A0C0F]">
+                                <h1
+                                    className="mt-3 origin-center -rotate-[6deg] scale-x-90 scale-y-150 font-noto font-black leading-relaxed text-[#0A0C0F]"
+                                    style={{
+                                        fontSize:
+                                            'clamp(1.1rem, 4.8vh, 1.875rem)',
+                                    }}
+                                >
                                     {division.name}
                                 </h1>
                             </div>
                             <div className="absolute left-[17%] top-[44%] z-10 w-[70%]">
-                                <p className="text-md mt-3 font-arsenal leading-relaxed text-[#F0F2F5]">
+                                <p
+                                    className="mt-3 font-arsenal leading-relaxed text-[#F0F2F5]"
+                                    style={{
+                                        fontSize: 'clamp(0.6rem, 2.6vh, 1rem)',
+                                    }}
+                                >
                                     {division.description}
                                 </p>
                             </div>
@@ -777,7 +841,7 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                     </div>
 
                     {/* Background chains */}
-                    <div className="absolute z-0 h-full w-full">
+                    <div className="absolute z-0 h-full w-full max-[500px]:hidden [@media(max-height:500px)]:hidden">
                         <div className="absolute -left-[30rem] -top-4 w-[40rem]">
                             <div ref={chainBG1TopRef}>
                                 <ChainBG1 className="block h-auto w-full" />
@@ -810,14 +874,29 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                     </div>
 
                     {/* foreground chains */}
-                    <div className="absolute right-0 z-20 h-full w-[40rem]">
-                        <div className="absolute -top-24 right-0 w-[77%]">
+                    <div
+                        className="absolute right-0 z-20 h-full"
+                        style={{ width: 'clamp(18rem, 100vh, 40rem)' }}
+                    >
+                        <div
+                            className="absolute right-0"
+                            style={{
+                                top: 'clamp(-10rem, -10vh, -2.7rem)',
+                                width: '72%',
+                            }}
+                        >
                             <div ref={chainFG1Ref}>
                                 <ChainFG1 className="block h-auto w-full" />
                             </div>
                         </div>
 
-                        <div className="absolute -bottom-11 right-0 w-[40rem]">
+                        <div
+                            className="absolute right-0"
+                            style={{
+                                bottom: 'clamp(-2.75rem, -5vh, -1.2375rem)',
+                                width: 'clamp(10rem, 85vh, 40rem)',
+                            }}
+                        >
                             <div ref={chainFG2Ref}>
                                 <ChainFG2 className="block h-auto w-full" />
                             </div>
@@ -828,7 +907,8 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                 <Button
                     className="bg fixed bottom-6 right-6 z-40"
                     Icon={BackButtonSVG}
-                    iconClassName="w-[12rem] h-fit"
+                    iconClassName="h-fit"
+                    iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}
                     onClick={handleCloseDivisionPopup}
                 />
             </div>

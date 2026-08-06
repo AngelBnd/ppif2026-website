@@ -2,6 +2,7 @@ import backButtonImg from '@/assets/icons/BackButtonSVG.svg';
 import leftArrow from '@/assets/timeline/about-left-arrow.svg';
 import rightArrow from '@/assets/timeline/about-right-arrow.svg';
 import aboutmodal from '@/assets/timeline/aboutmodal.svg';
+import Bebas from '@/assets/timeline/Bebas.svg?react';
 import greyknife from '@/assets/timeline/grey-knife.svg';
 import One from '@/assets/timeline/one.svg?react';
 import Page from '@/assets/timeline/Page.svg?react';
@@ -202,11 +203,24 @@ export default function AboutDDayModal({
                         {/* Page 1 */}
                         {page === 1 && (
                             <div className="absolute left-[18%] top-[39%] h-[13.4rem] w-[67%] text-[#F2F2F2]">
-                                <h2 className="absolute -top-[27%] left-[35%] mb-[3vmin] -rotate-3 font-arsenal text-3xl font-bold text-[#282829]">
+                                <h2
+                                    className="absolute -top-[27%] left-[30%] mb-[3vmin] -rotate-3 font-arsenal font-bold text-[#282829]"
+                                    style={{
+                                        top: 'clamp(-50%, calc(-2% - 8vh), -16%)',
+                                        fontSize:
+                                            'clamp(1.35rem, 5.9vh, 1.875rem)',
+                                    }}
+                                >
                                     Apa itu {displayName}?
                                 </h2>
 
-                                <div className="h-[13rem] pt-4">
+                                <div
+                                    style={{
+                                        height: 'clamp(3rem, 28.6vh, 13rem)',
+                                        paddingTop:
+                                            'clamp(0.5rem, 2.2vh, 1rem)',
+                                    }}
+                                >
                                     <CustomScrollBox text={modalDescription} />
                                 </div>
                             </div>
@@ -215,11 +229,23 @@ export default function AboutDDayModal({
                         {/* Page 2 */}
                         {page === 2 && (
                             <div className="absolute left-[18%] top-[37%] h-[8rem] w-[67%] text-[#F2F2F2]">
-                                <h2 className="absolute -top-[35%] left-[15%] mb-[3vmin] -rotate-3 font-arsenal text-3xl font-bold text-[#282829]">
+                                <h2
+                                    className="absolute left-[15%] mb-[3vmin] -rotate-3 font-arsenal text-3xl font-bold text-[#282829]"
+                                    style={{
+                                        top: 'clamp(-50%, calc(-2% - 5vh), -24%)',
+                                        fontSize:
+                                            'clamp(0.8rem, 5vh, 1.875rem)',
+                                    }}
+                                >
                                     Apa yang harus saya bawa atau pakai?
                                 </h2>
 
-                                <div className="grid grid-cols-3 gap-[3vmin]">
+                                <div
+                                    className="grid gap-[3vmin]"
+                                    style={{
+                                        gridTemplateColumns: `repeat(${Math.min(images.length, 4)}, minmax(0, 1fr))`,
+                                    }}
+                                >
                                     {images.map((image, index) => (
                                         <div
                                             key={`${image}-${index}`}
@@ -234,33 +260,67 @@ export default function AboutDDayModal({
                                     ))}
                                 </div>
 
-                                <Perhatiakn className="absolute -bottom-[11rem] -right-[5rem] block h-auto w-[22rem]" />
+                                {name === 'BriefingDay' ? (
+                                    <Bebas className="absolute -bottom-[11rem] -right-[5rem] block h-auto w-[22rem]" />
+                                ) : (
+                                    <Perhatiakn className="absolute -bottom-[11rem] -right-[5rem] block h-auto w-[22rem]" />
+                                )}
                             </div>
                         )}
 
-                        <div className="absolute bottom-[5%] left-[14%] h-24 w-[13rem]">
-                            <Page className="absolute bottom-0 right-0 h-auto w-[10rem]" />
+                        <div
+                            className="bg absolute"
+                            style={{
+                                bottom: '5%',
+                                left: '14%',
+                                height: 'clamp(2.7rem, 13.2vh, 6rem)',
+                                width: 'clamp(2rem, 28.6vh, 13rem)',
+                            }}
+                        >
+                            <Page
+                                className="absolute -right-5 bottom-0 h-auto"
+                                style={{ width: 'clamp(4.5rem, 24vh, 10rem)' }}
+                            />
 
-                            <div className="absolute bottom-1 w-[4rem]">
+                            <div
+                                className="absolute bottom-1"
+                                style={{ width: 'clamp(1.8rem, 8.8vh, 4rem)' }}
+                            >
                                 {page === 1 ? (
-                                    <One className="block h-auto w-[2.5rem]" />
+                                    <One
+                                        className="block h-auto"
+                                        style={{
+                                            width: 'clamp(1em, 8vh, 3rem)',
+                                        }}
+                                    />
                                 ) : (
-                                    <Two className="block h-auto w-[3rem]" />
+                                    <Two
+                                        className="block h-auto"
+                                        style={{
+                                            width: 'clamp(0.9rem, 8vh, 3.5rem)',
+                                        }}
+                                    />
                                 )}
                             </div>
 
-                            <div className="absolute h-[5rem] w-[16.5rem]">
+                            <div
+                                className="absolute"
+                                style={{
+                                    height: 'clamp(2.25rem, 11vh, 5rem)',
+                                    width: 'clamp(7.425rem, 36.3vh, 16.5rem)',
+                                }}
+                            >
                                 {page === 1 ? (
                                     <button
                                         type="button"
                                         onClick={() => setPage(2)}
                                         aria-label="Next page"
-                                        className="absolute right-0 top-2 transition duration-200 hover:scale-110 active:scale-95"
+                                        className="absolute -right-4 top-2 transition duration-200 hover:scale-110 active:scale-95"
                                     >
                                         <img
                                             src={rightArrow}
                                             alt="Next"
-                                            className="h-[7vmin] w-auto -translate-x-[3vmin] translate-y-[0.5vmin] object-contain"
+                                            className="h-[7vmin] w-auto -translate-x-[2vmin] translate-y-[0.5vmin] object-contain"
                                         />
                                     </button>
                                 ) : (
@@ -268,12 +328,12 @@ export default function AboutDDayModal({
                                         type="button"
                                         onClick={() => setPage(1)}
                                         aria-label="Previous page"
-                                        className="absolute -left-10 -top-5 bottom-0 z-10 transition duration-200 hover:scale-110 active:scale-95"
+                                        className="absolute -left-8 -top-5 bottom-0 z-10 transition duration-200 hover:scale-110 active:scale-95"
                                     >
                                         <img
                                             src={leftArrow}
                                             alt="Previous"
-                                            className="h-[7vmin] w-auto -translate-x-[1vmin] translate-y-[4.5vmin] object-contain"
+                                            className="h-[7vmin] w-auto -translate-x-[0.2vmin] translate-y-[4.5vmin] object-contain"
                                         />
                                     </button>
                                 )}
@@ -287,7 +347,7 @@ export default function AboutDDayModal({
             <button
                 type="button"
                 onClick={handleClose}
-                className="absolute bottom-6 right-6 transition duration-200 hover:scale-105 active:scale-95"
+                className="absolute bottom-6 right-6 z-[999] transition duration-200 hover:scale-105 active:scale-95"
             >
                 <img
                     src={backButtonImg}

@@ -27,14 +27,14 @@ export default function DivisionCard({
 
     return (
         <div
-            style={style}
             className={[
-                `h-auto w-64 ${className}`,
+                `h-auto ${className}`,
 
                 'transition-transform duration-300 ease-out',
                 'hover:rotate-[3deg] hover:scale-105',
                 'active:scale-95',
             ].join(' ')}
+            style={{ width: 'clamp(9rem, 50vh, 16rem)', ...style }}
         >
             <div
                 className={[

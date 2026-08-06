@@ -113,7 +113,10 @@ export default function CustomScrollBox({ text }: Props) {
                 ref={scrollRef}
                 className="h-full overflow-y-scroll pr-14 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-                <div className="font-arsenal text-xl font-semibold leading-relaxed text-[#F0F2F5]">
+                <div
+                    className="font-arsenal font-semibold leading-relaxed text-[#F0F2F5]"
+                    style={{ fontSize: 'clamp(0.25rem, 3vh, 1.25rem)' }}
+                >
                     <p>{text}</p>
                 </div>
             </div>
@@ -124,6 +127,10 @@ export default function CustomScrollBox({ text }: Props) {
                     ref={svgRef}
                     data-click-sound
                     onClick={handleScrollbarClick}
+                    style={{
+                        width: 'clamp(24px, 5vh, 42px)',
+                        height: 'clamp(100px, 24vh, 180px)',
+                    }}
                     className="absolute -top-[2rem] right-0 h-[180px] w-[42px] cursor-pointer"
                     viewBox="0 0 42 135"
                     fill="none"

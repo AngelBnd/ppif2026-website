@@ -174,7 +174,7 @@ export default function Navbar() {
     return (
         <nav
             //  ${isGamePage ? 'pointer-events-none z-[0] opacity-0' : 'z-50'}
-            className={`fixed -top-4 left-0 w-full ${isGamePage ? 'pointer-events-none z-[0]' : 'z-[50]'}`}
+            className={`pointer-events-none fixed -top-4 left-0 w-full ${isGamePage ? 'z-[0]' : 'z-[50]'}`}
         >
             <img
                 src={BlackPartTopSVG}
@@ -199,13 +199,18 @@ export default function Navbar() {
             </div>
 
             {!isGamePage && (
-                <div className="w-200 absolute left-1/2 top-3 z-10 flex -translate-x-1/2 items-center">
-                    <div className="flex items-center -space-x-2">
+                <div
+                    className="w-200 absolute left-1/2 z-10 flex -translate-x-1/2 items-center"
+                    style={{
+                        top: 'clamp(-1rem, calc(17.7vh - 6.2rem), 0.75rem)',
+                    }}
+                >
+                    <div className="pointer-events-auto flex items-center -space-x-2">
                         <svg
                             viewBox="0 0 240 100"
-                            width="140"
-                            height="120"
-                            className={`pointer-events-none absolute left-2 z-50 opacity-70 mix-blend-difference ${activeTab === 'none' ? 'invisible' : ''}`}
+                            width="clamp(80px, 14vh, 140px)"
+                            height="clamp(68px, 12vh, 120px)"
+                            className="pointer-events-none absolute left-2 z-50 opacity-70 mix-blend-difference ..."
                             style={{ left: leftPositions[activeTab] }}
                             preserveAspectRatio="none"
                         >
@@ -222,7 +227,7 @@ export default function Navbar() {
                             activeTab={activeTab}
                             onSelect={setActiveTab}
                             Icon={HomeButton}
-                            iconClassName="w-36"
+                            iconClassName="w-[clamp(4rem,20vh,9rem)]"
                         />
 
                         <NavItem
@@ -231,7 +236,7 @@ export default function Navbar() {
                             activeTab={activeTab}
                             onSelect={setActiveTab}
                             Icon={AboutButton}
-                            iconClassName="w-36"
+                            iconClassName="w-[clamp(4rem,20vh,9rem)]"
                         />
 
                         <NavItem
@@ -240,7 +245,7 @@ export default function Navbar() {
                             activeTab={activeTab}
                             onSelect={setActiveTab}
                             Icon={TimelineButton}
-                            iconClassName="w-48"
+                            iconClassName="w-[clamp(5rem,27vh,12rem)]"
                         />
 
                         <NavItem
@@ -249,11 +254,14 @@ export default function Navbar() {
                             activeTab={activeTab}
                             onSelect={setActiveTab}
                             Icon={ContactButton}
-                            iconClassName="w-44"
+                            iconClassName="w-[clamp(4.5rem,25vh,11rem)]"
                         />
                     </div>
 
-                    <div className="mx-4 flex gap-1">
+                    <div
+                        className="pointer-events-auto relative z-[999] mx-4 flex"
+                        style={{ gap: 'clamp(0.5rem, 2vh, 1rem)' }}
+                    >
                         <Link
                             href="/archive"
                             data-click-sound
@@ -262,7 +270,7 @@ export default function Navbar() {
                                 'hover:rotate-3 hover:scale-110 active:scale-95',
                             ].join(' ')}
                         >
-                            <ArchiveButton className="w-16" />
+                            <ArchiveButton className="w-[clamp(2.5rem,7vh,4rem)]" />
                         </Link>
 
                         <button
@@ -279,9 +287,9 @@ export default function Navbar() {
                                 className="inline-block origin-bottom will-change-transform"
                             >
                                 {isPlaying ? (
-                                    <MusicButton className="w-16" />
+                                    <MusicButton className="w-[clamp(2.5rem,7vh,4rem)]" />
                                 ) : (
-                                    <MusicButton2 className="w-16" />
+                                    <MusicButton2 className="w-[clamp(2.5rem,7vh,4rem)]" />
                                 )}
                             </span>
                         </button>

@@ -272,8 +272,9 @@ export default function GalleryPopup({
             <Button
                 Icon={BackButton}
                 onClick={onClose}
-                className="absolute bottom-12 right-12 z-50"
-                iconClassName="w-[12rem]"
+                className="absolute bottom-6 right-6 z-50"
+                iconClassName=""
+                iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}
             />
         </div>
     );

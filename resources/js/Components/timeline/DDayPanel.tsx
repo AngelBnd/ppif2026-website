@@ -55,7 +55,7 @@ export default function DDayPanel({
                 },
                 {
                     xPercent: 0,
-
+                    delay: 0.3,
                     duration: 0.4,
                     ease: 'power4.out',
                     clearProps: 'transform',
@@ -69,7 +69,7 @@ export default function DDayPanel({
                 },
                 {
                     x: 0,
-
+                    delay: 0.3,
                     duration: 0.4,
                     ease: 'back.out(1.2)',
                 },
@@ -83,6 +83,7 @@ export default function DDayPanel({
                 },
                 {
                     x: 0,
+                    delay: 0.3,
                     rotate: 3,
                     duration: 0.4,
                     ease: 'back.out(1.3)',
@@ -94,7 +95,7 @@ export default function DDayPanel({
                 scale: 1.09,
                 duration: 1,
                 repeat: -1,
-                delay: 0.4,
+                delay: 0.5,
                 yoyo: true,
                 ease: 'sine.inOut',
             });
@@ -199,12 +200,13 @@ export default function DDayPanel({
                     ref={augTagRef}
                     src={aug26Tag}
                     alt="AUG 2026"
-                    className="absolute left-[18%] top-[-5%] w-[42%] drop-shadow-md"
+                    className="absolute left-[18%] top-[-9%] w-[42%] drop-shadow-md"
                 />
 
                 <div
                     ref={contentRef}
                     className="absolute left-[28%] top-[15%] mt-4 flex h-[33rem] w-[56%] flex-col items-start gap-[1vmin]"
+                    style={{ top: 'clamp(6.75%, calc(2vh + 12%), 20%) ' }}
                 >
                     {/* 1. D-DAY PPIF title */}
                     {/* Removed absolute positioning; it now takes 100% of the wrapper's width */}
@@ -214,23 +216,40 @@ export default function DDayPanel({
                     >
                         <HeaderSVG className="block h-auto w-full" />
                     </div>
+                    <div
+                        className="absolute"
+                        style={{
+                            left: 'clamp(-18%, -12vh, -10%)',
+                            top: 'clamp(16.5%, 20vh, 30%)',
+                            width: 'clamp(18%, 22vh, 40%)',
+                        }}
+                    >
+                        <DecorShape
+                            ref={decorShape1ref}
+                            src={ShapeDecoLong}
+                            alt=""
+                            className="w-full"
+                        />
+                    </div>
 
-                    <DecorShape
-                        ref={decorShape1ref}
-                        src={ShapeDecoLong}
-                        alt=""
-                        className="-left-[10%] top-[30%] w-[40%]"
-                    />
-
-                    <DecorShape
-                        ref={decorShape2ref}
-                        src={ShapeDecoShort}
-                        alt=""
-                        className="-right-[12%] -top-[18%] w-[40%]"
-                    />
+                    <div
+                        className="absolute"
+                        style={{
+                            right: 'clamp(-21.6%, -20vh, -12%)',
+                            top: 'clamp(-20%, calc(-25vh + 1rem), 0%)',
+                            width: 'clamp(18%, 22vh, 40%)',
+                        }}
+                    >
+                        <DecorShape
+                            ref={decorShape2ref}
+                            src={ShapeDecoShort}
+                            alt=""
+                            className="w-full"
+                        />
+                    </div>
                     {/* 2. Description */}
                     {/* Swapped absolute positioning for margin-left (ml-[12%]) to keep the staggered look */}
-                    <div className="my-6 [perspective:380px]">
+                    <div className="mx-3 my-3 [perspective:380px]">
                         <div className="mb-[0vmin] ml-[12%] -rotate-6 space-y-2 font-arsenal text-[2.5vmin] leading-snug [transform:rotateZ(-4deg)_rotateY(-9deg)_scaleY(1.12)_scaleX(1.1)_skewX(2deg)]">
                             <p>{informationDisplayed}</p>
                         </div>

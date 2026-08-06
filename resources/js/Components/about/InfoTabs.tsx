@@ -205,9 +205,9 @@ function TabButton({
             >
                 <SelectedSvg3 className="block h-auto w-full" />
             </div>
-
             <span
-                className={`absolute left-[33%] top-[24%] z-50 font-arsenal text-sm ${active ? 'text-[#0A0C0F]' : 'text-[#F0F2F5]'} md:text-xl`}
+                className={`absolute left-[33%] top-[24%] z-50 font-arsenal ${active ? 'text-[#0A0C0F]' : 'text-[#F0F2F5]'}`}
+                style={{ fontSize: 'clamp(0.75rem, 3.5vh, 1.25rem)' }}
             >
                 {label}
             </span>

@@ -562,7 +562,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'BPH',
         description:
-            'Bertanggung jawab mengoordinasikan seluruh alur kerja kepanitiaan, menjaga komunikasi antar divisi, mengatur timeline, serta memastikan setiap kegiatan berjalan sesuai rencana.',
+            'Layaknya pengendali alur di balik Metaverse, Project Manager menjaga setiap divisi tetap selaras, memperkuat koordinasi, dan mengarahkan setiap langkah menuju kesuksesan PPIF 2026.',
         nameSrc: PM,
         image: PMPlain,
         members: [
@@ -597,7 +597,7 @@ export const divisionData: DivisionData[] = [
             side: 'top',
             value: '35%',
         },
-        left: '11rem',
+        left: 'clamp(88px, 23.89vh, 176px)',
         namePosition: {
             left: '22%',
             bottom: '2%',
@@ -611,7 +611,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Acara',
         description:
-            'Merancang konsep acara, menyusun rundown, mengatur jalannya kegiatan, serta memastikan setiap sesi acara dapat berjalan dengan tertib, menarik, dan sesuai tujuan.',
+            'Layaknya pusat ide dalam sebuah perjalanan, divisi ini memastikan setiap kegiatan berjalan lancar dan menghadirkan pengalaman yang tak terlupakan bagi seluruh peserta.',
         nameSrc: Developer,
         image: DeveloperPlain,
         members: divisionMembers.Acara,
@@ -620,7 +620,7 @@ export const divisionData: DivisionData[] = [
             side: 'bottom',
             value: '6%',
         },
-        left: '31rem',
+        left: 'clamp(248px, 67.35vh, 496px)',
         namePosition: {
             left: '23%',
             bottom: '5%',
@@ -634,7 +634,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Visual',
         description:
-            'Membuat kebutuhan visual acara, mulai dari aset grafis, ilustrasi, hingga elemen desain yang memperkuat identitas dan suasana kegiatan.',
+            'Layaknya kumpulan pixel yang membentuk satu universe, divisi ini menghadirkan visual yang menarik, konsisten, dan bermakna untuk menghidupkan setiap momen PPIF 2026.',
         nameSrc: Bitmap,
         image: BitmapPlain,
         members: divisionMembers.Visual,
@@ -643,7 +643,7 @@ export const divisionData: DivisionData[] = [
             side: 'top',
             value: '18%',
         },
-        left: '48rem',
+        left: 'clamp(384px, 104.23vh, 768px)',
         namePosition: {
             left: '31%',
             bottom: '7%',
@@ -657,7 +657,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Person in Charge',
         description:
-            'Menjadi penghubung dan penanggung jawab teknis untuk pihak atau kelompok tertentu, memastikan kebutuhan terkoordinasi dengan baik selama kegiatan berlangsung.',
+            'Layaknya sebuah buku panduan dalam semesta yang terus berkembang, divisi ini menyajikan materi perkuliahan yang seru, relevan, dan mudah dipahami bagi mahasiswa baru.',
         nameSrc: Module,
         image: ModulePlain,
         members: divisionMembers['Person in Charge'],
@@ -666,7 +666,7 @@ export const divisionData: DivisionData[] = [
             side: 'bottom',
             value: '8%',
         },
-        left: '68rem',
+        left: 'clamp(544px, 147.77vh, 1088px)',
         namePosition: {
             left: '25%',
             bottom: '8%',
@@ -680,7 +680,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Keamanan',
         description:
-            'Menjaga ketertiban dan keamanan selama kegiatan, mengatur alur peserta, serta membantu memastikan lingkungan acara tetap aman dan kondusif.',
+            'Layaknya lapisan enkripsi yang menjaga lintasan multiverse tetap stabil, divisi ini memastikan proses berjalan tertib serta menciptakan lingkungan yang aman dan kondusif.',
         nameSrc: Encryptor,
         image: EncryptorPlain,
         members: divisionMembers.Keamanan,
@@ -689,7 +689,7 @@ export const divisionData: DivisionData[] = [
             side: 'top',
             value: '37%',
         },
-        left: '90rem',
+        left: 'clamp(720px, 195.43vh, 1440px)',
         namePosition: {
             left: '23%',
             bottom: '5%',
@@ -703,7 +703,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Website',
         description:
-            'Mengembangkan dan mengelola kebutuhan website acara, mulai dari tampilan, fitur, hingga pengalaman pengguna agar informasi dapat diakses dengan jelas.',
+            'Layaknya portal menuju sebuah universe, divisi ini merancang dan mengelola website yang optimal, fungsional, dan user-friendly demi menghadirkan pengalaman digital yang mulus.',
         nameSrc: Interface,
         image: InterfacePlain,
         members: divisionMembers.Website,
@@ -712,7 +712,7 @@ export const divisionData: DivisionData[] = [
             side: 'bottom',
             value: '6%',
         },
-        left: '110rem',
+        left: 'clamp(880px, 238.86vh, 1760px)',
         namePosition: {
             left: '23%',
             bottom: '7%',
@@ -726,7 +726,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Perlengkapan',
         description:
-            'Menyiapkan, mengatur, dan memastikan seluruh perlengkapan yang dibutuhkan acara tersedia, tertata, serta siap digunakan sesuai kebutuhan.',
+            'Layaknya sebuah extension dalam sistem multiverse, divisi ini menjadi penghubung yang menjaga kelancaran acara melalui pengelolaan perlengkapan, konsumsi, dan logistik.',
         nameSrc: Extension,
         image: ExtensionPlain,
         members: divisionMembers.Perlengkapan,
@@ -735,7 +735,7 @@ export const divisionData: DivisionData[] = [
             side: 'top',
             value: '17%',
         },
-        left: '130rem',
+        left: 'clamp(1040px, 282.29vh, 2080px)',
         namePosition: {
             left: '22%',
             bottom: '4%',
@@ -749,7 +749,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Administrator',
         description:
-            'Mengelola kebutuhan administrasi acara, menyusun data penting, mencatat informasi, serta membantu kelancaran koordinasi internal kepanitiaan.',
+            'Layaknya pusat koordinasi dalam semesta PPIF, divisi ini mendata mahasiswa baru, merinci setiap detail administratif, serta menjaga kerapihan data.',
         nameSrc: Admin,
         image: AdminPlain,
         members: divisionMembers.Administrator,
@@ -758,7 +758,7 @@ export const divisionData: DivisionData[] = [
             side: 'bottom',
             value: '10%',
         },
-        left: '148rem',
+        left: 'clamp(1184px, 321.49vh, 2368px)',
         namePosition: {
             left: '33%',
             bottom: '9%',
@@ -772,7 +772,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Public Relation',
         description:
-            'Menjalin komunikasi dengan pihak eksternal, menyampaikan informasi acara, membangun relasi, serta membantu menjaga citra kegiatan di hadapan publik.',
+            'Layaknya sebuah console dalam sistem, divisi ini mengelola konten visual dan tulisan untuk membangun citra PPIF 2026 serta menjalin koneksi yang kuat dengan audiens.',
         nameSrc: Console,
         image: ConsolePlain,
         members: divisionMembers['Public Relation'],
@@ -781,7 +781,7 @@ export const divisionData: DivisionData[] = [
             side: 'top',
             value: '30%',
         },
-        left: '168rem',
+        left: 'clamp(1344px, 364.99vh, 2688px)',
         namePosition: {
             left: '25%',
             bottom: '6%',
@@ -795,7 +795,7 @@ export const divisionData: DivisionData[] = [
     {
         name: 'Dokumentasi',
         description:
-            'Mendokumentasikan momen penting selama kegiatan melalui foto dan video, serta menyimpan hasil dokumentasi sebagai arsip dan publikasi acara.',
+            'Layaknya sebuah rekaman waktu di lintasan multiverse, Snapshot mengabadikan setiap momen penting dan menyimpannya sebagai kenangan yang terus hidup bagi peserta PPIF 2026.',
         nameSrc: Snapshot,
         image: SnapshotPlain,
         members: divisionMembers.Dokumentasi,
@@ -804,7 +804,7 @@ export const divisionData: DivisionData[] = [
             side: 'bottom',
             value: '10%',
         },
-        left: '190rem',
+        left: 'clamp(1520px, 412.91vh, 3040px)',
         namePosition: {
             left: '22%',
             bottom: '6%',

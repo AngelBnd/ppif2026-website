@@ -10,6 +10,10 @@ export default defineConfig({
             refresh: true,
         }),
         react(),
-        svgr(),
+        svgr({
+            svgrOptions: {
+                expandProps: 'end',
+            },
+        }),
     ],
 });

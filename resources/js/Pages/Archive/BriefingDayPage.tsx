@@ -489,16 +489,25 @@ export default function BriefingDayPage() {
                     <Shape1 className="h-full w-full scale-110 transform object-fill" />
                 </div>
 
-                <div className="relative z-10 flex h-[550px] w-full max-w-5xl items-center justify-between px-12">
+                <div
+                    className="relative -left-16 z-10 flex w-full max-w-5xl items-center justify-between"
+                    style={{
+                        height: 'clamp(247.5px, 80.1vh, 550px)',
+                        paddingLeft: 'clamp(1.5rem, 5.9vh, 3rem)',
+                        paddingRight: 'clamp(1.5rem, 5.9vh, 3rem)',
+                    }}
+                >
                     {/* CAROUSEL KARTU STACK */}
                     <div
                         ref={(el) => {
                             if (el) leftElementsRef.current[1] = el;
                         }}
-                        className="relative h-[420px] w-[580px] opacity-0"
+                        className="relative opacity-0"
                         style={{
-                            left: '-180px',
-                            top: '-20px',
+                            height: 'clamp(200px, 60vh, 1000px)',
+                            width: 'clamp(100px, 140vh, 1900px)',
+                            left: 'clamp(-70px, calc(-90vh + 100px), -100px)',
+                            top: 'clamp(-9px, 9vh, -100px)',
                         }}
                     >
                         {DUMMY_DATA.map((item) => {
@@ -527,7 +536,7 @@ export default function BriefingDayPage() {
                                 >
                                     <div className="absolute flex h-[100%] w-[100%] items-center justify-center">
                                         <div
-                                            className="z-10 h-full w-full bg-zinc-800 transition-all duration-300 ease-in-out"
+                                            className="relative z-10 h-full w-full bg-zinc-800 transition-all duration-300 ease-in-out"
                                             style={{
                                                 clipPath: isActive
                                                     ? 'url(#cropAktif)'
@@ -557,25 +566,24 @@ export default function BriefingDayPage() {
 
                                         {isActive && (
                                             <>
-                                                {/* Active decorative bits behind the selected frame */}
+                                                {/* Active colored bits behind the photo/frame */}
                                                 <div className="pointer-events-none absolute inset-0 z-0">
-                                                    {/* Red bit enters from the right */}
                                                     <div
                                                         ref={activeBlueBitRef}
-                                                        className="absolute right-2 top-[2%] z-0 h-full w-[99%]"
+                                                        className="absolute right-2 top-[2%] h-full w-[99%]"
                                                     >
                                                         <ActiveBitBlue className="h-full w-full object-contain opacity-90" />
                                                     </div>
-                                                    {/* Blue bit enters from the left */}
+
                                                     <div
                                                         ref={activeRedBitRef}
-                                                        className="absolute z-0 h-full w-[96%]"
+                                                        className="absolute h-full w-[96%]"
                                                     >
                                                         <ActiveBitRed className="h-full w-full object-contain" />
                                                     </div>
                                                 </div>
 
-                                                {/* Selected frame stays above both bits */}
+                                                {/* Selected frame */}
                                                 <div className="pointer-events-none absolute inset-0 z-20 flex h-full w-full items-center justify-center">
                                                     <FrameSelected
                                                         width="100%"
@@ -595,32 +603,55 @@ export default function BriefingDayPage() {
                         ref={(el) => {
                             if (el) rightElementsRef.current[0] = el;
                         }}
-                        className="relative z-20 flex w-[420px] flex-col gap-6 opacity-0"
+                        className="relative left-8 z-20 flex flex-col opacity-0"
+                        style={{
+                            width: 'clamp(189px, 120.7vh, 600px)',
+                            gap: 'clamp(0.75rem, 2.95vh, 1.5rem)',
+                        }}
                     >
-                        <div className="group relative flex min-h-[140px] w-full items-center p-6 text-white">
-                            <div className="pointer-events-none absolute -bottom-[155%] -left-[80%] z-0 origin-bottom-left scale-[3] transform">
+                        <div
+                            className="group relative flex w-full items-center text-white"
+                            style={{
+                                minHeight: 'clamp(63px, 20vh, 200px)',
+                                padding: 'clamp(1.5rem, 5.9vh, 3rem)',
+                            }}
+                        >
+                            <div
+                                className="pointer-events-none absolute z-0 origin-bottom-left transform"
+                                style={{
+                                    bottom: '-160%',
+                                    left: '-99%',
+                                    transform: 'scale(3)',
+                                    width: 'clamp(200px, 38vh, 400px)',
+                                    height: 'clamp(70px, 20vh, 400px)',
+                                }}
+                            >
                                 <PhotoInfoBanner
                                     width={'100%'}
                                     height={'100%'}
                                 />
                             </div>
 
-                            <div className="absolute -bottom-[22%] -left-[70%] z-30 w-full -rotate-[17deg] transform select-text pl-4">
+                            <div className="bg absolute -bottom-[22%] -left-[90%] z-30 w-full -rotate-[17deg] transform select-text pl-4">
                                 <h2
-                                    className="mb-2 text-2xl font-black uppercase italic tracking-wider text-black"
+                                    className="mb-2 font-black uppercase italic tracking-wider text-black"
                                     style={{
                                         fontFamily: "'NotoSans', sans-serif",
+                                        fontSize:
+                                            'clamp(1.1rem, 4.8vh, 1.5rem)',
                                     }}
                                 >
                                     {DUMMY_DATA[currentIndex].title}
                                 </h2>
                             </div>
 
-                            <div className="absolute -bottom-[70%] -left-[65%] z-30 w-full -rotate-[13deg] transform select-text pl-4">
+                            <div className="absolute -bottom-[70%] -left-[80%] z-30 w-full -rotate-[13deg] transform select-text pl-4">
                                 <p
-                                    className="max-w-[90%] text-sm leading-relaxed tracking-tight text-white"
+                                    className="max-w-[90%] leading-relaxed tracking-tight text-white"
                                     style={{
                                         fontFamily: "'Arsenal', sans-serif",
+                                        fontSize:
+                                            'clamp(0.6rem, 2.6vh, 0.875rem)',
                                     }}
                                 >
                                     {DUMMY_DATA[currentIndex].desc}
@@ -634,7 +665,14 @@ export default function BriefingDayPage() {
                                     setShouldRenderView(true);
                                     setIsViewOpen(true);
                                 }}
-                                className="group absolute bottom-[-175px] left-[330px] flex h-[85px] w-[160px] -rotate-[3deg] items-center justify-center overflow-visible transition-transform active:scale-95"
+                                className="group absolute -rotate-[3deg] items-center justify-center overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    display: 'flex',
+                                    bottom: 'clamp(-175px, -19.4vh, -78.75px)',
+                                    left: 'clamp(148.5px, 40vh, 340px)',
+                                    height: 'clamp(38.25px, 9.4vh, 85px)',
+                                    width: 'clamp(72px, 17.8vh, 160px)',
+                                }}
                             >
                                 <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
                                     <ViewButton
@@ -650,7 +688,13 @@ export default function BriefingDayPage() {
                             <button
                                 type="button"
                                 onClick={handlePrev}
-                                className="group absolute bottom-[200px] left-[-450px] flex h-[150px] w-[180px] items-center justify-center overflow-visible transition-transform active:scale-95"
+                                className="group absolute flex items-center justify-center overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    bottom: 'clamp(100px, 25.2vh, 210px)',
+                                    left: 'clamp(-450px, -50vh, -202.5px)',
+                                    height: 'clamp(67.5px, 16.7vh, 150px)',
+                                    width: 'clamp(81px, 30vh, 180px)',
+                                }}
                             >
                                 <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
                                     <PrevButton
@@ -663,7 +707,13 @@ export default function BriefingDayPage() {
                             <button
                                 type="button"
                                 onClick={handleNext}
-                                className="group absolute bottom-[-130px] left-[-650px] flex h-[150px] w-[180px] items-center justify-center overflow-visible transition-transform active:scale-95"
+                                className="group absolute flex items-center justify-center overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    bottom: 'clamp(-190.5px, -18.4vh, -30px)',
+                                    left: 'clamp(-700px, -75.2vh, -292.5px)',
+                                    height: 'clamp(67.5px, 16.7vh, 150px)',
+                                    width: 'clamp(81px, 30vh, 180px)',
+                                }}
                             >
                                 <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
                                     <NextButton
@@ -681,12 +731,13 @@ export default function BriefingDayPage() {
                     ref={(el) => {
                         if (el) rightElementsRef.current[1] = el;
                     }}
-                    className="absolute bottom-8 right-12 z-20 opacity-0"
+                    className="absolute bottom-6 right-6 z-20 opacity-0"
                 >
                     <Link
                         href="/archive"
                         data-click-sound
-                        className="group flex h-[80px] w-[180px] items-center justify-center overflow-visible transition-transform active:scale-95"
+                        className="group flex h-[80px] items-center justify-center overflow-visible transition-transform active:scale-95"
+                        style={{ width: 'clamp(81px, 30vh, 260px)' }}
                         aria-label="Back to Archive"
                     >
                         <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
@@ -709,7 +760,10 @@ export default function BriefingDayPage() {
                         onClick={handleCloseView}
                     >
                         {/* BACK VIEW BUTTON */}
-                        <div className="group absolute left-[1100px] top-[600px] z-10 h-[138px] w-[245px] overflow-visible transition-transform active:scale-95">
+                        <div
+                            className="group absolute bottom-6 right-6 z-10 overflow-visible transition-transform active:scale-95"
+                            style={{ width: 'clamp(110.25px, 27.2vh, 245px)' }}
+                        >
                             <Button
                                 Icon={ViewBackButton}
                                 onClick={handleCloseView}

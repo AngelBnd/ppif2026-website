@@ -1,5 +1,4 @@
-import type { ComponentType, SVGProps } from 'react';
-
+import type { ComponentType, CSSProperties, SVGProps } from 'react';
 type SvgButtonProps = {
     /**
      * Either an inline SVG component (`?react` import) or an image URL (plain
@@ -12,6 +11,7 @@ type SvgButtonProps = {
     className?: string;
     iconClassName?: string;
     ariaLabel?: string;
+    iconStyle?: CSSProperties;
 };
 
 export default function Button({
@@ -20,6 +20,7 @@ export default function Button({
     className = '',
     iconClassName = '',
     ariaLabel = 'button',
+    iconStyle,
 }: SvgButtonProps) {
     return (
         <button
@@ -33,10 +34,11 @@ export default function Button({
                     src={Icon}
                     alt=""
                     draggable={false}
+                    style={iconStyle}
                     className={`select-none ${iconClassName}`}
                 />
             ) : (
-                <Icon className={iconClassName} />
+                <Icon className={iconClassName} style={iconStyle} />
             )}
         </button>
     );

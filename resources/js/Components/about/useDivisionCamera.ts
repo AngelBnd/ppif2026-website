@@ -237,6 +237,19 @@ export function useDivisionCamera({
             target = clampScroll(target + normalizeWheel(e) * cfg.wheelGain);
         };
 
+        /* Used only when the hook does NOT own scrolling (reduced motion or a
+         * touch-primary device). Writes scrollLeft directly so a plain wheel
+         * mouse — which emits vertical delta the browser won't translate to
+         * horizontal scroll here — can still move the panel. Horizontal input
+         * (deltaX-dominant, e.g. trackpads) is left to native scrolling. */
+        const onWheelNative = (e: WheelEvent) => {
+            if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+            e.preventDefault();
+            scroller.scrollLeft = clampScroll(
+                scroller.scrollLeft + normalizeWheel(e),
+            );
+        };
+
         let dragging = false;
         let dragStartX = 0;
         let dragStartScroll = 0;
@@ -478,6 +491,14 @@ export function useDivisionCamera({
             window.addEventListener('mouseup', release);
             scroller.addEventListener('mouseleave', release);
             scroller.style.cursor = 'grab';
+        } else {
+            // Reduced-motion / touch-primary path: a plain wheel mouse only
+            // emits vertical delta, which the browser won't turn into
+            // horizontal scroll on this container. Map it ourselves; let real
+            // horizontal input (trackpads) pass through natively.
+            scroller.addEventListener('wheel', onWheelNative, {
+                passive: false,
+            });
         }
         scroller.addEventListener('keydown', onKeyDown);
         scroller.addEventListener('scroll', onScroll, { passive: true });

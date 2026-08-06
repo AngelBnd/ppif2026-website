@@ -207,7 +207,10 @@ export default function Heading({ className, currentInfo }: Props) {
         };
     }, [currentInfo]);
     return (
-        <div className={`${className} absolute w-[70%] max-w-[35rem]`}>
+        <div
+            className={`${className} absolute`}
+            style={{ width: 'clamp(18rem, 90vh, 39rem)' }}
+        >
             <div
                 // bg-green-400
                 className={`absolute z-40 flex h-auto w-full origin-top-left -rotate-[20deg] flex-col items-start -space-y-12`}
@@ -221,24 +224,48 @@ export default function Heading({ className, currentInfo }: Props) {
 
                 <div className="absolute left-[18%] top-[20%] z-50 w-full">
                     <div ref={starRefIF} className="h-auto w-fit">
-                        <Star className="block h-auto w-40" />
+                        <Star
+                            className="block h-auto"
+                            style={{ width: 'clamp(4.5rem, 30vh, 10rem)' }}
+                        />
                     </div>
                 </div>
             </div>
 
             <div
-                className={`absolute -top-5 flex h-auto origin-top-left -rotate-[14deg] items-end ${isFirstRender.current ? 'hidden' : ''}`}
+                className={`absolute flex h-auto origin-top-left -rotate-[14deg] items-end ${isFirstRender.current ? 'hidden' : ''}`}
+                style={{ top: 'clamp(-20rem, calc(3rem - 9vh), 12rem)' }}
             >
                 <div ref={aboutAboutPPIFRef}>
-                    <About_AboutPPIF className="mb-4 block" />
+                    <About_AboutPPIF
+                        className="mb-2 block h-auto"
+                        style={{
+                            width: 'clamp(4rem, 40vh, 14rem)',
+                            marginBottom: 'clamp(0rem, 2vh, 1rem)',
+                        }}
+                    />
                 </div>
                 <div ref={ifaboutPPIFRef}>
-                    <PPIF_AboutPPIF className="block" />
+                    <PPIF_AboutPPIF
+                        className="block h-auto"
+                        style={{
+                            width: 'clamp(4rem, 50vh, 25rem)',
+                        }}
+                    />
                 </div>
 
-                <div className="absolute -right-[14%] -top-[30%] z-50">
+                <div
+                    className="absolute z-50"
+                    style={{
+                        top: 'clamp(-45%, -2vh, -20%)',
+                        right: 'clamp(-30%, -6vh, -14%)',
+                    }}
+                >
                     <div ref={starRefPPIF} className="h-auto w-fit">
-                        <Star className="block h-auto w-40" />
+                        <Star
+                            className="block h-auto"
+                            style={{ width: 'clamp(4.5rem, 30vh, 10rem)' }}
+                        />
                     </div>
                 </div>
             </div>
