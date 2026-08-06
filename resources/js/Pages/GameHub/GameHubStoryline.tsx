@@ -189,7 +189,7 @@ export default function GameHubStoryline({ onReady }: Props) {
     const BOXES_PAGE_2 = [
         { src: SLBox16, left: '120px', top: '10%', width: '430px', beat: 0 },
         { src: SLBox17, left: '740px', top: '27%', width: '180px', beat: 1 },
-        { src: SLBox18, left: '1065px', top: '50%', width: '180px', beat: 2 },
+        { src: SLBox18, left: '1065px', top: '62%', width: '180px', beat: 2 },
         { src: SLBox19, left: '1340px', top: '75%', width: '300px', beat: 3 },
         { src: SLBox20, left: '1660px', top: '50%', width: '300px', beat: 4 },
         { src: SLBox21, left: '1900px', top: '8%', width: '420px', beat: 5 },
