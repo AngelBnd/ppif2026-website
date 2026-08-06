@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Foundation\Application;
@@ -64,6 +65,10 @@ Route::get('/games/core-logic-test/reveal', function () {
     ]);
 });
 
+
+Route::get('/inibuatorbits/leaderboard', [LeaderboardController::class, 'index'])
+    ->middleware('leaderboard.auth');
+
 Route::prefix('api')->group(function () {
     Route::post('teams/join', [TeamController::class, 'join'])
         ->middleware('throttle:team-join');
@@ -80,4 +85,4 @@ Route::prefix('api')->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

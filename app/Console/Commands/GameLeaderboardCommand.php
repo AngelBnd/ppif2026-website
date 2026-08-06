@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Support\GameCatalog;
+use App\Support\Leaderboard;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Panitia-only leaderboard. Runs on the server terminal (not exposed to players),
@@ -25,28 +24,8 @@ class GameLeaderboardCommand extends Command
 
     public function handle(): int
     {
-        $totalGames = count(GameCatalog::ORDER);
-
-        $query = DB::table('teams as t')
-            ->join('game_progress as gp', function ($join) {
-                $join->on('gp.team_id', '=', 't.id')
-                    ->whereNotNull('gp.completed_at');
-            })
-            ->groupBy('t.id', 't.name', 't.code')
-            ->orderByRaw('SUM(gp.duration_ms) ASC')
-            ->select([
-                't.name',
-                't.code',
-                DB::raw('SUM(gp.duration_ms) as total_ms'),
-                DB::raw('COUNT(gp.id) as games_done'),
-            ]);
-
-        // By default only fully-finished teams are ranked.
-        if (! $this->option('all')) {
-            $query->havingRaw('COUNT(gp.id) = ?', [$totalGames]);
-        }
-
-        $rows = $query->get();
+        $totalGames = Leaderboard::totalGames();
+        $rows = Leaderboard::rows($this->option('all'));
 
         if ($rows->isEmpty()) {
             $this->warn('Belum ada kelompok yang menyelesaikan game.');
@@ -70,22 +49,13 @@ class GameLeaderboardCommand extends Command
                     $rank,
                     $row->name,
                     $row->code,
-                    $this->formatDuration((int) $row->total_ms),
+                    Leaderboard::formatDuration($row->total_ms),
                     "{$row->games_done}/{$totalGames}",
-                    (int) $row->total_ms,
+                    $row->total_ms,
                 ];
             })->all(),
         );
 
         return self::SUCCESS;
-    }
-
-    private function formatDuration(int $ms): string
-    {
-        $totalSeconds = intdiv($ms, 1000);
-        $minutes = intdiv($totalSeconds, 60);
-        $seconds = $totalSeconds % 60;
-
-        return sprintf('%d:%02d', $minutes, $seconds);
     }
 }
