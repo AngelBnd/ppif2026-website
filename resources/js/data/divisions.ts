@@ -91,7 +91,7 @@ const divisionMembers = {
         },
         {
             picture: pic('DEVELOPER', 'Ashfa 1.webp'),
-            name: 'M. Ashfa',
+            name: 'Muhammad Ashfa',
             role: 'Anggota',
         },
         {
@@ -202,7 +202,7 @@ const divisionMembers = {
         },
         {
             picture: pic('MODULE', 'christoper yogis 1.webp'),
-            name: 'Christopher Yogiswara Leandro Sandyajati',
+            name: 'Christopher Yogiswara L. S.',
             role: 'Anggota',
         },
         {
@@ -354,14 +354,6 @@ const divisionMembers = {
             role: 'Anggota',
         },
         {
-            picture: pic(
-                'ENCRYPTOR',
-                'Roane Adzani Sukmayadi Jaya Putra 1.webp',
-            ),
-            name: 'Roane Adzani Sukmayadi Jaya Putra',
-            role: 'Anggota',
-        },
-        {
             picture: pic('ENCRYPTOR', 'Russel James Ryan 1.webp'),
             name: 'Russell James Ryan',
             role: 'Anggota',
@@ -411,7 +403,7 @@ const divisionMembers = {
         },
         {
             picture: pic('INTERFACE', 'muhammad daniel 1.webp'),
-            name: 'M. Daniel Azmi',
+            name: 'Muhammad Daniel A.',
             role: 'Anggota',
         },
     ]),
@@ -548,7 +540,7 @@ const divisionMembers = {
         },
         {
             picture: pic('SNAPSHOT', 'Britney.webp'),
-            name: 'Britney Jessica',
+            name: 'Britney Jessica S.',
             role: 'Anggota',
         },
         {
