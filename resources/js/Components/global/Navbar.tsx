@@ -56,10 +56,10 @@ function NavItem({
 
 export default function Navbar() {
     const leftPositions: Record<Section, string> = {
-        home: '0.2rem',
-        about: '8rem',
-        timeline: '17.5rem',
-        contact: '29rem',
+        home: 'clamp(0.09rem, 0.44vh, 0.2rem)',
+        about: 'clamp(3.55rem, 17.8vh, 8rem)',
+        timeline: 'clamp(7.78rem, 38.9vh, 17.5rem)',
+        contact: 'clamp(12.85rem, 64.4vh, 29rem)',
         none: '0rem',
     };
     const { url } = usePage();
@@ -208,7 +208,7 @@ export default function Navbar() {
                     <div className="pointer-events-auto flex items-center -space-x-2">
                         <svg
                             viewBox="0 0 240 100"
-                            width="clamp(80px, 14vh, 140px)"
+                            width="clamp(80px, 19vh, 190px)"
                             height="clamp(68px, 12vh, 120px)"
                             className="pointer-events-none absolute left-2 z-50 opacity-70 mix-blend-difference ..."
                             style={{ left: leftPositions[activeTab] }}

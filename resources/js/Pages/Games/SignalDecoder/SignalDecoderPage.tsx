@@ -300,7 +300,7 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
             
             </button> */}
             <section className="relative flex h-full w-full items-center justify-start">
-                <div className="relative z-[999] -mt-24 ml-36 h-[570px] w-[900px] shrink-0">
+                <div className="relative z-[45] -mt-24 ml-36 h-[570px] w-[900px] shrink-0">
                     <CrissCross finishGame={finishGame} />
                 </div>
 
