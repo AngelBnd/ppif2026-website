@@ -11,7 +11,6 @@ import BriefingDayButton from '@/assets/archive/BriefingDayButton.svg?react';
 import DDayButton from '@/assets/archive/DDayButton.svg?react';
 import GalleryScroll from '@/Components/about/GalleryScroll';
 import GlitchShape from '@/Components/global/GlitchShape';
-import ArchiveWaitInfo from './ArchiveWaitInfo';
 
 export default function ArchivePage() {
     const [showOverlay, setShowOverlay] = useState(true);
@@ -197,7 +196,10 @@ export default function ArchivePage() {
                 {/* SHAPE BACKGROUND (Slide In dari Kiri Bawah barengan dengan Menu) */}
                 <div
                     ref={shapeRef}
-                    className="z-5 pointer-events-none absolute -bottom-[53%] flex h-auto w-screen items-end text-[#BF1E2E]"
+                    className="z-5 pointer-events-none absolute flex h-auto w-screen items-end text-[#BF1E2E]"
+                    style={{
+                        bottom: 'clamp(-53%, calc(-18% + 4vh - 0.9*640px), -70%)',
+                    }}
                 >
                     <svg
                         viewBox="0 0 1891.5 1503.5"
