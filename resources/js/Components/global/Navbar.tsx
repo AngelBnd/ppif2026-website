@@ -210,7 +210,7 @@ export default function Navbar() {
                             viewBox="0 0 240 100"
                             width="clamp(80px, 19vh, 190px)"
                             height="clamp(68px, 12vh, 120px)"
-                            className="pointer-events-none absolute left-2 z-50 opacity-70 mix-blend-difference ..."
+                            className={`pointer-events-none absolute left-2 z-50 opacity-70 mix-blend-difference ${activeTab === 'none' ? 'invisible' : ''}`}
                             style={{ left: leftPositions[activeTab] }}
                             preserveAspectRatio="none"
                         >

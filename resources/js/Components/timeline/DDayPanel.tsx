@@ -347,7 +347,7 @@ export default function DDayPanel({
                         <div
                             ref={titleRef}
                             className={`pointer-events-none relative left-[8%] z-20 mb-[1%] mt-[5%]`}
-                        >
+                            >
                             <CurrentTitle className={currentTitleClassName} />
                         </div>
 
