@@ -1,5 +1,4 @@
 import aug26Tag from '@/assets/timeline/aug26-tag.svg';
-import decor from '@/assets/timeline/decor.svg';
 import detailsButton from '@/assets/timeline/details-button.svg';
 
 import {
@@ -9,11 +8,15 @@ import {
     type SVGProps,
 } from 'react';
 
-import ShapeDecoLong from '@/assets/timeline/ShapeDecorativeLong.svg';
-import ShapeDecoShort from '@/assets/timeline/ShapeDecoShort.svg';
-import { DecorShape } from '@/Pages/Games/DataTrace/DataTracePage';
-
 import gsap from 'gsap';
+
+import Star from '@/assets/about/Star4Points.svg?react';
+import PaperBack1 from '@/assets/games/signalDecoder/PaperBack1.svg?react';
+import PaperBack2 from '@/assets/games/signalDecoder/PaperBack2.svg?react';
+import PaperMain from '@/assets/games/signalDecoder/PaperMain.svg?react';
+import BriefingDayTitle from '@/assets/timeline/BriefingDayTitle.svg?react';
+import DdayTitle from '@/assets/timeline/DDayTitle.svg?react';
+import timelinetitle from '@/assets/timeline/TimelineTitle.svg';
 
 type SVGComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -38,13 +41,154 @@ export default function DDayPanel({
     const decorShape2ref = useRef<HTMLImageElement | null>(null);
     const hasMountedRef = useRef(false);
 
+    const paperWrapperRef = useRef<HTMLDivElement | null>(null);
+    const paperMainRef = useRef<HTMLDivElement | null>(null);
+    const paperBack1Ref = useRef<HTMLDivElement | null>(null);
+    const paperBack2Ref = useRef<HTMLDivElement | null>(null);
+
+    const CurrentTitle =
+        currentInfo === 'BriefingDay' ? BriefingDayTitle : DdayTitle;
+
+    const currentTitleClassName =
+        currentInfo === 'BriefingDay'
+            ? 'block h-auto w-[clamp(9rem,37vh,20rem)] -rotate-[3deg]'
+            : 'block h-auto w-[clamp(5.4rem,20vh,12rem)] -rotate-[6deg]';
+
+    const titleRef = useRef<HTMLDivElement | null>(null);
+    const descRef = useRef<HTMLDivElement | null>(null);
+    const detailsButtonRef = useRef<HTMLButtonElement | null>(null);
+    const timelineTitleRef = useRef<HTMLImageElement | null>(null);
+    const starRef = useRef<HTMLDivElement | null>(null);
+
+    // Timeline title + star entrance — plays once on first render.
+    useLayoutEffect(() => {
+        const title = timelineTitleRef.current;
+        const star = starRef.current;
+        if (!title || !star) return;
+
+        const ctx = gsap.context(() => {
+            const tl = gsap.timeline({ delay: 0.3 });
+
+            tl.fromTo(
+                title,
+                { x: -120, opacity: 0 },
+                { x: 0, opacity: 1, duration: 0.5, ease: 'bounce.out' },
+            ).fromTo(
+                star,
+                { rotation: -180, scale: 0.85, opacity: 0 },
+                {
+                    rotation: 0,
+                    scale: 1,
+                    opacity: 1,
+                    duration: 0.35,
+                    ease: 'back.out(1.2)',
+                    transformOrigin: '50% 50%',
+                },
+                '<0.1',
+            );
+        });
+
+        return () => ctx.revert();
+    }, []);
+
+    // When currentInfo flips (D-Day <-> BriefingDay), shuffle the paper stack
+    // and fade the fresh content back in — same feel as the paper-switch
+    // animation used elsewhere.
+    useLayoutEffect(() => {
+        // Skip the very first render; the panel has its own entrance.
+        if (!hasMountedRef.current) {
+            hasMountedRef.current = true;
+            return;
+        }
+
+        const main = paperMainRef.current;
+        const back1 = paperBack1Ref.current;
+        const back2 = paperBack2Ref.current;
+        const title = titleRef.current;
+        const desc = descRef.current;
+        const button = detailsButtonRef.current;
+
+        if (!main || !back1 || !back2 || !title || !desc || !button) return;
+
+        const ctx = gsap.context(() => {
+            gsap.killTweensOf([main, back1, back2, title, desc, button]);
+
+            const tl = gsap.timeline();
+
+            tl.fromTo(
+                main,
+                { rotation: -5, xPercent: -50 },
+                {
+                    rotation: 0,
+                    xPercent: -50,
+                    transformOrigin: 'center bottom',
+                    duration: 0.5,
+                    ease: 'back.out(1.5)',
+                },
+                0,
+            );
+            tl.fromTo(
+                back1,
+                { rotation: -2, x: -10 },
+                {
+                    rotation: 0,
+                    x: 0,
+                    duration: 0.4,
+                    transformOrigin: 'center bottom',
+                    ease: 'back.out(1.7)',
+                },
+                0,
+            );
+            tl.fromTo(
+                back2,
+                { rotation: 2, x: 10 },
+                {
+                    rotation: 0,
+                    x: 0,
+                    duration: 0.4,
+                    transformOrigin: 'center bottom',
+                    ease: 'back.out(1.7)',
+                },
+                0,
+            );
+
+            tl.fromTo(
+                [title, button],
+                { autoAlpha: 0, y: 14 },
+                {
+                    autoAlpha: 1,
+                    y: 0,
+                    duration: 0.28,
+                    stagger: 0.08,
+                    ease: 'power3.out',
+                    clearProps: 'transform,opacity,visibility',
+                },
+                0.08,
+            );
+
+            tl.fromTo(
+                desc,
+                { autoAlpha: 0 },
+                {
+                    autoAlpha: 1,
+                    duration: 0.4,
+                    ease: 'power3.out',
+                    clearProps: 'opacity,visibility',
+                },
+                0.14,
+            );
+        });
+
+        return () => ctx.revert();
+    }, [currentInfo]);
+
     // Entire panel enters from the right on initial render
     useLayoutEffect(() => {
         const panel = panelRef.current;
-        const content = contentRef.current;
         const augTag = augTagRef.current;
+        const paper = paperWrapperRef.current;
 
-        if (!panel || !content || !augTag) return;
+        if (!panel || !augTag) return;
 
         const ctx = gsap.context(() => {
             const tl = gsap.timeline();
@@ -63,7 +207,7 @@ export default function DDayPanel({
             );
 
             gsap.fromTo(
-                content,
+                paper,
                 {
                     x: 90,
                 },
@@ -112,78 +256,18 @@ export default function DDayPanel({
         return () => ctx.revert();
     }, []);
 
-    // Stagger each content element in, one after another, when the info changes
-    useLayoutEffect(() => {
-        const content = contentRef.current;
-
-        if (!content) return;
-
-        if (!hasMountedRef.current) {
-            hasMountedRef.current = true;
-            return;
-        }
-
-        const ctx = gsap.context(() => {
-            const items = Array.from(content.children).filter(
-                (el) =>
-                    el !== decorShape1ref.current &&
-                    el !== decorShape2ref.current,
-            );
-            gsap.killTweensOf(items);
-
-            gsap.fromTo(
-                items,
-                { x: 70, autoAlpha: 0 },
-                {
-                    x: 0,
-                    autoAlpha: 1,
-                    duration: 0.3,
-                    ease: 'back.out(1.3)',
-                    stagger: 0.12,
-                    clearProps: 'transform',
-                },
-            );
-
-            gsap.fromTo(
-                [decorShape1ref.current],
-                { x: 30, autoAlpha: 0, rotate: '-20deg' },
-                {
-                    rotate: '0deg',
-                    x: 0,
-                    autoAlpha: 1,
-                    duration: 0.3,
-                    ease: 'back.out(1.4)',
-                },
-            );
-
-            gsap.fromTo(
-                [decorShape2ref.current],
-                { x: 30, autoAlpha: 0, rotate: '20deg' },
-                {
-                    rotate: '0deg',
-                    x: 0,
-                    autoAlpha: 1,
-                    duration: 0.3,
-                    ease: 'back.out(1.4)',
-                },
-            );
-        }, content);
-
-        return () => ctx.revert();
-    }, [currentInfo]);
-
     return (
         <div
             ref={panelRef}
             className="bg pointer-events-none absolute inset-y-0 -right-12 z-30 w-1/2"
         >
             {/* 1. THE MASKED BACKGROUNDS */}
-            <div
+            {/* <div
                 className="absolute inset-0 bg-[#0a0c0f]"
                 style={{
                     clipPath: 'polygon(48% 0, 100% 0, 100% 100%, 10% 100%)',
                 }}
-            />
+            /> */}
             {/* White panel face */}
             <div
                 className="absolute inset-0 bg-[#F0F2F5]"
@@ -200,83 +284,105 @@ export default function DDayPanel({
                     ref={augTagRef}
                     src={aug26Tag}
                     alt="AUG 2026"
-                    className="absolute left-[18%] top-[-9%] w-[42%] drop-shadow-md"
+                    className="absolute left-[18%] top-[-4%] w-[42%]"
                 />
-
                 <div
-                    ref={contentRef}
-                    className="absolute left-[28%] top-[15%] mt-4 flex h-[33rem] w-[56%] flex-col items-start gap-[1vmin]"
-                    style={{ top: 'clamp(6.75%, calc(2vh + 12%), 20%) ' }}
+                    className="absolute z-[50]"
+                    style={{
+                        top: 'clamp(-2rem, calc(10vh - 2rem), 3.5rem)',
+                        right: 'clamp(4.5%, calc(1vh + 8%), 10%)',
+                        width: 'clamp(27%, calc(30vh + 40%), 65%)',
+                    }}
                 >
-                    {/* 1. D-DAY PPIF title */}
-                    {/* Removed absolute positioning; it now takes 100% of the wrapper's width */}
                     <div
-                        key={currentInfo}
-                        className={`shrink-0 ${headerClassName} `}
-                    >
-                        <HeaderSVG className="block h-auto w-full" />
-                    </div>
-                    <div
-                        className="absolute"
+                        ref={starRef}
+                        className="absolute z-50"
                         style={{
-                            left: 'clamp(-18%, -12vh, -10%)',
-                            top: 'clamp(16.5%, 20vh, 30%)',
-                            width: 'clamp(18%, 22vh, 40%)',
+                            top: 'clamp(0.2rem, (1vh - 0.2rem), 3rem)',
+                            right: 'clamp(1.8rem, 8.8vh, 4rem)',
+                            width: 'clamp(5.4rem, 26.4vh, 12rem)',
                         }}
                     >
-                        <DecorShape
-                            ref={decorShape1ref}
-                            src={ShapeDecoLong}
-                            alt=""
-                            className="w-full"
-                        />
+                        <Star className="block h-auto w-full" />
+                    </div>
+                    <img
+                        ref={timelineTitleRef}
+                        src={timelinetitle}
+                        className="block h-auto w-full"
+                    />
+                </div>
+                <div
+                    ref={paperWrapperRef}
+                    className="absolute bottom-0"
+                    style={{
+                        right: 'clamp(-0.45rem, -3.2vh, -3rem)',
+                        height: 'clamp(12.4rem, 59vh, 32rem)',
+                        width: 'clamp(18rem, 88vh, 40rem)',
+                    }}
+                >
+                    <div
+                        ref={paperBack2Ref}
+                        className="absolute -bottom-8 z-10"
+                        style={{
+                            right: 'clamp(1.8rem, 8.8vh, 4rem)',
+                            width: 'clamp(6.3rem, 27vh, 14rem)',
+                        }}
+                    >
+                        <PaperBack2 className="block h-auto w-full" />
                     </div>
 
                     <div
-                        className="absolute"
-                        style={{
-                            right: 'clamp(-21.6%, -20vh, -12%)',
-                            top: 'clamp(-20%, calc(-25vh + 1rem), 0%)',
-                            width: 'clamp(18%, 22vh, 40%)',
-                        }}
+                        ref={paperBack1Ref}
+                        className="absolute !-bottom-4 left-0"
+                        style={{ width: 'clamp(6rem, 30.2vh, 16rem)' }}
                     >
-                        <DecorShape
-                            ref={decorShape2ref}
-                            src={ShapeDecoShort}
-                            alt=""
-                            className="w-full"
-                        />
+                        <PaperBack1 className="block h-auto w-full" />
                     </div>
-                    {/* 2. Description */}
-                    {/* Swapped absolute positioning for margin-left (ml-[12%]) to keep the staggered look */}
-                    <div className="mx-3 my-3 [perspective:380px]">
-                        <div className="mb-[0vmin] ml-[12%] -rotate-6 space-y-2 font-arsenal text-[2.5vmin] leading-snug [transform:rotateZ(-4deg)_rotateY(-9deg)_scaleY(1.12)_scaleX(1.1)_skewX(2deg)]">
+
+                    <div
+                        ref={paperMainRef}
+                        className="absolute left-1/2 z-30 h-full -translate-x-1/2"
+                        style={{ width: 'clamp(14.85rem, 70.6vh, 33rem)' }}
+                    >
+                        <div
+                            ref={titleRef}
+                            className={`pointer-events-none relative left-[8%] z-20 mb-[2%] mt-[5%]`}
+                        >
+                            <CurrentTitle className={currentTitleClassName} />
+                        </div>
+
+                        <div
+                            ref={descRef}
+                            className="relative z-[999] ml-[12%] w-[59%] -rotate-6 font-arsenal leading-snug"
+                            style={{
+                                marginBottom: '2vmin',
+                                fontSize: 'clamp(0.2rem, 2.4vh, 1.6rem)',
+                            }}
+                        >
                             <p>{informationDisplayed}</p>
                         </div>
-                    </div>
 
-                    {/* 3. See Details button */}
-                    {/* Swapped absolute positioning for margin-left (ml-[15%]) */}
-                    {/* Adjusted width to 45% of the wrapper instead of the whole screen */}
-                    <button
-                        type="button"
-                        onClick={onSeeDetails}
-                        className="group -bottom-8 ml-[13%] w-[50%] hover:scale-[1.03] active:scale-95"
-                    >
-                        <img
-                            src={detailsButton}
-                            alt="See Details"
-                            className="h-auto w-full object-contain"
+                        <button
+                            ref={detailsButtonRef}
+                            type="button"
+                            onClick={onSeeDetails}
+                            className="group pointer-events-auto relative z-[999] ml-[13%] w-[40%] hover:scale-[1.03] active:scale-95"
+                        >
+                            <img
+                                src={detailsButton}
+                                alt="See Details"
+                                className="h-auto w-full object-contain"
+                            />
+                        </button>
+
+                        <PaperMain
+                            className="absolute block h-[140%] w-auto"
+                            style={{
+                                bottom: 'clamp(-14rem, -15vh, -4rem)',
+                            }}
                         />
-                    </button>
+                    </div>
                 </div>
-
-                {/* Decorative triangles */}
-                <img
-                    src={decor}
-                    alt=""
-                    className="absolute bottom-[6%] right-[12%] w-[10%] opacity-90"
-                />
             </div>
         </div>
     );

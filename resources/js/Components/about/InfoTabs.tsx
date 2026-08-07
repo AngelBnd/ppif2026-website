@@ -231,7 +231,7 @@ export default function InfoTabs({
     }, [activeTab]);
 
     return (
-        <div className={`${className} w-[40%] max-w-[22rem]`}>
+        <div className={`${className} !z-[999] w-[40%] max-w-[22rem]`}>
             <div className="relative flex w-full -rotate-12 flex-col -space-y-2">
                 <TabButton
                     label="Information"

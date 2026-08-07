@@ -261,9 +261,23 @@ export default function AboutDDayModal({
                                 </div>
 
                                 {name === 'BriefingDay' ? (
-                                    <Bebas className="absolute -bottom-[11rem] -right-[5rem] block h-auto w-[22rem]" />
+                                    <Bebas
+                                        className="absolute block h-auto"
+                                        style={{
+                                            bottom: 'clamp(-14rem, -8vh, -11rem)',
+                                            right: 'clamp(-7rem, -4vh, -5rem)',
+                                            width: 'clamp(9.9rem, 40vh, 22rem)',
+                                        }}
+                                    />
                                 ) : (
-                                    <Perhatiakn className="absolute -bottom-[11rem] -right-[5rem] block h-auto w-[22rem]" />
+                                    <Perhatiakn
+                                        className="absolute block h-auto"
+                                        style={{
+                                            bottom: 'clamp(-120rem, -12vh, -11rem)',
+                                            right: 'clamp(-7rem, -4vh, -5rem)',
+                                            width: 'clamp(9.9rem, 60vh, 22rem)',
+                                        }}
+                                    />
                                 )}
                             </div>
                         )}

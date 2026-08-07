@@ -37,7 +37,7 @@ export const timelineInformation: Record<TimelineView, TimelineInformation> = {
         aboutTitle: DdayTitle,
         modalTitle: 'About D-Day',
         informationDisplayed:
-            'D-Day merupakan hari utama ketika seluruh rangkaian acara dilaksanakan. Pada hari ini, peserta akan mengikuti kegiatan yang telah dipersiapkan oleh panitia. Seluruh peserta diharapkan hadir tepat waktu dan mengikuti arahan yang diberikan.',
+            'D-Day merupakan hari kedua dari rangkaian PPIF yang berisi kegiatan utama dari keseluruhan PPIF 2026. Pada hari ini, peserta akan mengikuti kegiatan yang telah dipersiapkan oleh panitia. Seluruh peserta diharapkan hadir tepat waktu dan membawa kelengkapan yang sudah diberitahukan pada briefing day. ',
         modalDescription:
             'D-Day merupakan puncak dari seluruh rangkaian kegiatan yang telah dipersiapkan sebelumnya. Pada hari ini, peserta akan mengikuti berbagai agenda utama sesuai dengan susunan acara yang telah ditentukan oleh panitia. Setiap peserta diwajibkan hadir tepat waktu, membawa seluruh perlengkapan yang dibutuhkan, serta mengikuti arahan panitia selama acara berlangsung. Kehadiran dan partisipasi aktif peserta sangat penting agar setiap sesi dapat berjalan sesuai jadwal. Peserta juga diharapkan menjaga ketertiban, memperhatikan informasi yang disampaikan, dan segera menghubungi panitia apabila mengalami kendala. Seluruh aturan dan ketentuan yang berlaku harus dipatuhi demi menjaga kenyamanan serta keamanan bersama selama kegiatan berlangsung.',
         images: [baju2, tas, buku, bekal],
@@ -50,9 +50,9 @@ export const timelineInformation: Record<TimelineView, TimelineInformation> = {
         aboutTitle: BriefingDayAboutTitle,
         modalTitle: 'About Briefing Day',
         informationDisplayed:
-            'Briefing Day merupakan sesi pengarahan sebelum pelaksanaan acara utama. Peserta akan menerima penjelasan mengenai aturan, jadwal, dan alur kegiatan. Panitia juga akan menyampaikan pembagian kelompok serta tanggung jawab setiap peserta.',
+            'Briefing Day merupakan sesi informasi yang diadakan secara daring sebelum pelaksanaan D-Day PPIF 2026. Peserta akan menerima penjelasan mengenai aturan, jadwal, dan hal-hal yang perlu dipersiapkan untuk mengikuti kegiatan D-Day nantinya. Selain itu, panitia juga akan menyampaikan pembagian kelompok serta tanggung jawab yang perlu diperhatikan oleh setiap peserta.',
         modalDescription:
-            'Briefing Day diselenggarakan sebagai sesi persiapan sebelum peserta mengikuti kegiatan utama pada D-Day. Dalam sesi ini, panitia akan memberikan penjelasan lengkap mengenai jadwal, lokasi, aturan, pembagian kelompok, serta alur kegiatan yang harus diikuti. Peserta akan mendapatkan kesempatan untuk memahami tanggung jawab masing-masing dan menanyakan informasi yang masih belum jelas. Seluruh perubahan atau informasi tambahan mengenai pelaksanaan acara juga akan disampaikan pada sesi briefing. Oleh karena itu, setiap peserta diharapkan hadir tepat waktu dan memperhatikan seluruh penjelasan dari panitia. Dengan mengikuti Briefing Day, peserta dapat mempersiapkan diri dengan lebih baik dan mengurangi kemungkinan terjadinya kesalahan atau kebingungan saat acara utama berlangsung.',
+            'Briefing Day diselenggarakan sebagai sesi persiapan sebelum peserta mengikuti kegiatan utama pada D-Day. Dalam sesi ini, panitia akan memberikan penjelasan lengkap mengenai jadwal, lokasi, aturan, pembagian kelompok, serta alur kegiatan yang harus diikuti. Peserta akan mendapatkan kesempatan untuk memahami tanggung jawab masing-masing dan menanyakan informasi yang masih belum jelas. Seluruh perubahan atau informasi tambahan mengenai pelaksanaan acara juga akan disampaikan pada sesi briefing day. Oleh karena itu, setiap peserta diharapkan hadir tepat waktu dan mencatat seluruh penjelasan dari panitia. Dengan mengikuti Briefing Day, peserta dapat mempersiapkan diri dengan lebih baik dan mengurangi kemungkinan terjadinya kesalahann atau kebingungan saat acara utama berlangsung.',
         images: [baju, buku, gadget],
     },
 };

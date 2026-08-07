@@ -49,12 +49,12 @@ export default function Contact() {
             if (contactUs) {
                 gsap.fromTo(
                     contactUs,
-                    { x: 80, opacity: 0, yPercent: -50, rotation: -3 },
+                    { x: 200, opacity: 0, yPercent: -50 },
                     {
                         x: 0,
                         opacity: 1,
                         yPercent: -50,
-                        rotation: 6,
+
                         transformOrigin: 'right center',
                         duration: 0.6,
                         delay: 0.6,
@@ -394,7 +394,7 @@ export default function Contact() {
                     </svg>
                     <img
                         ref={contactUsRef}
-                        className="absolute -left-4 top-1/2 z-50 w-[50%] opacity-0"
+                        className="]opacity-0 absolute -left-4 top-1/2 z-50 w-[50%] rotate-[7deg]"
                         src={ContactUsText}
                     />
                     {/* Tangan + Handphone */}

@@ -89,6 +89,19 @@ export default function GameHubStoryline({ onReady }: Props) {
 
     const PAGE_WIDTH = page === 1 ? '7400px' : '5200px';
 
+    // Responsive scaling — same approach as DivisionsSection: the camera and
+    // wrapper scale with viewport height, reaching full design size around a
+    // ~737px-tall viewport (and holding above it), shrinking to half on very
+    // short screens. clamp form is clamp(D/2, (D / 7.3684)vh, D) per dimension.
+    // NOTE: the camera math (buildLiftPath / path sampling) keeps using the
+    // design width via parseFloat(PAGE_WIDTH) — it's independent of render size.
+    const PAGE_WIDTH_CLAMP =
+        page === 1
+            ? 'clamp(3700px, 1004.29vh, 7400px)'
+            : 'clamp(2600px, 705.72vh, 5200px)';
+    const PANEL_HEIGHT_CLAMP = 'clamp(428px, 116.17vh, 856px)';
+    const CAMERA_HEIGHT_CLAMP = 'clamp(345px, 93.64vh, 690px)';
+
     const scrollRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
     const bgRef = useRef<HTMLDivElement>(null);
@@ -524,10 +537,10 @@ export default function GameHubStoryline({ onReady }: Props) {
                     ref={panelRef}
                     className="relative"
                     style={{
-                        width: PAGE_WIDTH,
-                        height: '856px',
-                        minWidth: PAGE_WIDTH,
-                        minHeight: '856px',
+                        width: PAGE_WIDTH_CLAMP,
+                        height: PANEL_HEIGHT_CLAMP,
+                        minWidth: PAGE_WIDTH_CLAMP,
+                        minHeight: PANEL_HEIGHT_CLAMP,
                     }}
                 >
                     {TRIGGERS.map((trg, i) => (
@@ -546,9 +559,10 @@ export default function GameHubStoryline({ onReady }: Props) {
 
                     <div
                         ref={cameraRef}
-                        className="relative h-[690px]"
+                        className="relative"
                         style={{
-                            width: PAGE_WIDTH,
+                            width: PAGE_WIDTH_CLAMP,
+                            height: CAMERA_HEIGHT_CLAMP,
                             perspective: '900px',
                         }}
                     >

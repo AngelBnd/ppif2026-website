@@ -11,6 +11,7 @@ import BriefingDayButton from '@/assets/archive/BriefingDayButton.svg?react';
 import DDayButton from '@/assets/archive/DDayButton.svg?react';
 import GalleryScroll from '@/Components/about/GalleryScroll';
 import GlitchShape from '@/Components/global/GlitchShape';
+import ArchiveWaitInfo from './ArchiveWaitInfo';
 
 export default function ArchivePage() {
     const [showOverlay, setShowOverlay] = useState(true);
@@ -144,9 +145,9 @@ export default function ArchivePage() {
             `}</style>
 
             {/* Render Overlay Info */}
-            {/* {showOverlay && (
+            {showOverlay && (
                 <ArchiveWaitInfo onClose={() => setShowOverlay(false)} />
-            )} */}
+            )}
 
             <div
                 className="relative flex min-h-screen select-none overflow-hidden bg-transparent text-white"

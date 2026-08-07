@@ -538,6 +538,7 @@ export function useDivisionCamera({
             window.removeEventListener('resize', onResize);
 
             scroller.removeEventListener('wheel', onWheel);
+            scroller.removeEventListener('wheel', onWheelNative);
             scroller.removeEventListener('mousedown', onPointerDown);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('mouseup', release);

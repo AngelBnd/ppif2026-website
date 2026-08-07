@@ -94,7 +94,7 @@ export default function TimelineBackground() {
             <img
                 src={timelineBg}
                 alt=""
-                className="absolute -bottom-12 -left-[10%] z-0 h-[100%] object-contain object-bottom"
+                className="absolute -bottom-10 -left-[1%] z-0 h-[100%] object-contain object-bottom"
             />
 
             {clouds.map((cloud, i) => (
