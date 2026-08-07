@@ -39,6 +39,7 @@ import Panel6 from '@/assets/games/storyline/panels/Panel6.webp';
 import Panel7 from '@/assets/games/storyline/panels/Panel7.webp';
 import Panel8 from '@/assets/games/storyline/panels/Panel8.webp';
 import Panel9 from '@/assets/games/storyline/panels/Panel9.webp';
+import skipbutton from '@/assets/icons/SkipButton.svg';
 import ImReady from '@/assets/svgs/ImReady.svg';
 import NextPage from '@/assets/svgs/NextPage.svg';
 import { CAMERA_PATHS } from '@/Components/about/cameraPath';
@@ -297,6 +298,23 @@ export default function GameHubStoryline({ onReady }: Props) {
             });
     };
 
+    const handleLeaveToGames = () => {
+        const wipeEl = wipeRef.current;
+        if (!wipeEl) {
+            onReady();
+            return;
+        }
+
+        gsap.timeline()
+            .set(wipeEl, { display: 'block', xPercent: 120 })
+            .to(wipeEl, {
+                xPercent: 0,
+                duration: 0.5,
+                ease: 'power4.inOut',
+                onComplete: onReady,
+            });
+    };
+
     useEffect(() => {
         const scroller = scrollRef.current;
         const world = worldRef.current;
@@ -512,6 +530,24 @@ export default function GameHubStoryline({ onReady }: Props) {
 
     return (
         <div className="absolute inset-0 overflow-hidden text-white">
+            <button
+                onClick={handleLeaveToGames}
+                data-type="btn"
+                className="group pointer-events-auto absolute z-30 cursor-pointer select-none transition-transform duration-300 hover:scale-110 active:scale-95"
+                style={{
+                    bottom: 'clamp(0.75rem, 3vh, 1.5rem)',
+                    right: 'clamp(0.75rem, 3vh, 1.5rem)',
+                    width: 'clamp(5.4rem, 26.4vh, 12rem)',
+                }}
+            >
+                <img
+                    src={skipbutton}
+                    alt="Next Page"
+                    draggable={false}
+                    className="h-auto w-full"
+                />
+            </button>
+
             <div
                 ref={bgRef}
                 className="absolute inset-0 z-0 h-screen w-screen bg-[#0A0C0F]"
@@ -553,7 +589,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                                 left: `${trg.left}%`,
                                 top: `${trg.top}%`,
                             }}
-                            className="absolute z-50 h-5 w-5 bg-green-500"
+                            className="absolute z-50 h-5 w-5"
                         />
                     ))}
 
@@ -734,7 +770,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                                     ))}
 
                                     <button
-                                        onClick={onReady}
+                                        onClick={handleLeaveToGames}
                                         data-beat={3}
                                         data-type="btn"
                                         style={{

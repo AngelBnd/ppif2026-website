@@ -60,10 +60,10 @@ export default function GameHubPage() {
             <Button
                 onClick={handleBack}
                 Icon={BackButton}
-                className="absolute bottom-4 left-6 z-30 w-[12rem]"
+                className="bg absolute bottom-6 left-6 z-30"
+                iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}
                 iconClassName="w-full"
             />
-
             {screen === 'join' && (
                 <InputUniqueCode onJoined={() => setScreen('errorGimmick')} />
             )}

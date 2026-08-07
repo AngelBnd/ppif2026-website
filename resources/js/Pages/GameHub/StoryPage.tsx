@@ -11,8 +11,9 @@ export default function StoryPage() {
             <Button
                 onClick={() => router.visit('/home')}
                 Icon={BackButton}
-                className="absolute bottom-4 left-6 z-30 w-[12rem]"
+                className="absolute bottom-6 left-6 z-30 w-[12rem]"
                 iconClassName="w-full"
+                iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}
             />
 
             <GameHubStoryline onReady={() => router.visit('/games')} />
