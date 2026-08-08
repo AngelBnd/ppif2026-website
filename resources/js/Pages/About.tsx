@@ -6,6 +6,7 @@ import InfoTabs from '@/Components/about/InfoTabs';
 import MorphingAboutBox from '@/Components/about/MorphingAboutBox';
 import CustomScrollBox from '@/Components/global/CustomScrollBox';
 
+import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
 import { ScrollSmoother } from 'gsap/ScrollSmoother';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -410,6 +411,7 @@ export default function About() {
 
     return (
         <div className="relative flex h-screen w-screen items-center justify-center overflow-hidden">
+            <Head title="About" />
             <div className="transition-300 pointer-events-none absolute z-0 h-full w-full bg-[#7C131E] opacity-70 ease-in" />
             <div ref={codieRef} className="absolute inset-0 z-0">
                 {!codieIntroDone ? (

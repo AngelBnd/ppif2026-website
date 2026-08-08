@@ -59,13 +59,6 @@ Route::get('/games/{gameSlug}', function ($gameSlug) {
     ]);
 });
 
-Route::get('/games/core-logic-test/reveal', function () {
-    return Inertia::render('Games/ReconstructIdentity/FragmentRevealPage', [
-        'gameSlug' => 'reconstruct-identity',
-    ]);
-});
-
-
 Route::get('/inibuatorbits/leaderboard', [LeaderboardController::class, 'index'])
     ->middleware('leaderboard.auth');
 

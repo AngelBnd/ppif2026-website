@@ -1,6 +1,6 @@
 import { games, type GameSlug } from '@/data/games';
 import { completeGame, startGame } from '@/services/gameApi';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
 import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
@@ -106,6 +106,7 @@ export default function GamePage({ gameSlug }: Props) {
 
     return (
         <>
+            <Head title={game.title} />
             <CircleWipe ref={wipeRef} duration={1.5} />
 
             {step === 'puzzle' && (

@@ -1,6 +1,6 @@
 ﻿import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import Button from '@/Components/global/Button';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import gsap from 'gsap';
 import { useRef, useState } from 'react';
 import ErrorGimmick from './ErrorGimmick';
@@ -57,6 +57,7 @@ export default function GameHubPage() {
 
     return (
         <main className="z-50 h-screen w-screen overflow-hidden">
+            <Head title="Games" />
             <Button
                 onClick={handleBack}
                 Icon={BackButton}
