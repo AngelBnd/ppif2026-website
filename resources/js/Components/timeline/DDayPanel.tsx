@@ -93,8 +93,13 @@ export default function DDayPanel({
     // animation used elsewhere.
     useLayoutEffect(() => {
         // Skip the very first render; the panel has its own entrance.
+        // paperMain still needs its permanent xPercent offset baked in,
+        // since that value isn't part of the entrance animation.
         if (!hasMountedRef.current) {
             hasMountedRef.current = true;
+            if (paperMainRef.current) {
+                gsap.set(paperMainRef.current, { xPercent: -50 });
+            }
             return;
         }
 
@@ -312,17 +317,17 @@ export default function DDayPanel({
                     ref={paperWrapperRef}
                     className="absolute bottom-0"
                     style={{
-                        right: 'clamp(-0.45rem, -3.2vh, -3rem)',
-                        height: 'clamp(12.4rem, 59vh, 32rem)',
-                        width: 'clamp(12rem, 88vh, 48rem)',
+                        right: 'clamp(-0.45rem, -3svh, -3rem)',
+                        height: 'clamp(12.4rem, 59svh, 32rem)',
+                        width: 'clamp(12rem, 84svh, 48rem)',
                     }}
                 >
                     <div
                         ref={paperBack2Ref}
                         className="absolute -bottom-12 z-10"
                         style={{
-                            right: 'clamp(0.2rem, 7vh, 4rem)',
-                            height: 'clamp(6.3rem, 60vh, 30rem)',
+                            right: 'clamp(0.2rem, 7svh, 4rem)',
+                            height: 'clamp(6.3rem, 60svh, 30rem)',
                         }}
                     >
                         <PaperBack2 className="block h-full w-auto" />
@@ -331,17 +336,18 @@ export default function DDayPanel({
                     <div
                         ref={paperBack1Ref}
                         className="absolute !-bottom-12 left-0"
-                        style={{ height: 'clamp(9rem, 63vh, 25rem)' }}
+                        style={{ height: 'clamp(9rem, 63svh, 25rem)' }}
                     >
                         <PaperBack1 className="block h-full w-auto" />
                     </div>
 
                     <div
                         ref={paperMainRef}
-                        className="absolute !-bottom-2 !right-0 z-30 pt-[2%]"
+                        className="absolute !-bottom-2 z-30 pt-[2%]"
                         style={{
-                            height: 'clamp(8rem, 59vh, 63rem)',
-                            width: 'clamp(2.85rem, 53vh, 33rem)',
+                            right: '0',
+                            height: 'clamp(8rem, 59svh, 63rem)',
+                            width: 'clamp(2.85rem, 53svh, 33rem)',
                         }}
                     >
                         <div
@@ -356,8 +362,8 @@ export default function DDayPanel({
                             className="relative z-[999] mb-[2%] ml-[15%] -rotate-6 font-arsenal leading-snug"
                             style={{
                                 marginBottom: '1.4vmin',
-                                fontSize: 'clamp(0.2rem, 2.5vh, 1.6rem)',
-                                width: 'clamp(6rem, 44vh, 26rem)',
+                                fontSize: 'clamp(0.2rem, 2.5svh, 1.6rem)',
+                                width: 'clamp(6rem, 44svh, 26rem)',
                             }}
                         >
                             <p>{informationDisplayed}</p>
@@ -379,8 +385,8 @@ export default function DDayPanel({
                         <PaperMain
                             className="absolute block w-auto"
                             style={{
-                                bottom: 'clamp(-14rem, -15vh, -4rem)',
-                                height: 'clamp(14rem, 84vh, 50rem)',
+                                bottom: 'clamp(-14rem, -15svh, -4rem)',
+                                height: 'clamp(14rem, 84svh, 50rem)',
                             }}
                         />
                     </div>
