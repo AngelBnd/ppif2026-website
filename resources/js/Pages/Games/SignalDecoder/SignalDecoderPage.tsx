@@ -306,9 +306,10 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
 
                 <div
                     ref={sideBarBGRef}
-                    className="pointer-events-none absolute right-0 top-0 h-auto w-[52.083vw] bg-red-300"
+                    className="pointer-events-none absolute -top-[10%] right-0 w-[50vw]"
+                    style={{ height: 'max(120%, 120vh)' }}
                 >
-                    <SideBarBG className="pointer-events-none absolute h-auto w-full" />
+                    <SideBarBG className="pointer-events-none absolute h-full w-full" />
                 </div>
 
                 <div

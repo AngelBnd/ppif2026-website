@@ -11,6 +11,7 @@ export default function StoryPage() {
             <Button
                 onClick={() => router.visit('/home')}
                 Icon={BackButton}
+                back
                 className="absolute bottom-6 left-6 z-30 w-[12rem]"
                 iconClassName="w-full"
                 iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}

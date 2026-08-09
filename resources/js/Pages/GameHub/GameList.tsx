@@ -19,6 +19,7 @@ import SignalDecoderL from '@/assets/games/hub/SignalDecoderLocked.svg';
 import Thumb from '@/assets/games/hub/thumb.svg';
 import Button from '@/Components/global/Button';
 import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
+import { playSfx } from '@/lib/sound';
 import { router } from '@inertiajs/react';
 
 export default function GameList() {
@@ -100,6 +101,8 @@ export default function GameList() {
     };
 
     useLayoutEffect(() => {
+        playSfx('hpGames');
+
         const ctx = gsap.context(() => {
             const phone = phoneRef.current;
             const hand = handGroupRef.current;

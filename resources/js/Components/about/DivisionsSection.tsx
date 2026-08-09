@@ -229,6 +229,7 @@ const DivisionsSection = forwardRef<DivisionsSectionRef, DivisionsSectionProps>(
                             setRenderMainContent(true);
                             setActiveTab('information');
                         }}
+                        back
                     />
                 </div>
                 {renderDivisionPopup && selectedDivision && (
