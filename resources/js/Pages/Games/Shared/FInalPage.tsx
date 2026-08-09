@@ -1,6 +1,7 @@
 ﻿import Button from '@/Components/global/Button';
 
 import BackButton from '@/assets/icons/BackButtonSVG.svg';
+import VictoryMusic from '@/Components/global/VictoryMusic';
 import { getRevealedName } from '@/services/gameApi';
 import { router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -48,11 +49,13 @@ export default function ErrorGimmick({}: Props) {
                 backgroundPosition: 'center',
             }}
         >
+            <VictoryMusic />
             <Button
                 onClick={() => {
                     router.visit('/');
                 }}
                 Icon={BackButton}
+                back
                 className="absolute bottom-4 left-6 z-30 w-[12rem]"
                 iconClassName="w-full"
             />

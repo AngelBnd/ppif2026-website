@@ -361,6 +361,7 @@ export default function AboutDDayModal({
             <button
                 type="button"
                 onClick={handleClose}
+                data-back-sound
                 className="absolute bottom-6 right-6 z-[999] transition duration-200 hover:scale-105 active:scale-95"
             >
                 <img

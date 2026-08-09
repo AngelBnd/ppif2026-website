@@ -12,6 +12,8 @@ type SvgButtonProps = {
     iconClassName?: string;
     ariaLabel?: string;
     iconStyle?: CSSProperties;
+    /** Marks the button as a "go back" control so it plays back sounds. */
+    back?: boolean;
 };
 
 export default function Button({
@@ -21,12 +23,14 @@ export default function Button({
     iconClassName = '',
     ariaLabel = 'button',
     iconStyle,
+    back = false,
 }: SvgButtonProps) {
     return (
         <button
             type="button"
             onClick={onClick}
             aria-label={ariaLabel}
+            data-back-sound={back || undefined}
             className={`transition duration-200 hover:scale-105 active:scale-95 ${className}`}
         >
             {typeof Icon === 'string' ? (

@@ -11,6 +11,8 @@ import {
 type MusicContextValue = {
     isPlaying: boolean;
     toggle: () => void;
+    /** Pauses the backsound while `active` and resumes it when released. */
+    setSuspended: (active: boolean) => void;
 };
 
 const MusicContext = createContext<MusicContextValue | null>(null);
@@ -30,6 +32,8 @@ type MusicProviderProps = {
 export default function MusicProvider({ children }: MusicProviderProps) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const suspendedRef = useRef(false);
+    const wasPlayingRef = useRef(false);
 
     const toggle = useCallback(() => {
         if (audioRef.current?.paused) {
@@ -43,7 +47,32 @@ export default function MusicProvider({ children }: MusicProviderProps) {
         }
     }, []);
 
-    const value = useMemo(() => ({ isPlaying, toggle }), [isPlaying, toggle]);
+    const setSuspended = useCallback((active: boolean) => {
+        const audio = audioRef.current;
+        if (active) {
+            if (suspendedRef.current) return;
+            suspendedRef.current = true;
+            wasPlayingRef.current = !audio?.paused;
+            if (audio && !audio.paused) {
+                audio.pause();
+                setIsPlaying(false);
+            }
+        } else {
+            if (!suspendedRef.current) return;
+            suspendedRef.current = false;
+            if (wasPlayingRef.current && audio) {
+                audio.play().catch(() => {
+                    setIsPlaying(false);
+                });
+                setIsPlaying(true);
+            }
+        }
+    }, []);
+
+    const value = useMemo(
+        () => ({ isPlaying, toggle, setSuspended }),
+        [isPlaying, toggle, setSuspended],
+    );
 
     return (
         <MusicContext.Provider value={value}>

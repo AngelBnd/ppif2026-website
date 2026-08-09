@@ -1,3 +1,4 @@
+import { playSfx } from '@/lib/sound';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import DiscordText from '../assets/contact/Discord.svg';
@@ -261,6 +262,10 @@ export default function Contact() {
         });
 
         return () => ctx.revert();
+    }, []);
+
+    useEffect(() => {
+        playSfx('hpContact');
     }, []);
 
     useEffect(() => {

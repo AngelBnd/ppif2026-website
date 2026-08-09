@@ -60,6 +60,7 @@ export default function GameHubPage() {
             <Button
                 onClick={handleBack}
                 Icon={BackButton}
+                back
                 className="bg absolute bottom-6 left-6 z-30"
                 iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}
                 iconClassName="w-full"
