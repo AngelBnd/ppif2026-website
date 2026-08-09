@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'leaderboard' => [
+        'username' => env('LEADERBOARD_USERNAME'),
+        'password' => env('LEADERBOARD_PASSWORD'),
+    ],
+
 ];

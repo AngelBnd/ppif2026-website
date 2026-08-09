@@ -1,6 +1,18 @@
+import BlackPartBottom from '@/../../public/svgs/BlackPartBottomSVG.svg';
+import { usePage } from '@inertiajs/react';
+
 export default function BottomFrame() {
+    const { url } = usePage();
+    const isGamePage = url.startsWith('/games');
+
     return (
-        <div className="pointer-events-none fixed -bottom-8 left-0 block w-full overflow-hidden">
+        <div
+            className={`pointer-events-none fixed -bottom-6 left-0 block w-full overflow-hidden ${isGamePage ? 'pointer-events-none z-[-1]' : 'z-[0]'}`}
+        >
+            <img
+                src={BlackPartBottom}
+                className="absolute bottom-0 h-auto w-[100vw]"
+            />
             <div className="bottomFrame-video-mask bg-[#0A0C0F]">
                 <video
                     autoPlay
@@ -9,7 +21,7 @@ export default function BottomFrame() {
                     playsInline
                     className="block w-full object-cover opacity-5"
                 >
-                    <source src="/videos/StarsLoop.mp4" type="video/mp4" />
+                    <source src="/videos/StarsLoop.webm" type="video/webm" />
                 </video>
             </div>
         </div>

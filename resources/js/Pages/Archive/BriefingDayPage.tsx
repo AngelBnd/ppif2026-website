@@ -1,0 +1,792 @@
+﻿import { useEffect, useRef, useState } from 'react';
+// @ts-ignore
+import { useGSAP } from '@gsap/react';
+import { Head, Link } from '@inertiajs/react';
+import gsap from 'gsap';
+
+// assets
+import Button from '@/Components/global/Button';
+import FrameSelected from '@/assets/archive/FrameSelected.svg?react';
+import FrameUnselected from '@/assets/archive/FrameUnselected.svg?react';
+import NextButton from '@/assets/archive/NextButton.svg?react';
+import PhotoInfoBanner from '@/assets/archive/PhotoInfoBanner.svg?react';
+import PrevButton from '@/assets/archive/PrevButton.svg?react';
+import Shape1 from '@/assets/archive/Shape1.svg?react';
+import ViewBackButton from '@/assets/archive/ViewBackButton.svg';
+import ViewButton from '@/assets/archive/ViewButton.svg?react';
+import ActiveBitBlue from '@/assets/archive/blueBitActive.svg?react';
+import ActiveBitRed from '@/assets/archive/redBitActive.svg?react';
+import BackButtonSvg from '@/assets/icons/BackButtonSVG.svg';
+
+interface CarouselItem {
+    id: number;
+    title: string;
+    desc: string;
+    image: string;
+}
+
+const DUMMY_DATA: CarouselItem[] = [
+    {
+        id: 1,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 2,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 3,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 4,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 5,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 6,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 7,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 8,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 9,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+    {
+        id: 10,
+        title: 'Kembali Lagi Nanti!',
+        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
+        image: '/pngs/archive/archivePlaceHolder.svg',
+    },
+];
+
+const SLOTS: Record<
+    number,
+    {
+        x: number;
+        y: number;
+        scale: number;
+        rotate: number;
+        opacity: number;
+        grayscale: number;
+        zIndex: number;
+    }
+> = {
+    [-2]: {
+        x: 100,
+        y: -300,
+        scale: 0.45,
+        rotate: -6,
+        opacity: 1,
+        grayscale: 1,
+        zIndex: 10,
+    },
+    [-1]: {
+        x: 30,
+        y: -200,
+        scale: 0.55,
+        rotate: -4,
+        opacity: 1,
+        grayscale: 1,
+        zIndex: 12,
+    },
+    [0]: {
+        x: 0,
+        y: 0,
+        scale: 1,
+        rotate: -3,
+        opacity: 1,
+        grayscale: 0,
+        zIndex: 15,
+    },
+    [1]: {
+        x: -160,
+        y: 200,
+        scale: 0.5,
+        rotate: 6,
+        opacity: 1,
+        grayscale: 1,
+        zIndex: 20,
+    },
+    [2]: {
+        x: -260,
+        y: 300,
+        scale: 0.5,
+        rotate: 6,
+        opacity: 1,
+        grayscale: 1,
+        zIndex: 25,
+    },
+};
+const MIN_OFFSET = -2;
+const MAX_OFFSET = 2;
+
+function getOffset(index: number, currentIndex: number, total: number) {
+    let diff = index - currentIndex;
+    if (diff > total / 2) diff -= total;
+    if (diff < -total / 2) diff += total;
+    return diff;
+}
+
+export default function BriefingDayPage() {
+    const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [isAnimating, setIsAnimating] = useState<boolean>(false);
+
+    const [isViewOpen, setIsViewOpen] = useState<boolean>(false);
+    const [shouldRenderView, setShouldRenderView] = useState<boolean>(false);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const viewModalRef = useRef<HTMLDivElement>(null);
+    const viewContentRef = useRef<HTMLDivElement>(null);
+
+    const leftElementsRef = useRef<HTMLDivElement[]>([]);
+    const rightElementsRef = useRef<HTMLDivElement[]>([]);
+
+    const activeRedBitRef = useRef<HTMLDivElement | null>(null);
+    const activeBlueBitRef = useRef<HTMLDivElement | null>(null);
+
+    const total = DUMMY_DATA.length;
+
+    const { contextSafe } = useGSAP({ scope: containerRef });
+
+    // GSAP PAGE ENTRANCE
+    useGSAP(
+        () => {
+            const tl = gsap.timeline();
+
+            tl.fromTo(
+                leftElementsRef.current,
+                { x: -100, y: 100, opacity: 0 },
+                {
+                    x: 0,
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.55,
+                    ease: 'back.out(1.5)',
+                    stagger: 0.03,
+                },
+                0,
+            );
+
+            tl.fromTo(
+                rightElementsRef.current,
+                { x: 140, y: -140, opacity: 0 },
+                {
+                    x: 0,
+                    y: 0,
+                    opacity: 1,
+                    duration: 0.55,
+                    ease: 'back.out(1.5)',
+                    stagger: 0.03,
+                },
+                0,
+            );
+        },
+        { scope: containerRef },
+    );
+
+    // GSAP View Button
+    useGSAP(
+        () => {
+            if (isViewOpen && shouldRenderView) {
+                gsap.fromTo(
+                    viewModalRef.current,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 0.25, ease: 'power2.out' },
+                );
+
+                gsap.fromTo(
+                    viewContentRef.current,
+                    {
+                        scale: 0.25,
+                        rotate: -12,
+                        x: -520,
+                        y: 50,
+                        opacity: 0.5,
+                    },
+                    {
+                        scale: 1,
+                        rotate: 0,
+                        x: 0,
+                        y: 0,
+                        opacity: 1,
+                        duration: 0.5,
+                        ease: 'back.out(1.1)',
+                    },
+                );
+            }
+        },
+        { dependencies: [isViewOpen, shouldRenderView] },
+    );
+
+    const handleCloseView = contextSafe(() => {
+        if (isAnimating) return;
+
+        gsap.to(viewContentRef.current, {
+            scale: 0.3,
+            rotate: -4,
+            x: -420,
+            y: 50,
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power3.in',
+        });
+
+        gsap.to(viewModalRef.current, {
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power2.inOut',
+            onComplete: () => {
+                setIsViewOpen(false);
+                setShouldRenderView(false);
+            },
+        });
+    });
+
+    const animateToIndex = contextSafe((nextIndex: number) => {
+        if (isAnimating) return;
+        setIsAnimating(true);
+
+        DUMMY_DATA.forEach((item) => {
+            const prevOffset = getOffset(item.id - 1, currentIndex, total);
+            const nextOffset = getOffset(item.id - 1, nextIndex, total);
+
+            const card = containerRef.current?.querySelector(
+                `.card-item[data-id="${item.id}"]`,
+            ) as HTMLElement | null;
+            if (!card) return;
+
+            const img = card.querySelector('img');
+
+            const wasInRange =
+                prevOffset >= MIN_OFFSET && prevOffset <= MAX_OFFSET;
+            const willBeInRange =
+                nextOffset >= MIN_OFFSET && nextOffset <= MAX_OFFSET;
+
+            // CASE 1: CARD UNSELECTED
+            if (wasInRange && !willBeInRange) {
+                gsap.to(card, {
+                    x: 200,
+                    y: -350,
+                    scale: 0.3,
+                    rotate: -10,
+                    opacity: 0,
+                    duration: 0.5,
+                    ease: 'power2.in',
+                });
+                return;
+            }
+
+            // CASE 2: CARD SELECTED
+            if (!wasInRange && willBeInRange) {
+                const target = SLOTS[nextOffset];
+                gsap.set(card, {
+                    x: -400,
+                    y: 400,
+                    scale: 0.3,
+                    rotate: 15,
+                    zIndex: target.zIndex,
+                    opacity: 0,
+                });
+                gsap.to(card, {
+                    x: target.x,
+                    y: target.y,
+                    scale: target.scale,
+                    rotate: target.rotate,
+                    opacity: target.opacity,
+                    duration: 0.5,
+                    ease: 'power3.out',
+                });
+                if (img) {
+                    gsap.set(img, {
+                        filter: `grayscale(${target.grayscale}) contrast(1.1) brightness(${target.grayscale ? 0.8 : 1})`,
+                    });
+                }
+                return;
+            }
+
+            if (!wasInRange && !willBeInRange) return;
+
+            const target = SLOTS[nextOffset];
+            gsap.to(card, {
+                x: target.x,
+                y: target.y,
+                scale: target.scale,
+                rotate: target.rotate,
+                opacity: target.opacity,
+                zIndex: target.zIndex,
+                duration: 0.5,
+                ease: 'power3.inOut',
+            });
+
+            if (img) {
+                gsap.to(img, {
+                    filter: `grayscale(${target.grayscale}) contrast(1.1) brightness(${target.grayscale ? 0.8 : 1})`,
+                    duration: 0.5,
+                    ease: 'power3.inOut',
+                });
+            }
+        });
+
+        gsap.delayedCall(0.5, () => setIsAnimating(false));
+        setCurrentIndex(nextIndex);
+    });
+
+    const handleNext = () => {
+        if (!isAnimating) animateToIndex((currentIndex + 1) % total);
+    };
+    const handlePrev = () => {
+        if (!isAnimating) animateToIndex((currentIndex - 1 + total) % total);
+    };
+
+    // animasi kotak birtu & merah
+    useGSAP(
+        () => {
+            const redBit = activeRedBitRef.current;
+            const blueBit = activeBlueBitRef.current;
+
+            if (!redBit || !blueBit) return;
+
+            gsap.killTweensOf([redBit, blueBit]);
+
+            const timeline = gsap.timeline({
+                delay: 0.3,
+            });
+
+            timeline.fromTo(
+                redBit,
+                {
+                    rotate: 15,
+                    autoAlpha: 0,
+                    transformOrigin: 'center center',
+                },
+                {
+                    rotate: 0,
+                    autoAlpha: 1,
+                    duration: 0.35,
+                    ease: 'power3.out',
+                },
+                0,
+            );
+
+            timeline.fromTo(
+                blueBit,
+                {
+                    rotate: -15,
+                    autoAlpha: 0,
+                    transformOrigin: 'center center',
+                },
+                {
+                    rotate: 0,
+                    autoAlpha: 1,
+                    duration: 0.35,
+                    ease: 'power3.out',
+                },
+                0,
+            );
+        },
+        {
+            scope: containerRef,
+            dependencies: [currentIndex],
+        },
+    );
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key.toLowerCase() === 'c') {
+                setIsViewOpen(false);
+                setShouldRenderView(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+
+    return (
+        <>
+            <Head title="Archive/BriefingDay" />
+
+            {/* FRAME MASK */}
+            <svg width="0" height="0" className="pointer-events-none absolute">
+                <defs>
+                    {/* MASKING KONDISI NON-AKTIF */}
+                    <clipPath
+                        id="cropNonAktif"
+                        clipPathUnits="objectBoundingBox"
+                    >
+                        <path d="M0.049,0.214 L0.92,0.163 L0.92,0.9 L0.049,0.895 Z" />
+                    </clipPath>
+
+                    {/* MASKING KONDISI AKTIF */}
+                    <clipPath id="cropAktif" clipPathUnits="objectBoundingBox">
+                        <path d="M0.027,0.28 L0.937,0.092 L0.923,0.861 L0.081,0.904 Z" />
+                    </clipPath>
+                </defs>
+            </svg>
+
+            <style>{`
+                @font-face {
+                    font-family: 'Arsenal';
+                    src: url('/fonts/Arsenal-Bold.woff2') format('woff2');
+                    font-weight: bold;
+                    font-style: normal;
+    font-display: swap;
+                }
+                @font-face {
+                    font-family: 'NotoSans';
+                    src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
+                    font-weight: bold;
+                    font-style: normal;
+    font-display: swap;
+                }
+            `}</style>
+
+            <div
+                ref={containerRef}
+                className="relative flex min-h-screen select-none items-center justify-center overflow-hidden bg-transparent text-white"
+                style={{ fontFamily: "'Arsenal', sans-serif" }}
+            >
+                {/* <ArchiveBackground /> */}
+
+                {/* BACKGROUND SHAPE RED */}
+                <div
+                    ref={(el) => {
+                        if (el) leftElementsRef.current[0] = el;
+                    }}
+                    className="z-5 pointer-events-none absolute -bottom-[0%] -left-[2%] flex h-[120vh] w-[100vw] items-end text-[#BF1E2E] opacity-0"
+                >
+                    <Shape1 className="h-full w-full scale-110 transform object-fill" />
+                </div>
+
+                <div
+                    className="relative -left-16 z-10 flex w-full max-w-5xl items-center justify-between"
+                    style={{
+                        height: 'clamp(247.5px, 80.1vh, 550px)',
+                        paddingLeft: 'clamp(1.5rem, 5.9vh, 3rem)',
+                        paddingRight: 'clamp(1.5rem, 5.9vh, 3rem)',
+                    }}
+                >
+                    {/* CAROUSEL KARTU STACK */}
+                    <div
+                        ref={(el) => {
+                            if (el) leftElementsRef.current[1] = el;
+                        }}
+                        className="relative opacity-0"
+                        style={{
+                            height: 'clamp(200px, 60vh, 1000px)',
+                            width: 'clamp(100px, 140vh, 1900px)',
+                            left: 'clamp(-70px, calc(-90vh + 100px), -100px)',
+                            top: 'clamp(-9px, 9vh, -100px)',
+                        }}
+                    >
+                        {DUMMY_DATA.map((item) => {
+                            const offset = getOffset(
+                                item.id - 1,
+                                currentIndex,
+                                total,
+                            );
+                            const inRange =
+                                offset >= MIN_OFFSET && offset <= MAX_OFFSET;
+                            const target = inRange ? SLOTS[offset] : null;
+                            const isActive = offset === 0;
+
+                            return (
+                                <div
+                                    key={item.id}
+                                    data-id={item.id}
+                                    style={{
+                                        transform: target
+                                            ? `translate(${target.x}px, ${target.y}px) rotate(${target.rotate}deg) scale(${target.scale})`
+                                            : `scale(0.3)`,
+                                        opacity: target ? target.opacity : 0,
+                                        zIndex: target ? target.zIndex : 0,
+                                    }}
+                                    className="card-item pointer-events-none absolute left-0 top-0 flex h-full w-full origin-center items-center justify-center"
+                                >
+                                    <div className="absolute flex h-[100%] w-[100%] items-center justify-center">
+                                        <div
+                                            className="relative z-10 h-full w-full bg-zinc-800 transition-all duration-300 ease-in-out"
+                                            style={{
+                                                clipPath: isActive
+                                                    ? 'url(#cropAktif)'
+                                                    : 'url(#cropNonAktif)',
+                                            }}
+                                        >
+                                            <img
+                                                src={item.image}
+                                                alt={item.title}
+                                                style={{
+                                                    filter: isActive
+                                                        ? 'grayscale(0) contrast(1.1) brightness(1)'
+                                                        : 'grayscale(1) contrast(1.1) brightness(0.8)',
+                                                }}
+                                                className="h-full w-full object-cover"
+                                            />
+                                        </div>
+
+                                        {!isActive && (
+                                            <div className="pointer-events-none absolute inset-0 z-10 flex h-full w-full items-center justify-center">
+                                                <FrameUnselected
+                                                    width={'100%'}
+                                                    height={'100%'}
+                                                />
+                                            </div>
+                                        )}
+
+                                        {isActive && (
+                                            <>
+                                                {/* Active colored bits behind the photo/frame */}
+                                                <div className="pointer-events-none absolute inset-0 z-0">
+                                                    <div
+                                                        ref={activeBlueBitRef}
+                                                        className="absolute right-2 top-[2%] h-full w-[99%]"
+                                                    >
+                                                        <ActiveBitBlue className="h-full w-full object-contain opacity-90" />
+                                                    </div>
+
+                                                    <div
+                                                        ref={activeRedBitRef}
+                                                        className="absolute h-full w-[96%]"
+                                                    >
+                                                        <ActiveBitRed className="h-full w-full object-contain" />
+                                                    </div>
+                                                </div>
+
+                                                {/* Selected frame */}
+                                                <div className="pointer-events-none absolute inset-0 z-20 flex h-full w-full items-center justify-center">
+                                                    <FrameSelected
+                                                        width="100%"
+                                                        height="100%"
+                                                    />
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* BANNER INFO & NAVIGASI */}
+                    <div
+                        ref={(el) => {
+                            if (el) rightElementsRef.current[0] = el;
+                        }}
+                        className="relative left-8 z-20 flex flex-col opacity-0"
+                        style={{
+                            width: 'clamp(189px, 120.7vh, 600px)',
+                            gap: 'clamp(0.75rem, 2.95vh, 1.5rem)',
+                        }}
+                    >
+                        <div
+                            className="group relative flex w-full items-center text-white"
+                            style={{
+                                minHeight: 'clamp(63px, 20vh, 200px)',
+                                padding: 'clamp(1.5rem, 5.9vh, 3rem)',
+                            }}
+                        >
+                            <div
+                                className="pointer-events-none absolute z-0 origin-bottom-left transform"
+                                style={{
+                                    bottom: '-160%',
+                                    left: '-99%',
+                                    transform: 'scale(3)',
+                                    width: 'clamp(200px, 38vh, 400px)',
+                                    height: 'clamp(70px, 20vh, 400px)',
+                                }}
+                            >
+                                <PhotoInfoBanner
+                                    width={'100%'}
+                                    height={'100%'}
+                                />
+                            </div>
+
+                            <div className="bg absolute -bottom-[22%] -left-[90%] z-30 w-full -rotate-[17deg] transform select-text pl-4">
+                                <h2
+                                    className="mb-2 font-black uppercase italic tracking-wider text-black"
+                                    style={{
+                                        fontFamily: "'NotoSans', sans-serif",
+                                        fontSize:
+                                            'clamp(1.1rem, 4.8vh, 1.5rem)',
+                                    }}
+                                >
+                                    {DUMMY_DATA[currentIndex].title}
+                                </h2>
+                            </div>
+
+                            <div className="absolute -bottom-[70%] -left-[80%] z-30 w-full -rotate-[13deg] transform select-text pl-4">
+                                <p
+                                    className="max-w-[90%] leading-relaxed tracking-tight text-white"
+                                    style={{
+                                        fontFamily: "'Arsenal', sans-serif",
+                                        fontSize:
+                                            'clamp(0.6rem, 2.6vh, 0.875rem)',
+                                    }}
+                                >
+                                    {DUMMY_DATA[currentIndex].desc}
+                                </p>
+                            </div>
+
+                            {/* BUTTON VIEW PHOTO */}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShouldRenderView(true);
+                                    setIsViewOpen(true);
+                                }}
+                                className="group absolute -rotate-[3deg] items-center justify-center overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    display: 'flex',
+                                    bottom: 'clamp(-175px, -19.4vh, -78.75px)',
+                                    left: 'clamp(148.5px, 40vh, 340px)',
+                                    height: 'clamp(38.25px, 9.4vh, 85px)',
+                                    width: 'clamp(72px, 17.8vh, 160px)',
+                                }}
+                            >
+                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                    <ViewButton
+                                        width={'100%'}
+                                        height={'100%'}
+                                    />
+                                </div>
+                            </button>
+                        </div>
+
+                        {/* NAVIGATION BUTTONS */}
+                        <div className="relative flex items-center gap-6 pl-4">
+                            <button
+                                type="button"
+                                onClick={handlePrev}
+                                className="group absolute flex items-center justify-center overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    bottom: 'clamp(100px, 25.2vh, 210px)',
+                                    left: 'clamp(-450px, -50vh, -202.5px)',
+                                    height: 'clamp(67.5px, 16.7vh, 150px)',
+                                    width: 'clamp(81px, 30vh, 180px)',
+                                }}
+                            >
+                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                    <PrevButton
+                                        width={'100%'}
+                                        height={'100%'}
+                                    />
+                                </div>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleNext}
+                                className="group absolute flex items-center justify-center overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    bottom: 'clamp(-190.5px, -18.4vh, -30px)',
+                                    left: 'clamp(-700px, -75.2vh, -292.5px)',
+                                    height: 'clamp(67.5px, 16.7vh, 150px)',
+                                    width: 'clamp(81px, 30vh, 180px)',
+                                }}
+                            >
+                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                    <NextButton
+                                        width={'100%'}
+                                        height={'100%'}
+                                    />
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* BACK BUTTON */}
+                <div
+                    ref={(el) => {
+                        if (el) rightElementsRef.current[1] = el;
+                    }}
+                    className="absolute bottom-6 right-6 z-20 opacity-0"
+                >
+                    <Link
+                        href="/archive"
+                        data-click-sound
+                        className="group flex h-[80px] items-center justify-center overflow-visible transition-transform active:scale-95"
+                        style={{ width: 'clamp(81px, 30vh, 260px)' }}
+                        aria-label="Back to Archive"
+                    >
+                        <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                            <img
+                                src={BackButtonSvg}
+                                alt=""
+                                draggable={false}
+                                className="h-full w-full select-none object-contain"
+                            />
+                        </div>
+                    </Link>
+                </div>
+
+                {/* VIEW CARD */}
+                {shouldRenderView && (
+                    <div
+                        ref={viewModalRef}
+                        data-click-sound
+                        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm transition-all"
+                        onClick={handleCloseView}
+                    >
+                        {/* BACK VIEW BUTTON */}
+                        <div
+                            className="group absolute bottom-6 right-6 z-10 overflow-visible transition-transform active:scale-95"
+                            style={{ width: 'clamp(110.25px, 27.2vh, 245px)' }}
+                        >
+                            <Button
+                                Icon={ViewBackButton}
+                                onClick={handleCloseView}
+                                iconClassName="w-full h-full object-contain pointer-events-none group-hover:scale-105 transition-transform duration-200"
+                                ariaLabel="Back to Gallery"
+                            />
+                        </div>
+
+                        {/* PHOTO CONTAINER */}
+                        <div
+                            ref={viewContentRef}
+                            className="relative bottom-8 flex h-auto max-h-[90vh] w-full max-w-4xl origin-center items-center justify-center border-[6px] border-white bg-zinc-950 p-2"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <img
+                                src={DUMMY_DATA[currentIndex].image}
+                                alt={DUMMY_DATA[currentIndex].title}
+                                className="h-auto max-h-[85vh] w-full select-none object-contain"
+                            />
+                        </div>
+                    </div>
+                )}
+            </div>
+        </>
+    );
+}

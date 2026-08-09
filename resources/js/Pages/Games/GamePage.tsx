@@ -1,15 +1,14 @@
 import { games, type GameSlug } from '@/data/games';
-import { mockCompleteGame, mockGetFragment } from '@/services/mockGameApi';
+import { completeGame, startGame } from '@/services/gameApi';
 import { router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import CoreLogicResultPage from './CoreLogicTest/CoreLogicResultPage';
+import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
 import CoreLogicTestPage from './CoreLogicTest/CoreLogicTestPage';
 import DataTracePage from './DataTrace/DataTracePage';
 import ReconstructIdentityPage from './ReconstructIdentity/ReconstructIdentityPage';
 import FinalPage from './Shared/FInalPage';
 import FragmentRevealPage from './Shared/FragmentRevealPage';
-import ResultPage from './Shared/ResultPage';
 import SignalDecoderPage from './SignalDecoder/SignalDecoderPage';
 
 type Props = {
@@ -27,6 +26,16 @@ export default function GamePage({ gameSlug }: Props) {
     const [step, setStep] = useState<GameStep>('puzzle');
     const [letters, setLetters] = useState<string[]>([]);
     const game = games.find((item) => item.slug === gameSlug);
+    const wipeRef = useRef<CircleWipeHandle>(null);
+
+    function transitionToStep(nextStep: typeof step) {
+        wipeRef.current?.leave(() => {
+            setStep(nextStep);
+            requestAnimationFrame(() => {
+                wipeRef.current?.enter();
+            });
+        });
+    }
 
     if (!game) {
         return (
@@ -35,6 +44,17 @@ export default function GamePage({ gameSlug }: Props) {
             </main>
         );
     }
+
+    useEffect(() => {
+        wipeRef.current?.enter();
+    }, []);
+
+    // Start the server-side timer for this game the moment its screen opens.
+    // Time spent choosing games on the hub is never inside a start/complete
+    // window, so it is excluded from the total completion time.
+    useEffect(() => {
+        startGame(gameSlug);
+    }, [gameSlug]);
 
     const retrieveFragments = async () => {
         const teamId = Number(sessionStorage.getItem('teamId'));
@@ -45,21 +65,29 @@ export default function GamePage({ gameSlug }: Props) {
             return;
         }
 
-        await mockCompleteGame(teamId, gameSlug);
+        const answers =
+            gameSlug === 'core-logic-test'
+                ? (JSON.parse(
+                      sessionStorage.getItem('core_logic_answers') || '[]',
+                  ) as number[])
+                : undefined;
 
-        const fragment = await mockGetFragment(teamId, gameSlug);
-        setLetters(fragment.letters);
+        const result = await completeGame(
+            gameSlug,
+            answers !== undefined ? { answers } : undefined,
+        );
 
-        setStep('fragment');
+        setLetters(result.letters);
     };
 
     const finishGame = () => {
         if (isFinalGame) {
-            setStep('final');
+            transitionToStep('final');
             return;
         }
 
-        setStep('result');
+        retrieveFragments();
+        transitionToStep('fragment');
     };
 
     const gamePages: Record<
@@ -78,24 +106,15 @@ export default function GamePage({ gameSlug }: Props) {
 
     return (
         <>
+            <CircleWipe ref={wipeRef} duration={1.5} />
+
             {step === 'puzzle' && (
                 <SelectedGamePage gameSlug={gameSlug} finishGame={finishGame} />
             )}
 
-            {/* core logic punya result page sendiri */}
-            {step === 'result' &&
-                (gameSlug === 'core-logic-test' ? (
-                    <CoreLogicResultPage
-                        onRetrieveFragments={retrieveFragments}
-                    />
-                ) : (
-                    <ResultPage
-                        game={game}
-                        retrieveFragments={retrieveFragments}
-                    />
-                ))}
-
-            {step === 'fragment' && <FragmentRevealPage letters={letters} />}
+            {step === 'fragment' && (
+                <FragmentRevealPage game={game.title} letters={letters} />
+            )}
 
             {step === 'final' && <FinalPage />}
         </>
