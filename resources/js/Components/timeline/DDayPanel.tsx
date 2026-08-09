@@ -31,11 +31,8 @@ export default function DDayPanel({
     currentInfo,
     informationDisplayed,
     onSeeDetails,
-    HeaderSVG,
-    headerClassName,
 }: DDayPanelProps) {
     const panelRef = useRef<HTMLDivElement | null>(null);
-    const contentRef = useRef<HTMLDivElement | null>(null);
     const augTagRef = useRef<HTMLImageElement | null>(null);
     const decorShape1ref = useRef<HTMLImageElement | null>(null);
     const decorShape2ref = useRef<HTMLImageElement | null>(null);
@@ -51,8 +48,8 @@ export default function DDayPanel({
 
     const currentTitleClassName =
         currentInfo === 'BriefingDay'
-            ? 'block h-auto w-[clamp(9rem,37vh,20rem)] -rotate-[3deg]'
-            : 'block h-auto w-[clamp(5.4rem,20vh,12rem)] -rotate-[6deg]';
+            ? 'block h-auto w-[clamp(3rem,30vh,15rem)] -rotate-[5deg] '
+            : 'block h-auto w-[clamp(3rem,20vh,13rem)] -rotate-[7deg]';
 
     const titleRef = useRef<HTMLDivElement | null>(null);
     const descRef = useRef<HTMLDivElement | null>(null);
@@ -317,46 +314,50 @@ export default function DDayPanel({
                     style={{
                         right: 'clamp(-0.45rem, -3.2vh, -3rem)',
                         height: 'clamp(12.4rem, 59vh, 32rem)',
-                        width: 'clamp(18rem, 88vh, 40rem)',
+                        width: 'clamp(12rem, 88vh, 48rem)',
                     }}
                 >
                     <div
                         ref={paperBack2Ref}
-                        className="absolute -bottom-8 z-10"
+                        className="absolute -bottom-12 z-10"
                         style={{
-                            right: 'clamp(1.8rem, 8.8vh, 4rem)',
-                            width: 'clamp(6.3rem, 27vh, 14rem)',
+                            right: 'clamp(0.2rem, 7vh, 4rem)',
+                            height: 'clamp(6.3rem, 60vh, 30rem)',
                         }}
                     >
-                        <PaperBack2 className="block h-auto w-full" />
+                        <PaperBack2 className="block h-full w-auto" />
                     </div>
 
                     <div
                         ref={paperBack1Ref}
-                        className="absolute !-bottom-4 left-0"
-                        style={{ width: 'clamp(6rem, 30.2vh, 16rem)' }}
+                        className="absolute !-bottom-12 left-0"
+                        style={{ height: 'clamp(9rem, 63vh, 25rem)' }}
                     >
-                        <PaperBack1 className="block h-auto w-full" />
+                        <PaperBack1 className="block h-full w-auto" />
                     </div>
 
                     <div
                         ref={paperMainRef}
-                        className="absolute left-1/2 z-30 h-full -translate-x-1/2"
-                        style={{ width: 'clamp(14.85rem, 70.6vh, 33rem)' }}
+                        className="absolute !-bottom-2 !right-0 z-30 pt-[2%]"
+                        style={{
+                            height: 'clamp(8rem, 59vh, 63rem)',
+                            width: 'clamp(2.85rem, 53vh, 33rem)',
+                        }}
                     >
                         <div
                             ref={titleRef}
-                            className={`pointer-events-none relative left-[8%] z-20 mb-[1%] mt-[5%]`}
-                            >
+                            className="pointer-events-none relative left-[10%] z-20 mb-[0.2%] mt-[5%] w-fit"
+                        >
                             <CurrentTitle className={currentTitleClassName} />
                         </div>
 
                         <div
                             ref={descRef}
-                            className="relative z-[999] ml-[12%] w-[59%] -rotate-6 font-arsenal leading-snug"
+                            className="relative z-[999] mb-[2%] ml-[15%] -rotate-6 font-arsenal leading-snug"
                             style={{
-                                marginBottom: '2vmin',
-                                fontSize: 'clamp(0.2rem, 2.4vh, 1.6rem)',
+                                marginBottom: '1.4vmin',
+                                fontSize: 'clamp(0.2rem, 2.5vh, 1.6rem)',
+                                width: 'clamp(6rem, 44vh, 26rem)',
                             }}
                         >
                             <p>{informationDisplayed}</p>
@@ -366,7 +367,7 @@ export default function DDayPanel({
                             ref={detailsButtonRef}
                             type="button"
                             onClick={onSeeDetails}
-                            className="group pointer-events-auto relative z-[999] ml-[13%] w-[40%] hover:scale-[1.03] active:scale-95"
+                            className="bg group pointer-events-auto relative z-[999] ml-[15%] w-[50%] hover:scale-[1.03] active:scale-95"
                         >
                             <img
                                 src={detailsButton}
@@ -376,9 +377,10 @@ export default function DDayPanel({
                         </button>
 
                         <PaperMain
-                            className="absolute block h-[140%] w-auto"
+                            className="absolute block w-auto"
                             style={{
                                 bottom: 'clamp(-14rem, -15vh, -4rem)',
+                                height: 'clamp(14rem, 84vh, 50rem)',
                             }}
                         />
                     </div>

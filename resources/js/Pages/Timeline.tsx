@@ -393,7 +393,8 @@ export default function Timeline() {
                     ref={knifeRef}
                     src={knife}
                     alt=""
-                    className="absolute left-[36%] top-[26%] z-50 w-[11.5%] -translate-x-1/2"
+                    className="absolute left-[41%] top-[27%] z-50 -translate-x-1/2"
+                    style={{ width: 'clamp(4.95rem, 22.2vh, 11rem)' }}
                 />
 
                 {view === 1 ? (
