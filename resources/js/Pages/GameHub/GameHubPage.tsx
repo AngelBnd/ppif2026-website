@@ -1,7 +1,7 @@
 ﻿import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import Button from '@/Components/global/Button';
 import { useMusic } from '@/Components/global/MusicProvider';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import gsap from 'gsap';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import MusicButton from '../../assets/icons/MusicButton.svg?react';
@@ -114,6 +114,7 @@ export default function GameHubPage() {
 
     return (
         <main className="z-50 h-screen w-screen overflow-hidden">
+            <Head title="Games" />
             <button
                 data-no-click-sound
                 onClick={toggleMusic}

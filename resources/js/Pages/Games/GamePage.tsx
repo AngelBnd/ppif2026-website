@@ -1,6 +1,6 @@
 import { games, type GameSlug } from '@/data/games';
 import { completeGame, startGame } from '@/services/gameApi';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
 import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
@@ -144,6 +144,7 @@ export default function GamePage({ gameSlug }: Props) {
     }, [isPlaying]);
     return (
         <>
+            <Head title={game.title} />
             <button
                 data-no-click-sound
                 onClick={toggleMusic}

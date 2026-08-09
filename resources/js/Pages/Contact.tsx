@@ -1,4 +1,5 @@
 import { playSfx } from '@/lib/sound';
+import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import DiscordText from '../assets/contact/Discord.svg';
@@ -340,6 +341,7 @@ export default function Contact() {
 
     return (
         <div className="relative h-screen w-screen overflow-hidden">
+            <Head title="Contact" />
             <div className="absolute inset-0 z-0 bg-[#0A0C0F] opacity-40" />
 
             {/* Fixed 1920×1080 stage, uniformly scaled to fit any viewport. */}

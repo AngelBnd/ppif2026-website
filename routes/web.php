@@ -2,19 +2,13 @@
 
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LeaderboardController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TeamController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect('/home');
 });
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/home', function () {
     return Inertia::render('Home');
@@ -59,13 +53,6 @@ Route::get('/games/{gameSlug}', function ($gameSlug) {
     ]);
 });
 
-Route::get('/games/core-logic-test/reveal', function () {
-    return Inertia::render('Games/ReconstructIdentity/FragmentRevealPage', [
-        'gameSlug' => 'reconstruct-identity',
-    ]);
-});
-
-
 Route::get('/inibuatorbits/leaderboard', [LeaderboardController::class, 'index'])
     ->middleware('leaderboard.auth');
 
@@ -84,5 +71,3 @@ Route::prefix('api')->group(function () {
         Route::post('games/{slug}/complete', [GameController::class, 'complete']);
     });
 });
-
-require __DIR__ . '/auth.php';
