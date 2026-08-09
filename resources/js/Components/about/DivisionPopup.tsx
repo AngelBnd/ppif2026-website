@@ -910,6 +910,7 @@ const DivisionPopup = forwardRef<DivisionPopupRef, DivisionPopupProps>(
                     iconClassName="h-fit"
                     iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}
                     onClick={handleCloseDivisionPopup}
+                    back
                 />
             </div>
         );

@@ -3,6 +3,7 @@ import InputUniqueCodeSVG from '@/assets/games/hub/InputUniqueCodeSVG.svg?react'
 import OKButton from '@/assets/games/hub/OkButtonSVG.svg?react';
 import RedStreakGame from '@/assets/games/hub/RedStreakGame.svg?react';
 import Button from '@/Components/global/Button';
+import { playSfx } from '@/lib/sound';
 import { joinTeam } from '@/services/gameApi';
 import { gsap } from 'gsap';
 import { useRef, useState } from 'react';
@@ -27,6 +28,10 @@ function CodeInput({ length = 6, onComplete, inputBgRefs }: CodeInputProps) {
     ) => {
         const inputValue = e.target.value;
         const char = inputValue.slice(-1).toUpperCase();
+
+        if (char) {
+            playSfx('input');
+        }
 
         const newValues = [...values];
         newValues[index] = char;
@@ -122,6 +127,8 @@ export default function UniqueCodeForm({ onJoined }: Props) {
 
             await joinTeam(uniqueCode);
 
+            playSfx('inputSuccess');
+
             const inputBgs = inputBgRefs.current.filter(Boolean);
 
             gsap.fromTo(
@@ -144,6 +151,7 @@ export default function UniqueCodeForm({ onJoined }: Props) {
             );
         } catch (error) {
             setError('Invalid unique code.');
+            playSfx('inputError');
 
             if (formRef.current) {
                 gsap.fromTo(

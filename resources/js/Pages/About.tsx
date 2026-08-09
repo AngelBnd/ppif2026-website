@@ -20,6 +20,7 @@ import {
 
 import { type DivisionsSectionRef } from '@/Components/about/DivisionsSection';
 import Button from '@/Components/global/Button';
+import { playSfx } from '@/lib/sound';
 
 gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 export type currentInfo = 'informatics' | 'ppif';
@@ -111,6 +112,7 @@ export default function About() {
     useEffect(() => {
         const timer = setTimeout(() => {
             videoRef.current?.play();
+            playSfx('aboutPage');
         }, 350);
 
         return () => clearTimeout(timer);
