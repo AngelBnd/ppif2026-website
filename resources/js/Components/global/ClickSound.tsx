@@ -1,3 +1,4 @@
+import { playSfx } from '@/lib/sound';
 import { useEffect, useRef } from 'react';
 
 export default function ClickSound() {
@@ -15,6 +16,12 @@ export default function ClickSound() {
 
             if (interactive.hasAttribute('data-no-click-sound')) return;
 
+            // Back buttons play their own sound instead of the generic click.
+            if (target.closest('[data-back-sound]')) {
+                playSfx('backButton');
+                return;
+            }
+
             const audio = audioRef.current;
             if (!audio) return;
 
@@ -24,8 +31,25 @@ export default function ClickSound() {
             });
         }
 
+        function handleHover(event: PointerEvent) {
+            if (event.pointerType === 'mouse') {
+                const target = event.target as Element | null;
+                if (
+                    target?.closest(
+                        'button, [data-back-sound], [data-click-sound]',
+                    )
+                ) {
+                    playSfx('hoverButton');
+                }
+            }
+        }
+
         document.addEventListener('click', handleClick);
-        return () => document.removeEventListener('click', handleClick);
+        document.addEventListener('pointerenter', handleHover, true);
+        return () => {
+            document.removeEventListener('click', handleClick);
+            document.removeEventListener('pointerenter', handleHover, true);
+        };
     }, []);
 
     return (

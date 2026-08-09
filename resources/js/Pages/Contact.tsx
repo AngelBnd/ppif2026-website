@@ -1,3 +1,4 @@
+import { playSfx } from '@/lib/sound';
 import { Head } from '@inertiajs/react';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
@@ -265,6 +266,10 @@ export default function Contact() {
     }, []);
 
     useEffect(() => {
+        playSfx('hpContact');
+    }, []);
+
+    useEffect(() => {
         const icons =
             iconGroupsRef.current?.querySelectorAll<HTMLElement>('[data-icon]');
         if (!icons) return;
@@ -492,7 +497,7 @@ export default function Contact() {
                                         <div
                                             data-icon
                                             data-click-sound
-                                            // data-href="https://wa.me/628123456789"
+                                            data-href="https://chat.whatsapp.com/GZf6ECqpxci4f2POyrp2vs?mode=gi_t"
                                             className="relative flex shrink-0 items-center"
                                         >
                                             <img
@@ -511,7 +516,7 @@ export default function Contact() {
 
                                             <img
                                                 src={Whatsapp}
-                                                className="relative h-auto shrink-0 opacity-50"
+                                                className="relative h-auto shrink-0"
                                                 style={{
                                                     width: `calc(var(--vu)*13.021)`,
                                                 }}
@@ -526,7 +531,7 @@ export default function Contact() {
 
                                             <img
                                                 src={WhatsAppText}
-                                                className="relative h-auto shrink-0 opacity-50"
+                                                className="relative h-auto shrink-0"
                                                 style={{
                                                     width: `calc(var(--vu)*18)`,
                                                     marginTop: `calc(var(--vu)*0.5)`,
