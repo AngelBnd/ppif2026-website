@@ -20,10 +20,22 @@ const VOLUMES: Record<SfxName, number> = {
 };
 
 const cache = new Map<SfxName, HTMLAudioElement>();
+const lastPlayedAt = new Map<SfxName, number>();
 
 const PLAY_THROUGH: Set<SfxName> = new Set(['hoverButton']);
 
+// Minimum gap between consecutive plays of a given sfx, in ms.
+const COOLDOWNS: Partial<Record<SfxName, number>> = {
+    hoverButton: 800,
+};
+
 export function playSfx(name: SfxName) {
+    const cooldown = COOLDOWNS[name];
+    if (cooldown) {
+        const last = lastPlayedAt.get(name) ?? 0;
+        if (Date.now() - last < cooldown) return;
+    }
+
     let audio = cache.get(name);
     if (!audio) {
         audio = new Audio(`/audio/${name}.wav`);
@@ -36,6 +48,7 @@ export function playSfx(name: SfxName) {
         return;
     }
 
+    lastPlayedAt.set(name, Date.now());
     audio.currentTime = 0;
     audio.play().catch(() => {
         // ignore autoplay/user-interaction errors
