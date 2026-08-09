@@ -273,7 +273,7 @@ export default function GalleryPopup({
                 Icon={BackButton}
                 onClick={onClose}
                 back
-                className="absolute bottom-6 right-6 z-50"
+                className="absolute bottom-12 right-6 z-50"
                 iconClassName=""
                 iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}
             />

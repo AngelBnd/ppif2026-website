@@ -1,40 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useMusic } from './MusicProvider';
 
+/**
+ * Mount on a victory screen to make the shared music track switch to the
+ * victory theme. It carries no audio of its own — the MusicProvider owns the
+ * element, so the global music toggle mutes/plays it just like the backsound.
+ */
 export default function VictoryMusic() {
-    const audioRef = useRef<HTMLAudioElement | null>(null);
-    const { setSuspended } = useMusic();
+    const { setVictory } = useMusic();
 
     useEffect(() => {
-        setSuspended(true);
+        setVictory(true);
+        return () => setVictory(false);
+    }, [setVictory]);
 
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        audio.currentTime = 0;
-        audio.play().catch(() => {
-            // ignore autoplay/user-interaction errors
-        });
-
-        return () => {
-            setSuspended(false);
-            if (audio) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
-        };
-    }, [setSuspended]);
-
-    return (
-        <audio
-            ref={(el) => {
-                audioRef.current = el;
-                if (el) el.volume = 0.015;
-            }}
-            loop
-            preload="auto"
-            className="hidden"
-            src="/audio/victory.mp3"
-        />
-    );
+    return null;
 }

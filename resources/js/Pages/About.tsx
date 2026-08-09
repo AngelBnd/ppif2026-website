@@ -110,12 +110,9 @@ export default function About() {
     const staticVideoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
-        playSfx('aboutPage');
-    }, []);
-
-    useEffect(() => {
         const timer = setTimeout(() => {
             videoRef.current?.play();
+            playSfx('aboutPage');
         }, 350);
 
         return () => clearTimeout(timer);

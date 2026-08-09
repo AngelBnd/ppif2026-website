@@ -1,15 +1,19 @@
 ﻿import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import Button from '@/Components/global/Button';
+import { useMusic } from '@/Components/global/MusicProvider';
 import { router } from '@inertiajs/react';
 import gsap from 'gsap';
-import { useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import MusicButton from '../../assets/icons/MusicButton.svg?react';
+import MusicButton2 from '../../assets/icons/MusicButton2.svg?react';
 import ErrorGimmick from './ErrorGimmick';
 import GameList from './GameList';
 import InputUniqueCode from './UniqueCodeForm';
-
 type GameHubScreen = 'join' | 'games' | 'errorGimmick';
 
 export default function GameHubPage() {
+    const { toggle: toggleMusic, isPlaying } = useMusic();
+    const musicIconRef = useRef<HTMLSpanElement>(null);
     // Story now lives at /games/story, so the hub starts at the join step
     // (or straight to the game list when the team is already known).
     const [screen, setScreen] = useState<GameHubScreen>(() => {
@@ -55,8 +59,82 @@ export default function GameHubPage() {
         router.visit('/');
     };
 
+    // Continue the wipe handed off from the storyline: arriving from the
+    // "I'm Ready"/skip flow, the screen is conceptually still covered — so start
+    // covered and sweep out to reveal the hub. useLayoutEffect applies the cover
+    // before paint so there's no flash of the uncovered page.
+    useLayoutEffect(() => {
+        if (sessionStorage.getItem('gamesWipeIn') !== '1') return;
+        sessionStorage.removeItem('gamesWipeIn');
+
+        const wipeEl = wipeRef.current;
+        if (!wipeEl) return;
+
+        gsap.set(wipeEl, { display: 'block', xPercent: 0 });
+        gsap.to(wipeEl, {
+            xPercent: -120,
+            duration: 0.55,
+            ease: 'power4.inOut',
+            onComplete: () => gsap.set(wipeEl, { display: 'none' }),
+        });
+    }, []);
+
+    useEffect(() => {
+        const el = musicIconRef.current;
+        if (!el) return;
+
+        gsap.killTweensOf(el);
+        gsap.set(el, { rotation: 0, scale: 1 });
+
+        let anim: gsap.core.Timeline | gsap.core.Tween;
+
+        if (isPlaying) {
+            anim = gsap.to(el, {
+                scale: 1.05,
+                duration: 1,
+                ease: 'sine.inOut',
+                repeat: -1,
+                yoyo: true,
+            });
+        } else {
+            anim = gsap
+                .timeline({ repeat: -1, repeatDelay: 1.5 })
+                .to(el, { rotation: -8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: -6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 0, duration: 0.09, ease: 'power1.inOut' });
+        }
+
+        return () => {
+            anim.kill();
+            gsap.set(el, { rotation: 0, scale: 1 });
+        };
+    }, [isPlaying]);
+
     return (
         <main className="z-50 h-screen w-screen overflow-hidden">
+            <button
+                data-no-click-sound
+                onClick={toggleMusic}
+                className={[
+                    'absolute right-6 top-6 z-[40] origin-bottom transition-transform duration-200 ease-out will-change-transform',
+                    'hover:rotate-3 hover:scale-110 active:scale-95',
+                    ,
+                ].join(' ')}
+            >
+                <span
+                    ref={musicIconRef}
+                    className="inline-block origin-bottom will-change-transform"
+                >
+                    {isPlaying ? (
+                        <MusicButton className="w-[clamp(2.5rem,7vh,4rem)]" />
+                    ) : (
+                        <MusicButton2 className="w-[clamp(2.5rem,7vh,4rem)]" />
+                    )}
+                </span>
+            </button>
+
             <Button
                 onClick={handleBack}
                 Icon={BackButton}

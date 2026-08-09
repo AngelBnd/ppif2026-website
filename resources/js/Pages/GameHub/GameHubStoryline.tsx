@@ -48,9 +48,13 @@ import {
     useDivisionCamera,
     type DivisionTrigger,
 } from '@/Components/about/useDivisionCamera';
+import { useMusic } from '@/Components/global/MusicProvider';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import MusicButton from '../../assets/icons/MusicButton.svg?react';
+import MusicButton2 from '../../assets/icons/MusicButton2.svg?react';
+type GameHubScreen = 'join' | 'games' | 'errorGimmick';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -102,7 +106,7 @@ export default function GameHubStoryline({ onReady }: Props) {
             : 'clamp(2600px, 705.72vh, 5200px)';
     const PANEL_HEIGHT_CLAMP = 'clamp(428px, 116.17vh, 856px)';
     const CAMERA_HEIGHT_CLAMP = 'clamp(345px, 93.64vh, 690px)';
-
+    const musicIconRef = useRef<HTMLSpanElement>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const panelRef = useRef<HTMLDivElement>(null);
     const bgRef = useRef<HTMLDivElement>(null);
@@ -111,6 +115,7 @@ export default function GameHubStoryline({ onReady }: Props) {
     const clipRef = useRef<HTMLDivElement>(null);
     const markRefs = useRef<(HTMLDivElement | null)[]>([]);
     const wipeRef = useRef<HTMLDivElement>(null);
+    const { toggle: toggleMusic, isPlaying } = useMusic();
 
     const refs = useRef({
         scroller: scrollRef,
@@ -311,7 +316,12 @@ export default function GameHubStoryline({ onReady }: Props) {
                 xPercent: 0,
                 duration: 0.5,
                 ease: 'power4.inOut',
-                onComplete: onReady,
+                onComplete: () => {
+                    // Hand the covered wipe off to GameHubPage, which continues
+                    // the sweep-out on mount (this component unmounts on nav).
+                    sessionStorage.setItem('gamesWipeIn', '1');
+                    onReady();
+                },
             });
     };
 
@@ -528,8 +538,62 @@ export default function GameHubStoryline({ onReady }: Props) {
         return () => ctx.revert();
     }, [page]);
 
+    useEffect(() => {
+        const el = musicIconRef.current;
+        if (!el) return;
+
+        gsap.killTweensOf(el);
+        gsap.set(el, { rotation: 0, scale: 1 });
+
+        let anim: gsap.core.Timeline | gsap.core.Tween;
+
+        if (isPlaying) {
+            anim = gsap.to(el, {
+                scale: 1.05,
+                duration: 1,
+                ease: 'sine.inOut',
+                repeat: -1,
+                yoyo: true,
+            });
+        } else {
+            anim = gsap
+                .timeline({ repeat: -1, repeatDelay: 1.5 })
+                .to(el, { rotation: -8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 8, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: -6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 6, duration: 0.09, ease: 'power1.inOut' })
+                .to(el, { rotation: 0, duration: 0.09, ease: 'power1.inOut' });
+        }
+
+        return () => {
+            anim.kill();
+            gsap.set(el, { rotation: 0, scale: 1 });
+        };
+    }, [isPlaying]);
+
     return (
         <div className="absolute inset-0 overflow-hidden text-white">
+            <button
+                data-no-click-sound
+                onClick={toggleMusic}
+                className={[
+                    'absolute right-6 top-6 z-[40] origin-bottom transition-transform duration-200 ease-out will-change-transform',
+                    'hover:rotate-3 hover:scale-110 active:scale-95',
+                    ,
+                ].join(' ')}
+            >
+                <span
+                    ref={musicIconRef}
+                    className="inline-block origin-bottom will-change-transform"
+                >
+                    {isPlaying ? (
+                        <MusicButton className="w-[clamp(2.5rem,7vh,4rem)]" />
+                    ) : (
+                        <MusicButton2 className="w-[clamp(2.5rem,7vh,4rem)]" />
+                    )}
+                </span>
+            </button>
+
             <button
                 onClick={handleLeaveToGames}
                 data-type="btn"
