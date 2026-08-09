@@ -7,8 +7,8 @@ export const OutlineShader = {
     uniforms: {
         tDiffuse: { value: null as unknown },
         uResolution: { value: new Vector2(1, 1) }, // in CSS px
-        uThickness: { value: 2.5 }, // outline thickness (CSS px)
-        uColor: { value: new Color(0x000000) },
+        uThickness: { value: 4.2 }, // outline thickness (CSS px)
+        uColor: { value: new Color(0x0a0c0f) },
     },
     vertexShader: /* glsl */ `
         varying vec2 vUv;
