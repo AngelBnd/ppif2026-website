@@ -6,7 +6,7 @@ import Button from '@/Components/global/Button';
 import { playSfx } from '@/lib/sound';
 import { joinTeam } from '@/services/gameApi';
 import { gsap } from 'gsap';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 type Props = {
     onJoined: () => void;
@@ -120,6 +120,56 @@ export default function UniqueCodeForm({ onJoined }: Props) {
 
     const formRef = useRef<HTMLDivElement | null>(null);
     const inputBgRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const redStreakRef = useRef<SVGSVGElement | null>(null);
+    const inputSvgRef = useRef<SVGSVGElement | null>(null);
+    const codeInputWrapRef = useRef<HTMLDivElement | null>(null);
+    const btnWrapRef = useRef<HTMLDivElement | null>(null);
+
+    useLayoutEffect(() => {
+        const redStreak = redStreakRef.current;
+        const inputSvg = inputSvgRef.current;
+        const codeInputWrap = codeInputWrapRef.current;
+        const btnWrap = btnWrapRef.current;
+
+        if (!inputSvg || !codeInputWrap || !btnWrap) return;
+
+        const ctx = gsap.context(() => {
+            gsap.set(redStreak, { clipPath: 'inset(0% 100% 0% 0%)' });
+            gsap.set(inputSvg, { x: -120, opacity: 0 });
+            gsap.set([codeInputWrap, btnWrap], { x: -80, opacity: 0 });
+
+            const tl = gsap.timeline({ delay: 0.3 });
+
+            tl.to(redStreak, {
+                clipPath: 'inset(0% 0% 0% 0%)',
+                duration: 0.7,
+                ease: 'power2.out',
+            })
+                .to(
+                    inputSvg,
+                    {
+                        x: 0,
+                        opacity: 1,
+                        duration: 0.6,
+                        ease: 'back.out(1.2)',
+                    },
+                    '-=0.35',
+                )
+                .to(
+                    [codeInputWrap, btnWrap],
+                    {
+                        x: 0,
+                        opacity: 1,
+                        duration: 0.45,
+                        stagger: 0.1,
+                        ease: 'power3.out',
+                    },
+                    '-=0.3',
+                );
+        });
+
+        return () => ctx.revert();
+    }, []);
 
     const handleJoin = async () => {
         try {
@@ -169,41 +219,54 @@ export default function UniqueCodeForm({ onJoined }: Props) {
                     },
                 );
             }
+
+            setInterval(() => {
+                setError('');
+            }, 4000);
         }
     };
 
     return (
         <main className="flex min-h-screen items-center justify-center text-white">
             <div className="absolute h-full w-full bg-[#0A0C0F] opacity-35" />
-            <RedStreakGame className="absolute h-auto" />
+
+            <RedStreakGame ref={redStreakRef} className="absolute h-auto" />
+
             <div
                 ref={formRef}
                 className="absolute -ml-6 mt-16 flex -rotate-[9deg] items-center space-x-16"
             >
-                <InputUniqueCodeSVG className="auto h-auto w-[35rem]" />
-                <CodeInput
-                    length={5}
-                    inputBgRefs={inputBgRefs}
-                    onComplete={(value) => {
-                        setUniqueCode(value);
-                        setError('');
-                    }}
+                <InputUniqueCodeSVG
+                    ref={inputSvgRef}
+                    className="auto h-auto w-[35rem]"
                 />
+                <div ref={codeInputWrapRef}>
+                    <CodeInput
+                        length={5}
+                        inputBgRefs={inputBgRefs}
+                        onComplete={(value) => {
+                            setUniqueCode(value);
+                            setError('');
+                        }}
+                    />
+                </div>
 
-                <Button
-                    onClick={() => {
-                        handleJoin();
-                    }}
-                    Icon={OKButton}
-                    iconClassName="w-full h-auto block"
-                    className="w-[12rem]"
-                />
+                <div ref={btnWrapRef}>
+                    <Button
+                        onClick={() => {
+                            handleJoin();
+                        }}
+                        Icon={OKButton}
+                        iconClassName="w-full h-auto block"
+                        className="w-[12rem]"
+                    />
+                </div>
 
-                {/* {error && (
-                    <p className="mt-8 font-arsenal text-3xl font-bold text-red-500">
+                {error && (
+                    <p className="absolute bottom-[10%] left-1/2 z-[99] -translate-x-1/2 font-arsenal text-3xl font-bold text-red-500">
                         {error}
                     </p>
-                )} */}
+                )}
             </div>
         </main>
     );

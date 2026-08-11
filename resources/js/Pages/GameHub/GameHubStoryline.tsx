@@ -62,48 +62,24 @@ type Props = {
     onReady: () => void;
 };
 
-function buildLiftPath(
-    panels: { left: string; top: string }[],
-    widthPx: number,
-): string {
-    const pts = panels
-        .map((p) => ({ x: parseFloat(p.left), y: -parseFloat(p.top) }))
-        .sort((a, b) => a.x - b.x);
-
-    const first = pts[0] ?? { x: 0, y: -50 };
-    const last = pts[pts.length - 1] ?? { x: widthPx, y: -50 };
-
-    const nodes = [
-        { x: 0, y: first.y },
-        ...pts,
-        { x: widthPx, y: last.y },
-    ].filter((n, i, a) => i === 0 || n.x > a[i - 1].x);
-
-    let d = `M${nodes[0].x},${nodes[0].y}`;
-    for (let i = 1; i < nodes.length; i++) {
-        const p0 = nodes[i - 1];
-        const p1 = nodes[i];
-        const mx = (p0.x + p1.x) / 2;
-        d += ` C${mx},${p0.y} ${mx},${p1.y} ${p1.x},${p1.y}`;
-    }
-    return d;
-}
-
 export default function GameHubStoryline({ onReady }: Props) {
     const [page, setPage] = useState<1 | 2>(1);
 
     const PAGE_WIDTH = page === 1 ? '7400px' : '5200px';
 
-    // Responsive scaling — same approach as DivisionsSection: the camera and
-    // wrapper scale with viewport height, reaching full design size around a
+    // Responsive scaling — same approach as DivisionsSection: the wrapper
+    // scales with viewport height, reaching full design size around a
     // ~737px-tall viewport (and holding above it), shrinking to half on very
     // short screens. clamp form is clamp(D/2, (D / 7.3684)vh, D) per dimension.
-    // NOTE: the camera math (buildLiftPath / path sampling) keeps using the
-    // design width via parseFloat(PAGE_WIDTH) — it's independent of render size.
-    const PAGE_WIDTH_CLAMP =
-        page === 1
-            ? 'clamp(3700px, 1004.29vh, 7400px)'
-            : 'clamp(2600px, 705.72vh, 5200px)';
+    // Width is NOT part of that scaling: every panel/box/button below is
+    // placed with a literal px `left`/`right` inside the PAGE_WIDTH design
+    // space, and nothing scales those positions down. Shrinking the
+    // container's width independently of its content (e.g. on short/landscape
+    // phone viewports) just desyncs the container edge from where the content
+    // actually is — buttons anchored to "the edge" end up mid-content, and the
+    // camera's focusX/panelW normalisation (useDivisionCamera) breaks too. So
+    // width always matches PAGE_WIDTH, only height is allowed to shrink.
+    const PAGE_WIDTH_CLAMP = PAGE_WIDTH;
     const PANEL_HEIGHT_CLAMP = 'clamp(428px, 116.17vh, 856px)';
     const CAMERA_HEIGHT_CLAMP = 'clamp(345px, 93.64vh, 690px)';
     const musicIconRef = useRef<HTMLSpanElement>(null);
@@ -115,6 +91,7 @@ export default function GameHubStoryline({ onReady }: Props) {
     const clipRef = useRef<HTMLDivElement>(null);
     const markRefs = useRef<(HTMLDivElement | null)[]>([]);
     const wipeRef = useRef<HTMLDivElement>(null);
+    const accentSvgRefs = useRef<(SVGSVGElement | null)[]>([]);
     const { toggle: toggleMusic, isPlaying } = useMusic();
 
     const refs = useRef({
@@ -138,11 +115,11 @@ export default function GameHubStoryline({ onReady }: Props) {
     const PANELS_PAGE_1 = [
         { src: Panel1, left: '160px', top: '22%', width: '460px', beat: 0 },
         { src: Panel2, left: '650px', top: '34%', width: '460px', beat: 1 },
-        { src: Panel3, left: '1350px', top: '20%', width: '480px', beat: 2 },
-        { src: Panel4, left: '2050px', top: '40%', width: '340px', beat: 3 },
-        { src: Panel5, left: '3150px', top: '60%', width: '450px', beat: 4 },
-        { src: Panel6, left: '3380px', top: '22%', width: '450px', beat: 5 },
-        { src: Panel7, left: '4650px', top: '32%', width: '480px', beat: 6 },
+        { src: Panel3, left: '1350px', top: '20%', width: '480px', beat: 1 },
+        { src: Panel4, left: '2050px', top: '40%', width: '340px', beat: 1 },
+        { src: Panel5, left: '3150px', top: '60%', width: '450px', beat: 1 },
+        { src: Panel6, left: '3380px', top: '22%', width: '450px', beat: 1 },
+        { src: Panel7, left: '4650px', top: '22%', width: '480px', beat: 1 },
         {
             src: Panel8,
             left: '5850px',
@@ -155,32 +132,32 @@ export default function GameHubStoryline({ onReady }: Props) {
 
     const BOXES_PAGE_1 = [
         // Beat 0 (Panel 1)
-        { src: SLBox1, left: '60px', top: '10%', width: '300px', beat: 0 },
+        { src: SLBox1, left: '80px', top: '10%', width: '300px', beat: 0 },
         { src: SLBox2, left: '480px', top: '32%', width: '310px', beat: 0 },
         // Beat 1 (Panel 2)
         { src: SLBox3, left: '920px', top: '38%', width: '160px', beat: 1 },
         // Beat 2 (Panel 3)
-        { src: SLBox4, left: '1240px', top: '50%', width: '440px', beat: 2 },
+        { src: SLBox4, left: '1240px', top: '50%', width: '440px', beat: 1 },
         // Beat 3 (Panel 4)
-        { src: SLBox5, left: '2120px', top: '35%', width: '380px', beat: 3 },
-        { src: SLBox6, left: '2520px', top: '48%', width: '370px', beat: 4 },
+        { src: SLBox5, left: '2120px', top: '35%', width: '380px', beat: 1 },
+        { src: SLBox6, left: '2520px', top: '48%', width: '370px', beat: 1 },
         // Beat 4 (Panel 5)
-        { src: SLBox7, left: '3100px', top: '44%', width: '150px', beat: 5 },
-        { src: SLBox9, left: '3530px', top: '65%', width: '270px', beat: 7 },
-        { src: SLBox8, left: '3340px', top: '52%', width: '120px', beat: 6 },
+        { src: SLBox7, left: '3100px', top: '44%', width: '150px', beat: 1 },
+        { src: SLBox9, left: '3530px', top: '65%', width: '270px', beat: 1 },
+        { src: SLBox8, left: '3340px', top: '52%', width: '120px', beat: 1 },
         // Beat 5 (Panel 6)
-        { src: SLBox10, left: '4020px', top: '48%', width: '380px', beat: 8 },
+        { src: SLBox10, left: '4020px', top: '48%', width: '380px', beat: 1 },
         // Beat 6 (Panel 7)
-        { src: SLBox11, left: '4480px', top: '20%', width: '360px', beat: 9 },
-        { src: SLBox12, left: '4900px', top: '68%', width: '350px', beat: 10 },
-        { src: SLBox13, left: '5350px', top: '43%', width: '400px', beat: 11 },
+        { src: SLBox11, left: '4480px', top: '20%', width: '360px', beat: 1 },
+        { src: SLBox12, left: '4900px', top: '68%', width: '350px', beat: 1 },
+        { src: SLBox13, left: '5350px', top: '43%', width: '400px', beat: 1 },
         // Beat 7 (Panel 8 - INFECTED EVIL GLITCH)
         {
             src: SLBox14,
             left: '5820px',
             top: '32%',
             width: '380px',
-            beat: 12,
+            beat: 1,
             evil: true,
         },
         {
@@ -188,7 +165,7 @@ export default function GameHubStoryline({ onReady }: Props) {
             left: '6500px',
             top: '44%',
             width: '450px',
-            beat: 13,
+            beat: 1,
             evil: true,
         },
     ];
@@ -197,25 +174,25 @@ export default function GameHubStoryline({ onReady }: Props) {
     const PANELS_PAGE_2 = [
         { src: Panel9, left: '320px', top: '25%', width: '350px', beat: 0 },
         { src: Panel10, left: '780px', top: '24%', width: '235px', beat: 1 },
-        { src: Panel11, left: '1035px', top: '24%', width: '240px', beat: 2 },
-        { src: Panel12, left: '1295px', top: '24%', width: '235px', beat: 3 },
-        { src: Panel13, left: '2000px', top: '15%', width: '450px', beat: 4 },
-        { src: Panel14, left: '2480px', top: '24%', width: '440px', beat: 5 },
-        { src: Panel15, left: '3180px', top: '35%', width: '450px', beat: 6 },
-        { src: Panel16, left: '3800px', top: '43%', width: '450px', beat: 7 },
+        { src: Panel11, left: '1035px', top: '24%', width: '240px', beat: 1 },
+        { src: Panel12, left: '1295px', top: '24%', width: '235px', beat: 1 },
+        { src: Panel13, left: '2000px', top: '30%', width: '450px', beat: 1 },
+        { src: Panel14, left: '2480px', top: '24%', width: '440px', beat: 1 },
+        { src: Panel15, left: '3180px', top: '35%', width: '450px', beat: 1 },
+        { src: Panel16, left: '3800px', top: '43%', width: '450px', beat: 1 },
     ];
 
     const BOXES_PAGE_2 = [
         { src: SLBox16, left: '120px', top: '10%', width: '430px', beat: 0 },
         { src: SLBox17, left: '740px', top: '27%', width: '180px', beat: 1 },
-        { src: SLBox18, left: '1065px', top: '62%', width: '180px', beat: 2 },
-        { src: SLBox19, left: '1340px', top: '75%', width: '300px', beat: 3 },
-        { src: SLBox20, left: '1660px', top: '50%', width: '300px', beat: 4 },
-        { src: SLBox21, left: '1900px', top: '8%', width: '420px', beat: 5 },
-        { src: SLBox22, left: '2600px', top: '47%', width: '400px', beat: 6 },
-        { src: SLBox23, left: '3050px', top: '26%', width: '370px', beat: 7 },
-        { src: SLBox24, left: '3540px', top: '49%', width: '370px', beat: 8 },
-        { src: SLBox25, left: '4340px', top: '50%', width: '380px', beat: 9 },
+        { src: SLBox18, left: '1065px', top: '62%', width: '180px', beat: 1 },
+        { src: SLBox19, left: '1340px', top: '75%', width: '300px', beat: 1 },
+        { src: SLBox20, left: '1660px', top: '50%', width: '300px', beat: 1 },
+        { src: SLBox21, left: '1900px', top: '20%', width: '420px', beat: 1 },
+        { src: SLBox22, left: '2600px', top: '47%', width: '400px', beat: 1 },
+        { src: SLBox23, left: '3050px', top: '26%', width: '370px', beat: 1 },
+        { src: SLBox24, left: '3540px', top: '49%', width: '370px', beat: 1 },
+        { src: SLBox25, left: '4340px', top: '50%', width: '380px', beat: 1 },
     ];
 
     useLayoutEffect(() => {
@@ -228,7 +205,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                 ease: 'power3.out',
                 duration: 1.2,
             });
-        }, []);
+        });
 
         return () => {
             ctx.revert();
@@ -239,20 +216,27 @@ export default function GameHubStoryline({ onReady }: Props) {
     // because each page has different panels.
     const LIFT_D =
         page === 1
-            ? buildLiftPath(PANELS_PAGE_1, parseFloat(PAGE_WIDTH))
-            : buildLiftPath(PANELS_PAGE_2, parseFloat(PAGE_WIDTH));
+            ? 'M4.58,31.0584 C4.58,31.0584 686.46,330.56 1101.74,190.558 C1517.03,50.5564 2161.31,-78.942 2706.48,87.0566 C3251.64,253.055 3797.37,31.0584 4127.78,31.0584 C4458.18,31.0584 4881.44,184.559 5416.35,190.559 C5951.26,196.559 6035.00,-78.441 7400.00,138.059'
+            : 'M3.07,63.4378 C712.46,-190.063 953.79,542.431 1479.78,215.934 C2005.77,-110.563 2321.67,23.9336 3065.32,368.934 C3760.08,536.934 4045.24,106.939 5200.00,63.4386';
+
+    // Same hand-authored-curve treatment as LIFT_D: width-matched to page 1's
+    // design span (7400px) so its shape lines up with the panel positions.
+    const SCALE_D =
+        page === 1
+            ? 'M4.97,328.316 C642.39,34.3173 1294.38,-4.20732 1914.90,34.3173 C2487.65,69.876 2686.92,314.816 3228.20,300.816 C3769.49,286.816 3650.04,170.818 4541.50,34.3173 C5432.97,-102.184 6064.56,370.257 7400.00,102.816'
+            : 'M3.25,136.57 C819.69,-154.868 1261.67,510.068 2213.14,234.568 C3164.62,-40.9318 3911.46,-90.4307 5200.00,234.569';
 
     const CAMERA_CONFIG: Partial<CameraConfig> = {
         perspective: 900,
-        markers: true,
+
         paths: {
             lift: {
                 d: LIFT_D,
                 zero: 'mean',
 
-                gain: 0.4,
+                gain: 0.2,
             },
-            scale: { d: CAMERA_PATHS.scale, gain: 0.03 },
+            scale: { d: SCALE_D, gain: 0.1 },
             sway: { d: CAMERA_PATHS.sway, zero: 'mean', gain: 0 },
         },
         bankGain: 0.0009,
@@ -343,50 +327,8 @@ export default function GameHubStoryline({ onReady }: Props) {
                 const isBtn = el.getAttribute('data-type') === 'btn';
 
                 if (isBtn) {
-                    const tl = gsap.timeline({
-                        scrollTrigger: {
-                            trigger: el,
-                            scroller: scroller,
-                            horizontal: true,
-                            start: 'left 95%',
-                            toggleActions: 'play none none reverse',
-                        },
-                    });
-
-                    tl.fromTo(
-                        el,
-                        {
-                            opacity: 0,
-                            scale: 1.4,
-                            skewX: 25,
-                            x: -20,
-                            filter: 'hue-rotate(90deg) drop-shadow(4px 0px 0px #00FFFF)',
-                        },
-                        {
-                            opacity: 1,
-                            scale: 1,
-                            skewX: -15,
-                            x: 10,
-                            filter: 'hue-rotate(-90deg) drop-shadow(-4px 0px 0px #E60012)',
-                            duration: 0.08,
-                            delay: page === 1 ? beatNum * 0.22 : beatNum * 0.38,
-                            ease: 'none',
-                        },
-                    )
-                        .to(el, {
-                            skewX: 10,
-                            x: -5,
-                            filter: 'hue-rotate(45deg)',
-                            duration: 0.06,
-                            ease: 'none',
-                        })
-                        .to(el, {
-                            skewX: 0,
-                            x: 0,
-                            filter: 'hue-rotate(0deg) drop-shadow(0px 0px 15px #E60012)',
-                            duration: 0.06,
-                            ease: 'power2.out',
-                        });
+                    // No entrance animation — always visible, no scroll gating.
+                    gsap.set(el, { opacity: 1 });
                 } else if (page === 1) {
                     if (isEvil) {
                         gsap.fromTo(
@@ -407,14 +349,14 @@ export default function GameHubStoryline({ onReady }: Props) {
                                 rotation: 0,
                                 filter: 'drop-shadow(0px 0px 15px #E60012) hue-rotate(0deg)',
                                 duration: 0.7,
-                                delay: beatNum * 0.22,
+                                delay: beatNum * 0.12,
                                 ease: 'back.out(2.5)',
                                 scrollTrigger: {
                                     trigger: el,
                                     scroller: scroller,
                                     horizontal: true,
-                                    start: 'left 92%',
-                                    toggleActions: 'play none none reverse',
+                                    start: 'left 95%',
+                                    toggleActions: 'play none none none',
                                 },
                             },
                         );
@@ -463,14 +405,14 @@ export default function GameHubStoryline({ onReady }: Props) {
                                 rotation: 0,
                                 skewX: 0,
                                 duration: 0.65,
-                                delay: beatNum * 0.22,
+                                delay: beatNum * 0.11,
                                 ease: 'back.out(2.2)',
                                 scrollTrigger: {
                                     trigger: el,
                                     scroller: scroller,
                                     horizontal: true,
                                     start: 'left 92%',
-                                    toggleActions: 'play none none reverse',
+                                    toggleActions: 'play none none none',
                                 },
                             },
                         );
@@ -491,14 +433,14 @@ export default function GameHubStoryline({ onReady }: Props) {
                                 y: 0,
                                 rotation: 0,
                                 duration: 0.5,
-                                delay: beatNum * 0.22,
-                                ease: 'back.out(2.8)',
+                                delay: beatNum * 0.12,
+                                ease: 'back.out(1.3)',
                                 scrollTrigger: {
                                     trigger: el,
                                     scroller: scroller,
                                     horizontal: true,
                                     start: 'left 92%',
-                                    toggleActions: 'play none none reverse',
+                                    toggleActions: 'play none none none',
                                 },
                             },
                         );
@@ -520,20 +462,83 @@ export default function GameHubStoryline({ onReady }: Props) {
                             skewX: 0,
                             rotation: 0,
                             duration: 0.75,
-                            delay: beatNum * 0.38,
+                            delay: beatNum * 0.08,
                             ease: 'back.out(2.4)',
                             scrollTrigger: {
                                 trigger: el,
                                 scroller: scroller,
                                 horizontal: true,
                                 start: 'left 95%',
-                                toggleActions: 'play none none reverse',
+                                toggleActions: 'play none none none',
                             },
                         },
                     );
                 }
             });
         }, worldRef);
+
+        return () => ctx.revert();
+    }, [page]);
+
+    // Page 1's decorative accent shapes wipe in left-to-right as the scroll
+    // reaches them, same trigger point as the panels/boxes.
+    useEffect(() => {
+        if (page !== 1) return;
+
+        const scroller = scrollRef.current;
+        const svgs = accentSvgRefs.current.filter(
+            (el): el is SVGSVGElement => el !== null,
+        );
+        if (!scroller || svgs.length === 0) return;
+
+        const ctx = gsap.context(() => {
+            svgs.forEach((svg, i) => {
+                gsap.set(svg, { clipPath: 'inset(0% 100% 0% 0%)' });
+                gsap.to(svg, {
+                    clipPath: 'inset(0% 0% 0% 0%)',
+                    duration: 8,
+                    ease: 'power4.out',
+                    scrollTrigger: {
+                        trigger: svg,
+                        scroller,
+                        horizontal: true,
+                        start: 'left 95%',
+                        toggleActions: 'play none none none',
+                    },
+                });
+
+                // Last two shapes sit right around the infected panel — give
+                // them the same glitch shake it has, same timing/values.
+                if (i === 2 || i === 3) {
+                    const glitchTl = gsap.timeline({
+                        repeat: -1,
+                        repeatDelay: 2.3,
+                    });
+                    glitchTl
+                        .to(svg, {
+                            skewX: 12,
+                            x: 6,
+                            filter: 'hue-rotate(90deg) drop-shadow(4px 0px 0px #00FFFF)',
+                            duration: 0.05,
+                            ease: 'none',
+                        })
+                        .to(svg, {
+                            skewX: -12,
+                            x: -6,
+                            filter: 'hue-rotate(-90deg) drop-shadow(-4px 0px 0px #E60012)',
+                            duration: 0.05,
+                            ease: 'none',
+                        })
+                        .to(svg, {
+                            skewX: 0,
+                            x: 0,
+                            filter: 'hue-rotate(0deg) drop-shadow(0px 0px 15px #E60012)',
+                            duration: 0.05,
+                            ease: 'none',
+                        });
+                }
+            });
+        });
 
         return () => ctx.revert();
     }, [page]);
@@ -685,6 +690,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                             {page === 1 && (
                                 <>
                                     <svg
+                                        ref={(el) => {
+                                            accentSvgRefs.current[0] = el;
+                                        }}
                                         className="pointer-events-none absolute left-[2350px] top-[20%] z-10 h-[540px] w-[1500px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
                                         viewBox="0 0 1800 540"
                                         fill="none"
@@ -697,6 +705,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                                     </svg>
 
                                     <svg
+                                        ref={(el) => {
+                                            accentSvgRefs.current[1] = el;
+                                        }}
                                         className="pointer-events-none absolute left-[3550px] top-[38%] z-10 h-[540px] w-[1400px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
                                         viewBox="0 0 1800 540"
                                         fill="none"
@@ -710,6 +721,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                                     </svg>
 
                                     <svg
+                                        ref={(el) => {
+                                            accentSvgRefs.current[2] = el;
+                                        }}
                                         className="pointer-events-none absolute left-[5440px] top-[25%] z-10 h-[520px] w-[850px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
                                         viewBox="0 0 1150 520"
                                         fill="none"
@@ -723,6 +737,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                                     </svg>
 
                                     <svg
+                                        ref={(el) => {
+                                            accentSvgRefs.current[3] = el;
+                                        }}
                                         className="pointer-events-none absolute left-[6200px] top-[55%] z-10 h-[520px] w-[1150px] select-none drop-shadow-[0px_14px_0px_#0A0C0F]"
                                         viewBox="0 0 1150 520"
                                         fill="none"
@@ -777,7 +794,7 @@ export default function GameHubStoryline({ onReady }: Props) {
 
                                     <button
                                         onClick={handleNextPage}
-                                        data-beat={7}
+                                        data-beat={1}
                                         data-type="btn"
                                         style={{
                                             right: '48px',
@@ -838,9 +855,9 @@ export default function GameHubStoryline({ onReady }: Props) {
                                         data-beat={3}
                                         data-type="btn"
                                         style={{
-                                            right: '48px',
+                                            right: '56px',
                                             bottom: '35%',
-                                            width: '190px',
+                                            width: '230px',
                                         }}
                                         className="group pointer-events-auto absolute z-50 cursor-pointer select-none transition-transform duration-300 hover:scale-110 active:scale-95"
                                     >
@@ -848,7 +865,7 @@ export default function GameHubStoryline({ onReady }: Props) {
                                             src={ImReady}
                                             alt="I'm Ready"
                                             draggable={false}
-                                            className="h-auto w-full drop-shadow-[5px_5px_0px_#E60012]"
+                                            className="h-auto w-full"
                                         />
                                     </button>
                                 </>

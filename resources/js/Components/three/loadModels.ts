@@ -12,6 +12,9 @@ export function loadAnimatedModel(
     scene: Scene,
     mixers: AnimationMixer[],
     onLoaded?: (root: Object3D) => void,
+    /** Set false for models animated externally (e.g. by a scroll/fly-by
+     * controller) rather than by a baked GLTF clip — skips the warning. */
+    expectAnimation = true,
 ) {
     loader.load(
         url,
@@ -33,7 +36,7 @@ export function loadAnimatedModel(
                 action.setLoop(LoopRepeat, Infinity);
                 action.play();
                 mixers.push(mixer);
-            } else {
+            } else if (expectAnimation) {
                 console.warn(`[model] ${url} loaded but no animations found`);
             }
 
