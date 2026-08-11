@@ -350,7 +350,7 @@ export function useDivisionCamera({
             const endOf = (i: number) =>
                 i + 1 < N ? at(i + 1) : clipTl.duration();
 
-            let queue: number[] = [];
+            const queue: number[] = [];
             let cursor = 0;
             let active: gsap.core.Tween | null = null;
 

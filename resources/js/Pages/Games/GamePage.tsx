@@ -179,13 +179,15 @@ export default function GamePage({ gameSlug }: Props) {
                 </span>
             </button>{' '}
             <CircleWipe ref={wipeRef} duration={1.5} />
-            {step === 'puzzle' && gameSlug === 'signal-decoder' && questions && (
-                <SignalDecoderPage
-                    gameSlug={gameSlug}
-                    finishGame={finishGame}
-                    clues={questions as SignalDecoderQuestions}
-                />
-            )}
+            {step === 'puzzle' &&
+                gameSlug === 'signal-decoder' &&
+                questions && (
+                    <SignalDecoderPage
+                        gameSlug={gameSlug}
+                        finishGame={finishGame}
+                        clues={questions as SignalDecoderQuestions}
+                    />
+                )}
             {step === 'puzzle' && gameSlug === 'data-trace' && questions && (
                 <DataTracePage
                     gameSlug={gameSlug}
@@ -193,13 +195,15 @@ export default function GamePage({ gameSlug }: Props) {
                     questions={questions as DataTraceQuestionData[]}
                 />
             )}
-            {step === 'puzzle' && gameSlug === 'core-logic-test' && questions && (
-                <CoreLogicTestPage
-                    gameSlug={gameSlug}
-                    finishGame={finishGame}
-                    questions={questions as CoreLogicQuestionData[]}
-                />
-            )}
+            {step === 'puzzle' &&
+                gameSlug === 'core-logic-test' &&
+                questions && (
+                    <CoreLogicTestPage
+                        gameSlug={gameSlug}
+                        finishGame={finishGame}
+                        questions={questions as CoreLogicQuestionData[]}
+                    />
+                )}
             {step === 'puzzle' && gameSlug === 'reconstruct-identity' && (
                 <ReconstructIdentityPage
                     gameSlug={gameSlug}

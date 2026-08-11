@@ -50,8 +50,6 @@ export default function Timer({
     const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
     return (
-        <div className={`text-3xl font-bold ${className}`}>
-            {formattedTime}
-        </div>
+        <div className={`text-3xl font-bold ${className}`}>{formattedTime}</div>
     );
 }

@@ -1,4 +1,5 @@
 ﻿import { DATA_TRACE_ASSETS } from '@/data/dataTraceAssets';
+import { playSfx } from '@/lib/sound';
 import type { DataTraceQuestionData } from '@/services/gameApi';
 import { gsap } from 'gsap';
 import { FormEvent, forwardRef, useEffect, useRef, useState } from 'react';
@@ -217,6 +218,7 @@ export default function DataTracePage({ finishGame, questions }: Props) {
         if (isCorrect) {
             setIsWrong(false);
             setUserInput('');
+            playSfx('inputSuccess');
 
             // POOL COMPLIMENT CHANTS (PERSONA 5 STYLED)
             const p5Chants = [
@@ -348,6 +350,7 @@ export default function DataTracePage({ finishGame, questions }: Props) {
             }
         } else {
             setIsWrong(true);
+            playSfx('inputError');
 
             // Wrong answer animation
             gsap.to(formRef.current, {
@@ -524,7 +527,10 @@ export default function DataTracePage({ finishGame, questions }: Props) {
                                                 "'NotoSans', sans-serif",
                                         }}
                                     >
-                                        {String(questions.length).padStart(2, '0')}
+                                        {String(questions.length).padStart(
+                                            2,
+                                            '0',
+                                        )}
                                     </span>
                                 </div>
                             </div>

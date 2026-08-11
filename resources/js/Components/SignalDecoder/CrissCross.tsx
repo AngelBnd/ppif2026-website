@@ -1,5 +1,6 @@
 ﻿import type { SignalDecoderQuestions } from '@/services/gameApi';
 
+import { playSfx } from '@/lib/sound';
 import gsap from 'gsap';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -339,6 +340,7 @@ export default function CrissCross({ finishGame, clues }: Props) {
         if (!isCompleted || hasCompletedAnimationRef.current) return;
 
         hasCompletedAnimationRef.current = true;
+        playSfx('inputSuccess');
 
         inputRefs.current.flat().forEach((input) => {
             if (input) input.disabled = true;
