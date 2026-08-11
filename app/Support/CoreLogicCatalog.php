@@ -2,27 +2,31 @@
 
 namespace App\Support;
 
+use App\Models\CoreLogicQuestion;
+
 /**
- * Server-side copy of the Core Logic Test answer key
- * (resources/js/data/gameQuestions/coreLogicQuestions.ts `ans` values, in
- * question order). The client only ever submits the selected option index
- * per question; the score is always computed here so it cannot be spoofed.
+ * Server-side scoring for the Core Logic Test, backed by the
+ * core_logic_questions table. The client only ever submits the selected
+ * option index per question; the score is always computed here from the
+ * DB's correct_index column so it cannot be spoofed.
  */
 class CoreLogicCatalog
 {
-    public const QUESTION_COUNT = 10;
-
-    /** Correct option index (0-3) for each question, in order. */
-    public const ANSWERS = [0, 2, 3, 1, 3, 0, 2, 1, 0, 2];
+    public static function questionCount(): int
+    {
+        return CoreLogicQuestion::count();
+    }
 
     /**
-     * @param  array<int, int>  $answers  Selected option index per question.
+     * @param  array<int, int>  $answers  Selected option index per question, in order.
      */
     public static function score(array $answers): int
     {
+        $correctIndexes = CoreLogicQuestion::orderBy('order')->pluck('correct_index');
+
         $score = 0;
 
-        foreach (self::ANSWERS as $index => $correct) {
+        foreach ($correctIndexes as $index => $correct) {
             if (($answers[$index] ?? null) === $correct) {
                 $score++;
             }

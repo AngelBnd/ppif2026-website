@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\GameProgress;
 use App\Models\Team;
 use App\Support\CoreLogicCatalog;
+use App\Support\DataTraceCatalog;
 use App\Support\GameCatalog;
+use App\Support\SignalDecoderCatalog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -18,9 +20,9 @@ class GameController extends Controller
      */
     public function start(Request $request, string $slug): JsonResponse
     {
-        $this->assertValidSlug($slug);
+        GameCatalog::assertValidSlug($slug);
         $team = $this->team($request);
-        $this->assertUnlocked($team, $slug);
+        GameCatalog::assertUnlocked($team, $slug);
 
         $progress = GameProgress::firstOrNew([
             'team_id' => $team->id,
@@ -44,33 +46,55 @@ class GameController extends Controller
     }
 
     /**
-     * Finish one of the three puzzle games: stamp the completion time, persist the
-     * duration and (for Core Logic Test) the score, then hand back the fragment.
+     * Finish one of the three puzzle games: validate the submitted answers against
+     * the server's own copy of the answer key, stamp the completion time, persist
+     * the duration and (for Core Logic Test) the score, then hand back the fragment.
      */
     public function complete(Request $request, string $slug): JsonResponse
     {
-        $this->assertValidSlug($slug);
+        GameCatalog::assertValidSlug($slug);
 
         if ($slug === GameCatalog::FINAL) {
             abort(422, 'Reconstruct Identity is completed via the guess endpoint.');
         }
 
-        // Core Logic Test's score is never taken from the client: it is
-        // recomputed here from the raw answers against the server-side key.
-        $validated = $slug === GameCatalog::CORE_LOGIC
-            ? $request->validate([
-                'answers' => ['required', 'array', 'size:'.CoreLogicCatalog::QUESTION_COUNT],
-                'answers.*' => ['required', 'integer', 'min:0', 'max:3'],
-            ])
-            : [];
-
         $team = $this->team($request);
-        $this->assertUnlocked($team, $slug);
+        GameCatalog::assertUnlocked($team, $slug);
+
+        // Every answer is re-checked here against the DB-backed answer key; the
+        // client's own local check (used for live UI feedback) is never trusted.
+        $validated = match ($slug) {
+            GameCatalog::CORE_LOGIC => $request->validate([
+                'answers' => ['required', 'array', 'size:'.CoreLogicCatalog::questionCount()],
+                'answers.*' => ['required', 'integer', 'min:0', 'max:3'],
+            ]),
+            GameCatalog::SIGNAL_DECODER => $request->validate([
+                'values' => ['required', 'array'],
+                'values.*' => ['nullable', 'string', 'max:1'],
+            ]),
+            GameCatalog::DATA_TRACE => $request->validate([
+                'answers' => ['required', 'array', 'size:'.DataTraceCatalog::questionCount()],
+                'answers.*' => ['required', 'string', 'max:64'],
+            ]),
+            default => [],
+        };
 
         // Captured before finalize() so a replayed /complete call (e.g. with a
         // more favourable answers array) can never overwrite a score that was
-        // already locked in by the first, genuine completion.
+        // already locked in by the first, genuine completion. Also means a replay
+        // can never be rejected by the checks below just because it resubmits a
+        // blank/stale grid — only the first, genuine completion is gated on it.
         $alreadyCompleted = in_array($slug, $team->completedSlugs(), true);
+
+        if (! $alreadyCompleted) {
+            if ($slug === GameCatalog::SIGNAL_DECODER && ! SignalDecoderCatalog::isSolved($validated['values'])) {
+                abort(422, 'The crossword is not solved yet.');
+            }
+
+            if ($slug === GameCatalog::DATA_TRACE && ! DataTraceCatalog::isSolved($validated['answers'])) {
+                abort(422, 'The quiz is not solved yet.');
+            }
+        }
 
         $progress = $this->finalize($team, $slug);
 
@@ -100,7 +124,7 @@ class GameController extends Controller
 
         $team = $this->team($request);
         $slug = GameCatalog::FINAL;
-        $this->assertUnlocked($team, $slug);
+        GameCatalog::assertUnlocked($team, $slug);
 
         $isCorrect = mb_strtoupper(trim($validated['guess'])) === mb_strtoupper($team->name);
 
@@ -138,26 +162,6 @@ class GameController extends Controller
         }
 
         return $progress;
-    }
-
-    private function assertValidSlug(string $slug): void
-    {
-        if (! GameCatalog::isValid($slug)) {
-            abort(404, 'Unknown game.');
-        }
-    }
-
-    /**
-     * Enforce the play order server-side: a game is locked until its predecessor
-     * has been completed.
-     */
-    private function assertUnlocked(Team $team, string $slug): void
-    {
-        $prerequisite = GameCatalog::prerequisite($slug);
-
-        if ($prerequisite && ! in_array($prerequisite, $team->completedSlugs(), true)) {
-            abort(403, 'This game is locked.');
-        }
     }
 
     private function team(Request $request): Team

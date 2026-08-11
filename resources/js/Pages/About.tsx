@@ -74,7 +74,7 @@ const informationPlaceholder: {
             information:
                 'Program Studi Informatika Universitas Multimedia Nusantara mempersiapkan mahasiswa untuk menguasai ilmu komputer sekaligus mampu menerapkannya dalam berbagai bidang industri. Mahasiswa akan mempelajari dasar-dasar pemrograman, struktur data, algoritma, basis data, rekayasa perangkat lunak, kecerdasan buatan, pengembangan aplikasi, keamanan siber, hingga komputasi awan. Selain pembelajaran di kelas, mahasiswa juga didorong untuk mengembangkan kemampuan berpikir kritis, bekerja sama dalam tim, berinovasi, serta memperoleh pengalaman melalui proyek nyata, kompetisi, penelitian, dan program magang. Dengan kurikulum yang terus mengikuti perkembangan teknologi, Program Studi Informatika UMN bertujuan menghasilkan lulusan yang siap menghadapi tantangan dunia digital dan memberikan kontribusi bagi masyarakat.',
             gallery:
-                'Berikut merupakan dokumentasi berbagai kegiatan yang berkaitan dengan Informatika UMN, seperti Company Visit, Studi Banding, Pleno, dan Comvis. Kegiatan-kegiatan tersebut merupakan bagian dari program yang dinaungi oleh HMIF UMN. Jelajahi galeri untuk melihat berbagai momen, lalu klik pada gambar yang diinginkan untuk melihatnya dalam ukuran yang lebih besar.',
+                'Berikut merupakan dokumentasi berbagai kegiatan yang berkaitan dengan Informatika UMN, seperti Company Visit, Studi Banding, dan Pleno. Kegiatan-kegiatan tersebut merupakan bagian dari program yang dinaungi oleh HMIF UMN. Jelajahi galeri untuk melihat berbagai momen, lalu klik pada gambar yang diinginkan untuk melihatnya dalam ukuran yang lebih besar.',
             divisions: '',
         },
         images: [

@@ -21,6 +21,34 @@ export type TeamPublic = {
     total_duration_ms: number;
 };
 
+export type SignalDecoderClue = {
+    num: number;
+    row: number;
+    col: number;
+    word: string;
+    clue: string;
+};
+
+export type SignalDecoderQuestions = {
+    across: SignalDecoderClue[];
+    down: SignalDecoderClue[];
+};
+
+export type DataTraceQuestionData = {
+    order: number;
+    description: string;
+    answers: string[];
+    images: string[];
+};
+
+export type CoreLogicQuestionData = {
+    order: number;
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+};
+
 export class ApiError extends Error {
     status: number;
 
@@ -129,16 +157,23 @@ export async function startGame(gameSlug: GameSlug): Promise<void> {
 }
 
 /**
- * Finish one of the three puzzle games. Stops the timer server-side and returns
- * the unlocked fragment letters.
+ * Fetch a puzzle game's question content. Only reachable once the game is
+ * unlocked for the joined team (server-enforced, same as start/complete).
+ */
+export async function getGameQuestions<T>(gameSlug: GameSlug): Promise<T> {
+    return apiRequest<T>('GET', `/api/games/${gameSlug}/questions`);
+}
+
+/**
+ * Finish one of the three puzzle games. The payload carries whatever proof of
+ * completion the game needs (MCQ answer indices, crossword grid, quiz answers) —
+ * the server always re-checks it against its own answer key before accepting.
+ * Stops the timer server-side and returns the unlocked fragment letters.
  */
 export async function completeGame(
     gameSlug: GameSlug,
-    options?: { answers?: number[] },
+    payload?: Record<string, unknown>,
 ): Promise<{ letters: string[]; completedGames: GameSlug[] }> {
-    const payload =
-        options?.answers !== undefined ? { answers: options.answers } : undefined;
-
     const data = await apiRequest<{
         fragment: { letters: string[] };
         completed_games: GameSlug[];

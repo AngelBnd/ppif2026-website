@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\GameQuestionController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
@@ -67,6 +68,7 @@ Route::prefix('api')->group(function () {
 
         Route::post('games/reconstruct-identity/guess', [GameController::class, 'guess'])
             ->middleware('throttle:team-guess');
+        Route::get('games/{slug}/questions', [GameQuestionController::class, 'show']);
         Route::post('games/{slug}/start', [GameController::class, 'start']);
         Route::post('games/{slug}/complete', [GameController::class, 'complete']);
     });

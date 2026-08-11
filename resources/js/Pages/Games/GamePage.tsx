@@ -1,5 +1,12 @@
 import { games, type GameSlug } from '@/data/games';
-import { completeGame, startGame } from '@/services/gameApi';
+import {
+    completeGame,
+    getGameQuestions,
+    startGame,
+    type CoreLogicQuestionData,
+    type DataTraceQuestionData,
+    type SignalDecoderQuestions,
+} from '@/services/gameApi';
 import { Head, router } from '@inertiajs/react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -14,7 +21,6 @@ import ReconstructIdentityPage from './ReconstructIdentity/ReconstructIdentityPa
 import FinalPage from './Shared/FInalPage';
 import FragmentRevealPage from './Shared/FragmentRevealPage';
 import SignalDecoderPage from './SignalDecoder/SignalDecoderPage';
-type GameHubScreen = 'join' | 'games' | 'errorGimmick';
 type Props = {
     gameSlug: GameSlug;
 };
@@ -23,12 +29,18 @@ type GameStep = 'puzzle' | 'result' | 'fragment' | 'final';
 
 export type GamePageChildProps = {
     gameSlug: GameSlug;
-    finishGame: () => void;
+    finishGame: (payload?: Record<string, unknown>) => void;
 };
+
+type PuzzleQuestions =
+    | SignalDecoderQuestions
+    | DataTraceQuestionData[]
+    | CoreLogicQuestionData[];
 
 export default function GamePage({ gameSlug }: Props) {
     const [step, setStep] = useState<GameStep>('puzzle');
     const [letters, setLetters] = useState<string[]>([]);
+    const [questions, setQuestions] = useState<PuzzleQuestions | null>(null);
     const game = games.find((item) => item.slug === gameSlug);
     const wipeRef = useRef<CircleWipeHandle>(null);
     const { toggle: toggleMusic, isPlaying } = useMusic();
@@ -62,7 +74,30 @@ export default function GamePage({ gameSlug }: Props) {
         startGame(gameSlug);
     }, [gameSlug]);
 
-    const retrieveFragments = async () => {
+    // Fetch this game's question content from the server. Reconstruct Identity
+    // has none — it fetches its own target word data separately.
+    useEffect(() => {
+        setQuestions(null);
+
+        if (gameSlug === 'reconstruct-identity') return;
+
+        let cancelled = false;
+
+        getGameQuestions<PuzzleQuestions>(gameSlug)
+            .then((data) => {
+                if (!cancelled) setQuestions(data);
+            })
+            .catch(() => {
+                // best-effort — the puzzle page below stays covered by the wipe
+                // until this resolves, so a slow/failed fetch just delays entry.
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [gameSlug]);
+
+    const retrieveFragments = async (payload?: Record<string, unknown>) => {
         const teamId = Number(sessionStorage.getItem('teamId'));
 
         if (!teamId) {
@@ -71,42 +106,20 @@ export default function GamePage({ gameSlug }: Props) {
             return;
         }
 
-        const answers =
-            gameSlug === 'core-logic-test'
-                ? (JSON.parse(
-                      sessionStorage.getItem('core_logic_answers') || '[]',
-                  ) as number[])
-                : undefined;
-
-        const result = await completeGame(
-            gameSlug,
-            answers !== undefined ? { answers } : undefined,
-        );
+        const result = await completeGame(gameSlug, payload);
 
         setLetters(result.letters);
     };
 
-    const finishGame = () => {
+    const finishGame = (payload?: Record<string, unknown>) => {
         if (isFinalGame) {
             transitionToStep('final');
             return;
         }
 
-        retrieveFragments();
+        retrieveFragments(payload);
         transitionToStep('fragment');
     };
-
-    const gamePages: Record<
-        GameSlug,
-        React.ComponentType<GamePageChildProps>
-    > = {
-        'signal-decoder': SignalDecoderPage,
-        'data-trace': DataTracePage,
-        'core-logic-test': CoreLogicTestPage,
-        'reconstruct-identity': ReconstructIdentityPage,
-    };
-
-    const SelectedGamePage = gamePages[gameSlug];
 
     const isFinalGame = gameSlug === 'reconstruct-identity';
 
@@ -166,8 +179,32 @@ export default function GamePage({ gameSlug }: Props) {
                 </span>
             </button>{' '}
             <CircleWipe ref={wipeRef} duration={1.5} />
-            {step === 'puzzle' && (
-                <SelectedGamePage gameSlug={gameSlug} finishGame={finishGame} />
+            {step === 'puzzle' && gameSlug === 'signal-decoder' && questions && (
+                <SignalDecoderPage
+                    gameSlug={gameSlug}
+                    finishGame={finishGame}
+                    clues={questions as SignalDecoderQuestions}
+                />
+            )}
+            {step === 'puzzle' && gameSlug === 'data-trace' && questions && (
+                <DataTracePage
+                    gameSlug={gameSlug}
+                    finishGame={finishGame}
+                    questions={questions as DataTraceQuestionData[]}
+                />
+            )}
+            {step === 'puzzle' && gameSlug === 'core-logic-test' && questions && (
+                <CoreLogicTestPage
+                    gameSlug={gameSlug}
+                    finishGame={finishGame}
+                    questions={questions as CoreLogicQuestionData[]}
+                />
+            )}
+            {step === 'puzzle' && gameSlug === 'reconstruct-identity' && (
+                <ReconstructIdentityPage
+                    gameSlug={gameSlug}
+                    finishGame={finishGame}
+                />
             )}
             {step === 'fragment' && (
                 <FragmentRevealPage game={game.title} letters={letters} />
