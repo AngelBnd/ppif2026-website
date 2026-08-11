@@ -1,9 +1,8 @@
 ﻿import CrissCross from '@/Components/SignalDecoder/CrissCross';
+import type { SignalDecoderQuestions } from '@/services/gameApi';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
-
-import { CWdata } from '@/data/gameQuestions/signalDecoderQuestions';
 
 import HorizontalTitle from '@/assets/games/signalDecoder/Horizontal.svg?react';
 import PaperBack1 from '@/assets/games/signalDecoder/PaperBack1.svg?react';
@@ -14,7 +13,9 @@ import SideBarBG from '@/assets/games/signalDecoder/thethingthingy.svg?react';
 import VerticalTitle from '@/assets/games/signalDecoder/Vertical.svg?react';
 import CircleWipe, { CircleWipeHandle } from '@/Components/global/CircleWipe';
 
-export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
+type Props = GamePageChildProps & { clues: SignalDecoderQuestions };
+
+export default function SignalDecoderPage({ finishGame, clues }: Props) {
     const paperWrapperRef = useRef<HTMLDivElement | null>(null);
     const paperMainRef = useRef<HTMLDivElement | null>(null);
     const paperBack1Ref = useRef<HTMLDivElement | null>(null);
@@ -284,7 +285,7 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
 
     const CurrentSwitch = SwitchHorizontalVertical1;
 
-    const currentClues = isVertical ? CWdata.down : CWdata.across;
+    const currentClues = isVertical ? clues.down : clues.across;
     return (
         <main className="flex h-screen w-screen items-center justify-start text-white">
             <div className="absolute z-[-10] h-screen w-screen bg-[#0A0C0F] opacity-30" />
@@ -301,14 +302,15 @@ export default function SignalDecoderPage({ finishGame }: GamePageChildProps) {
             </button> */}
             <section className="relative flex h-full w-full items-center justify-start">
                 <div className="relative z-[45] -mt-24 ml-36 h-[570px] w-[900px] shrink-0">
-                    <CrissCross finishGame={finishGame} />
+                    <CrissCross finishGame={finishGame} clues={clues} />
                 </div>
 
                 <div
                     ref={sideBarBGRef}
-                    className="pointer-events-none absolute right-0 top-0 h-auto w-[52.083vw] bg-red-300"
+                    className="pointer-events-none absolute -top-[10%] right-0 w-[50vw]"
+                    style={{ height: 'max(120%, 120vh)' }}
                 >
-                    <SideBarBG className="pointer-events-none absolute h-auto w-full" />
+                    <SideBarBG className="pointer-events-none absolute h-full w-full" />
                 </div>
 
                 <div

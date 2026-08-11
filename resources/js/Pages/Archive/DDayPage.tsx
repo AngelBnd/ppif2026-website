@@ -739,6 +739,7 @@ export default function DDayPage() {
                     <Link
                         href="/archive"
                         data-click-sound
+                        data-back-sound
                         className="group flex h-[80px] items-center justify-center overflow-visible transition-transform active:scale-95"
                         style={{ width: 'clamp(81px, 30vh, 260px)' }}
                         aria-label="Back to Archive"
@@ -769,6 +770,7 @@ export default function DDayPage() {
                             <Button
                                 Icon={ViewBackButton}
                                 onClick={handleCloseView}
+                                back
                                 iconClassName="w-full h-full object-contain pointer-events-none group-hover:scale-105 transition-transform duration-200"
                                 ariaLabel="Back to Gallery"
                             />

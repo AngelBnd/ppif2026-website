@@ -1,4 +1,6 @@
 import InputBorderBottom from '@/assets/games/hub/InputBorderBottomSVG.svg?react';
+import VictoryMusic from '@/Components/global/VictoryMusic';
+import { playSfx } from '@/lib/sound';
 import { getMyTeam, guessReconstruct } from '@/services/gameApi';
 import gsap from 'gsap';
 import {
@@ -83,6 +85,7 @@ export default function ReconstructIdentityPage({
 
     function shakeWrong() {
         setStatus('wrong');
+        playSfx('inputError');
 
         if (!inputAreaRef.current) return;
         const target = inputAreaRef.current;
@@ -101,6 +104,7 @@ export default function ReconstructIdentityPage({
 
     function celebrateCorrect() {
         setStatus('correct');
+        playSfx('inputSuccess');
 
         if (isFinishingRef.current) return;
         isFinishingRef.current = true;
@@ -195,6 +199,9 @@ export default function ReconstructIdentityPage({
             .slice(-1)
             .toUpperCase()
             .replace(/[^A-Z0-9]/g, '');
+        if (char) {
+            playSfx('input');
+        }
         setLetterAt(index, char);
 
         if (char) {
@@ -342,6 +349,7 @@ export default function ReconstructIdentityPage({
                     ERROR !
                 </p>
             </div>
+            {status === 'correct' && <VictoryMusic />}
         </main>
     );
 }

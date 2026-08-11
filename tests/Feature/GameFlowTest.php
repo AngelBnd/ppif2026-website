@@ -2,14 +2,59 @@
 
 namespace Tests\Feature;
 
+use App\Models\DataTraceQuestion;
+use App\Models\SignalDecoderClue;
 use App\Models\Team;
 use App\Support\GameCatalog;
+use Database\Seeders\CoreLogicQuestionSeeder;
+use Database\Seeders\DataTraceQuestionSeeder;
+use Database\Seeders\SignalDecoderClueSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class GameFlowTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed([
+            SignalDecoderClueSeeder::class,
+            DataTraceQuestionSeeder::class,
+            CoreLogicQuestionSeeder::class,
+        ]);
+    }
+
+    /**
+     * A correct Signal Decoder grid submission, built from the seeded clues.
+     */
+    private function signalDecoderSolution(): array
+    {
+        $values = [];
+
+        foreach (SignalDecoderClue::all() as $clue) {
+            foreach (str_split($clue->word) as $offset => $letter) {
+                $row = $clue->direction === 'across' ? $clue->row : $clue->row + $offset;
+                $col = $clue->direction === 'across' ? $clue->col + $offset : $clue->col;
+                $values["{$row}-{$col}"] = $letter;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * A correct Data Trace answer submission, built from the seeded questions.
+     */
+    private function dataTraceSolution(): array
+    {
+        return DataTraceQuestion::orderBy('order')
+            ->get()
+            ->map(fn (DataTraceQuestion $question) => $question->answers[0])
+            ->all();
+    }
 
     /**
      * Create a team with the three puzzle fragments, mirroring the seeder shape.
@@ -93,7 +138,7 @@ class GameFlowTest extends TestCase
         $team = $this->makeTeam();
 
         $this->actingAsTeam($team)
-            ->postJson('/api/games/signal-decoder/complete')
+            ->postJson('/api/games/signal-decoder/complete', ['values' => $this->signalDecoderSolution()])
             ->assertOk()
             ->assertJsonPath('fragment.letters', ['L', 'A'])
             ->assertJsonPath('completed_games', ['signal-decoder']);
@@ -110,10 +155,12 @@ class GameFlowTest extends TestCase
 
         $this->postJson('/api/teams/join', ['code' => 'ABC12'])->assertOk();
 
-        $this->actingAsTeam($team)->postJson('/api/games/signal-decoder/complete')
+        $this->actingAsTeam($team)
+            ->postJson('/api/games/signal-decoder/complete', ['values' => $this->signalDecoderSolution()])
             ->assertJsonPath('fragment.letters', ['L', 'A']);
 
-        $this->actingAsTeam($team)->postJson('/api/games/data-trace/complete')
+        $this->actingAsTeam($team)
+            ->postJson('/api/games/data-trace/complete', ['answers' => $this->dataTraceSolution()])
             ->assertJsonPath('fragment.letters', ['E', 'T']);
 
         $this->actingAsTeam($team)
@@ -159,7 +206,8 @@ class GameFlowTest extends TestCase
         // Game 1 takes 2s.
         $this->actingAsTeam($team)->postJson('/api/games/signal-decoder/start');
         $this->travel(2)->seconds();
-        $this->actingAsTeam($team)->postJson('/api/games/signal-decoder/complete');
+        $this->actingAsTeam($team)
+            ->postJson('/api/games/signal-decoder/complete', ['values' => $this->signalDecoderSolution()]);
 
         // 10s spent idle choosing the next game on the hub — must NOT be counted.
         $this->travel(10)->seconds();
@@ -167,7 +215,8 @@ class GameFlowTest extends TestCase
         // Game 2 takes 3s.
         $this->actingAsTeam($team)->postJson('/api/games/data-trace/start');
         $this->travel(3)->seconds();
-        $this->actingAsTeam($team)->postJson('/api/games/data-trace/complete');
+        $this->actingAsTeam($team)
+            ->postJson('/api/games/data-trace/complete', ['answers' => $this->dataTraceSolution()]);
 
         // Total = 2s + 3s = 5s. The 10s of hub-idle time is excluded — if it
         // were counted the total would be ~15s. (Delta tolerates whole-second

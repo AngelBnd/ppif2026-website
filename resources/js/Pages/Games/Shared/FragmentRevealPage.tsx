@@ -3,6 +3,7 @@ import DT from '@/assets/games/fragmentReveal/DT.svg';
 import RIbbonBG from '@/assets/games/fragmentReveal/RibbonBG.svg';
 import SD from '@/assets/games/fragmentReveal/SD.svg';
 import YouveFinished from '@/assets/games/fragmentReveal/uvefinished.svg';
+import VictoryMusic from '@/Components/global/VictoryMusic';
 import { router } from '@inertiajs/react';
 import gsap from 'gsap';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -194,6 +195,7 @@ export default function FragmentRevealPage({
             ref={mainRef}
             className="relative flex h-[200vh] w-screen flex-col items-center justify-center overflow-hidden p-4 text-white"
         >
+            <VictoryMusic />
             <div className="absolute z-0 h-full w-full bg-[#0A0C0F] opacity-80" />
 
             <style>{`
@@ -207,11 +209,13 @@ export default function FragmentRevealPage({
             <div
                 ref={ribbonRef}
                 className="absolute left-1/2 top-0 h-auto w-[78rem] -translate-x-1/2"
-                style={{ clipPath: 'inset(0% 0% 100% 0%)' }}
+                style={{
+                    clipPath: 'inset(0% 0% 100% 0%)',
+                }}
             >
                 <img src={RIbbonBG} alt="" className="h-auto w-full" />
             </div>
-            <div className="relative flex h-screen w-screen max-w-[20000px] flex-col items-center justify-center gap-28 overflow-hidden">
+            <div className="relative flex h-screen w-screen max-w-[2000px] flex-col items-center justify-center gap-28 overflow-hidden">
                 <div className="relative flex flex-col items-center justify-center gap-2">
                     <img
                         src={YouveFinished}

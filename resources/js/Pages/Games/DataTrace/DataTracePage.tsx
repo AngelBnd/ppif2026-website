@@ -1,4 +1,6 @@
-﻿import { IMG_QS } from '@/data/gameQuestions/dataTraceQuestions';
+﻿import { DATA_TRACE_ASSETS } from '@/data/dataTraceAssets';
+import { playSfx } from '@/lib/sound';
+import type { DataTraceQuestionData } from '@/services/gameApi';
 import { gsap } from 'gsap';
 import { FormEvent, forwardRef, useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
@@ -34,12 +36,18 @@ export const DecorShape = forwardRef<HTMLDivElement, DecorShapeProps>(
 );
 DecorShape.displayName = 'DecorShape';
 
-export default function DataTracePage({ finishGame }: GamePageChildProps) {
+type Props = GamePageChildProps & { questions: DataTraceQuestionData[] };
+
+export default function DataTracePage({ finishGame, questions }: Props) {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [userInput, setUserInput] = useState<string>('');
     const [isWrong, setIsWrong] = useState<boolean>(false);
+    const [submittedAnswers, setSubmittedAnswers] = useState<string[]>([]);
 
-    const currentQuestion = IMG_QS[currentIndex];
+    const currentQuestion = questions[currentIndex];
+    const currentImages = currentQuestion.images.map(
+        (key) => DATA_TRACE_ASSETS[key],
+    );
 
     // REFS GSAP
     const paperRef = useRef<HTMLDivElement>(null);
@@ -202,7 +210,7 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
         e.preventDefault();
 
         const sanitizedInput = userInput.trim().toLowerCase();
-        const isCorrect = currentQuestion.ans.some(
+        const isCorrect = currentQuestion.answers.some(
             (acceptableAnswer) =>
                 acceptableAnswer.toLowerCase() === sanitizedInput,
         );
@@ -210,6 +218,7 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
         if (isCorrect) {
             setIsWrong(false);
             setUserInput('');
+            playSfx('inputSuccess');
 
             // POOL COMPLIMENT CHANTS (PERSONA 5 STYLED)
             const p5Chants = [
@@ -331,13 +340,17 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                 );
             }
 
-            if (currentIndex < IMG_QS.length - 1) {
+            const answersSoFar = [...submittedAnswers, sanitizedInput];
+
+            if (currentIndex < questions.length - 1) {
+                setSubmittedAnswers(answersSoFar);
                 setCurrentIndex((prev) => prev + 1);
             } else {
-                finishGame();
+                finishGame({ answers: answersSoFar });
             }
         } else {
             setIsWrong(true);
+            playSfx('inputError');
 
             // Wrong answer animation
             gsap.to(formRef.current, {
@@ -379,7 +392,11 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                 <div className="absolute z-[-10] h-screen w-screen bg-[#0A0C0F] opacity-30" />
                 {import.meta.env.DEV && (
                     <button
-                        onClick={() => finishGame()}
+                        onClick={() =>
+                            finishGame({
+                                answers: questions.map((q) => q.answers[0]),
+                            })
+                        }
                         className="pointer-events-auto fixed right-2 top-32 z-[9999] rounded bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-lg hover:bg-red-700"
                     >
                         Skip (development)
@@ -510,7 +527,10 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                                                 "'NotoSans', sans-serif",
                                         }}
                                     >
-                                        {String(IMG_QS.length).padStart(2, '0')}
+                                        {String(questions.length).padStart(
+                                            2,
+                                            '0',
+                                        )}
                                     </span>
                                 </div>
                             </div>
@@ -521,17 +541,17 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                             ref={imageContainerRef}
                             className="absolute -bottom-[330px] -right-[-250px] z-10 flex min-h-[150px] w-[calc(100%-4rem)] flex-wrap items-center justify-center gap-3 opacity-0"
                         >
-                            {currentQuestion.imgs.map((imgSrc, index) => (
+                            {currentImages.map((imgSrc, index) => (
                                 <div
                                     key={index}
                                     className="group relative flex items-center justify-center overflow-hidden"
                                     style={{
                                         flex:
-                                            currentQuestion.n === 1
+                                            currentImages.length === 1
                                                 ? '1 1 180px'
                                                 : '1 1 90px',
                                         maxWidth:
-                                            currentQuestion.n === 1
+                                            currentImages.length === 1
                                                 ? '210px'
                                                 : '100px',
                                         aspectRatio: '1/1',
@@ -557,7 +577,7 @@ export default function DataTracePage({ finishGame }: GamePageChildProps) {
                             }}
                         >
                             <p className="text-[26px] font-bold leading-relaxed text-zinc-800">
-                                {currentQuestion.desc}
+                                {currentQuestion.description}
                             </p>
                         </div>
                     </div>

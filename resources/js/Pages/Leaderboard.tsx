@@ -26,7 +26,9 @@ export default function Leaderboard({
 }: Props) {
     useEffect(() => {
         const interval = setInterval(() => {
-            router.reload({ only: ['teams', 'totalGames', 'includeInProgress'] });
+            router.reload({
+                only: ['teams', 'totalGames', 'includeInProgress'],
+            });
         }, REFRESH_INTERVAL_MS);
 
         return () => clearInterval(interval);

@@ -1,6 +1,6 @@
 import BackButton from '@/assets/icons/BackButtonSVG.svg';
 import Button from '@/Components/global/Button';
-import { router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import GameHubStoryline from './GameHubStoryline';
 
 // The story lives on its own URL (/games/story) so it's always shown as the
@@ -8,9 +8,11 @@ import GameHubStoryline from './GameHubStoryline';
 export default function StoryPage() {
     return (
         <main className="z-50 h-screen w-screen overflow-hidden">
+            <Head title="Story" />
             <Button
                 onClick={() => router.visit('/home')}
                 Icon={BackButton}
+                back
                 className="absolute bottom-6 left-6 z-30 w-[12rem]"
                 iconClassName="w-full"
                 iconStyle={{ width: 'clamp(5.4rem, 26.4vh, 12rem)' }}

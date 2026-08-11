@@ -9,7 +9,6 @@ export type GameConfig = {
     title: string;
     slug: GameSlug;
     path: string;
-    revealPath?: string;
     unlocksAfter?: GameSlug;
 };
 
@@ -32,7 +31,6 @@ export const games: GameConfig[] = [
         title: 'Core Logic Test',
         slug: 'core-logic-test',
         path: '/games/core-logic-test',
-        revealPath: '/games/core-logic-test/reveal',
         unlocksAfter: 'data-trace',
     },
     {

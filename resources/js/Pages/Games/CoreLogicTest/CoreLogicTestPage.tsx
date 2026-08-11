@@ -1,4 +1,4 @@
-﻿import { MCQ } from '@/data/gameQuestions/coreLogicQuestions';
+﻿import type { CoreLogicQuestionData } from '@/services/gameApi';
 import { gsap } from 'gsap';
 import { useEffect, useRef, useState } from 'react';
 import type { GamePageChildProps } from '../GamePage';
@@ -28,7 +28,9 @@ import QuestionBackground from '@/assets/games/coreLogic/svgs/QuestionBackground
 import QuestionRemainingBanner from '@/assets/games/coreLogic/svgs/QuestionRemainingBanner.svg';
 import Shape1 from '@/assets/games/coreLogic/svgs/Shape1.svg';
 
-export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
+type Props = GamePageChildProps & { questions: CoreLogicQuestionData[] };
+
+export default function CoreLogicPage({ finishGame, questions }: Props) {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [lives, setLives] = useState<number>(3);
     const [correctCount, setCorrectCount] = useState<number>(0);
@@ -43,7 +45,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
 
     const coddieRef = useRef<HTMLDivElement>(null);
 
-    const currentQuestion = MCQ[currentIndex];
+    const currentQuestion = questions[currentIndex];
 
     // Refs Pembungkus
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -775,14 +777,14 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
 
         setSelectedAnswers((prev) => [...prev, selectedIdx]);
 
-        const isCorrect = selectedIdx === currentQuestion.ans;
+        const isCorrect = selectedIdx === currentQuestion.correctIndex;
 
         if (isCorrect) {
             const nextCorrect = correctCount + 1;
             setCorrectCount(nextCorrect);
 
             setCoddieState('happy');
-            setCustomMessage(currentQuestion.exp);
+            setCustomMessage(currentQuestion.explanation);
             setShowExplanation(true);
         } else {
             const nextLives = lives - 1;
@@ -797,7 +799,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                 setShowExplanation(true);
             } else {
                 setCoddieState('sad');
-                setCustomMessage(currentQuestion.exp);
+                setCustomMessage(currentQuestion.explanation);
                 setShowExplanation(true);
             }
         }
@@ -820,7 +822,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
         setShowExplanation(false);
         setCoddieState('idle');
 
-        if (currentIndex < MCQ.length - 1) {
+        if (currentIndex < questions.length - 1) {
             setTimeout(() => {
                 setCurrentIndex((prev) => prev + 1);
             }, 250);
@@ -830,16 +832,12 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
     };
 
     // Handler Finish. `core_logic_score` is kept only for the immediate result
-    // UI; the authoritative score is recomputed server-side from
-    // `core_logic_answers`, so a spoofed sessionStorage value here can't
-    // affect what's actually persisted.
+    // UI; the authoritative score is recomputed server-side from the submitted
+    // `answers` array, so a spoofed sessionStorage value here can't affect
+    // what's actually persisted.
     const handleFinish = () => {
         sessionStorage.setItem('core_logic_score', String(correctCount));
-        sessionStorage.setItem(
-            'core_logic_answers',
-            JSON.stringify(selectedAnswers),
-        );
-        finishGame();
+        finishGame({ answers: selectedAnswers });
     };
 
     // Reset Game
@@ -915,13 +913,11 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                         onClick={() => {
                             sessionStorage.setItem(
                                 'core_logic_score',
-                                String(MCQ.length),
+                                String(questions.length),
                             );
-                            sessionStorage.setItem(
-                                'core_logic_answers',
-                                JSON.stringify(MCQ.map((q) => q.ans)),
-                            );
-                            finishGame();
+                            finishGame({
+                                answers: questions.map((q) => q.correctIndex),
+                            });
                         }}
                         className="fixed right-2 top-2 z-[9999] rounded bg-red-600 px-3 py-1 text-xs font-bold text-white shadow-lg hover:bg-red-700"
                     >
@@ -1005,7 +1001,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                                             {currentIndex + 1}
                                         </span>
                                         <span className="text-white/40">/</span>
-                                        <span>{MCQ.length}</span>
+                                        <span>{questions.length}</span>
                                     </div>
                                 </div>
 
@@ -1095,7 +1091,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                                     }}
                                 >
                                     <p className="pr-2 text-[22px] leading-relaxed tracking-tight text-zinc-950 selection:bg-black selection:text-white">
-                                        {currentQuestion.q}
+                                        {currentQuestion.question}
                                     </p>
                                 </div>
                             </div>
@@ -1160,9 +1156,9 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                                                     <span className="text-yellow-400">
                                                         {
                                                             currentQuestion
-                                                                .opts[
+                                                                .options[
                                                                 currentQuestion
-                                                                    .ans
+                                                                    .correctIndex
                                                             ]
                                                         }
                                                     </span>
@@ -1234,7 +1230,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                         {/* KELOMPOK ATAS (Pilihan A dan B) */}
                         <div className="-2 -blue-500 flex w-full flex-col justify-center md:flex-row">
                             {[0, 1].map((idx) => {
-                                const option = currentQuestion.opts[idx];
+                                const option = currentQuestion.options[idx];
                                 if (!option) return null;
 
                                 const optionAsset = getOptionAssets(idx);
@@ -1288,7 +1284,7 @@ export default function CoreLogicPage({ finishGame }: GamePageChildProps) {
                         {/* KELOMPOK BAWAH (Pilihan C dan D) */}
                         <div className="-2 -green-500 flex w-full flex-col justify-center md:flex-row">
                             {[2, 3].map((idx) => {
-                                const option = currentQuestion.opts[idx];
+                                const option = currentQuestion.options[idx];
                                 if (!option) return null;
 
                                 const optionAsset = getOptionAssets(idx);

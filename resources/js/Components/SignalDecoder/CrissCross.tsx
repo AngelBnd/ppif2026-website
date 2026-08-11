@@ -1,9 +1,6 @@
-﻿import {
-    CW_COLS,
-    CW_ROWS,
-    CWdata,
-} from '@/data/gameQuestions/signalDecoderQuestions';
+﻿import type { SignalDecoderQuestions } from '@/services/gameApi';
 
+import { playSfx } from '@/lib/sound';
 import gsap from 'gsap';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -12,12 +9,17 @@ import CWBoxACT from '@/assets/games/signalDecoder/crosswordBoxACTIVE.svg?react'
 import CWBoxCOR from '@/assets/games/signalDecoder/crosswordBoxCORRECT.svg?react';
 import CWBoxHIG from '@/assets/games/signalDecoder/crosswordBoxHIGHLIGHT.svg?react';
 
+// Fixed grid layout — independent of clue content, so it stays a constant here.
+export const CW_ROWS = 13;
+export const CW_COLS = 20;
+
 type Props = {
-    finishGame: () => void;
+    finishGame: (payload?: Record<string, unknown>) => void;
+    clues: SignalDecoderQuestions;
 };
-export default function CrissCross({ finishGame }: Props) {
-    const accrossData = CWdata.across;
-    const downData = CWdata.down;
+export default function CrissCross({ finishGame, clues }: Props) {
+    const accrossData = clues.across;
+    const downData = clues.down;
     let i = 0;
     let j = 0;
     let indexWord = 0;
@@ -338,6 +340,7 @@ export default function CrissCross({ finishGame }: Props) {
         if (!isCompleted || hasCompletedAnimationRef.current) return;
 
         hasCompletedAnimationRef.current = true;
+        playSfx('inputSuccess');
 
         inputRefs.current.flat().forEach((input) => {
             if (input) input.disabled = true;
@@ -345,7 +348,7 @@ export default function CrissCross({ finishGame }: Props) {
 
         const tl = gsap.timeline({
             onComplete: () => {
-                finishGame();
+                finishGame({ values });
             },
         });
 
@@ -385,7 +388,7 @@ export default function CrissCross({ finishGame }: Props) {
             tl.kill();
             completionTimelineRef.current = null;
         };
-    }, [isCompleted, finishGame]);
+    }, [isCompleted, finishGame, values]);
 
     const fillAllCells = () => {
         setValues({ ...answerMap });
@@ -457,7 +460,7 @@ export default function CrissCross({ finishGame }: Props) {
                             )
                                 isCorrect = true;
 
-                            console.log(accrossData[i].word[indexWord]);
+                            //console.log(accrossData[i].word[indexWord]);
                             indexWord++;
 
                             if (wordLengthAcross === 0) {
