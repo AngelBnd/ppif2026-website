@@ -231,6 +231,7 @@ export default function ModelBackground({
             scene,
             mixersRef.current,
             (root) => initTrain(trainLeft, root),
+            false,
         );
         loadAnimatedModel(
             loader,
@@ -238,6 +239,7 @@ export default function ModelBackground({
             scene,
             mixersRef.current,
             (root) => initTrain(trainRight, root),
+            false,
         );
 
         loader.load(

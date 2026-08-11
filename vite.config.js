@@ -13,6 +13,7 @@ export default defineConfig({
         svgr({
             svgrOptions: {
                 expandProps: 'end',
+                ref: true,
             },
         }),
     ],

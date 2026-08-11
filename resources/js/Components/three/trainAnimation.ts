@@ -152,10 +152,6 @@ export const updateTrain = (
     }
 
     if (t >= 1) {
-        console.log(
-            '[train] pass done — closest dist',
-            state.minDist.toFixed(1),
-        );
         state.minDist = Infinity;
         obj.position.x = state.startX; // park off-screen
         state.idle = true;

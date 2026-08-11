@@ -6,8 +6,8 @@ export default function ClickSound() {
 
     useEffect(() => {
         function handleClick(event: MouseEvent) {
-            const target = event.target as Element | null;
-            if (!target) return;
+            const target = event.target;
+            if (!(target instanceof Element)) return;
 
             const interactive =
                 target.closest('button') ??
@@ -32,15 +32,17 @@ export default function ClickSound() {
         }
 
         function handleHover(event: PointerEvent) {
-            if (event.pointerType === 'mouse') {
-                const target = event.target as Element | null;
-                if (
-                    target?.closest(
-                        'button, [data-back-sound], [data-click-sound]',
-                    )
-                ) {
-                    playSfx('hoverButton');
-                }
+            if (event.pointerType !== 'mouse') return;
+
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+
+            if (
+                target.closest(
+                    'button, [data-back-sound], [data-click-sound]',
+                )
+            ) {
+                playSfx('hoverButton');
             }
         }
 
