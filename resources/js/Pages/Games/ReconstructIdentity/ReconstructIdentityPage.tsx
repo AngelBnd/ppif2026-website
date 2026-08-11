@@ -1,4 +1,5 @@
 import InputBorderBottom from '@/assets/games/hub/InputBorderBottomSVG.svg?react';
+import VictoryMusic from '@/Components/global/VictoryMusic';
 import { playSfx } from '@/lib/sound';
 import { getMyTeam, guessReconstruct } from '@/services/gameApi';
 import gsap from 'gsap';
@@ -348,6 +349,7 @@ export default function ReconstructIdentityPage({
                     ERROR !
                 </p>
             </div>
+            {status === 'correct' && <VictoryMusic />}
         </main>
     );
 }

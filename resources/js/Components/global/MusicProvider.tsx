@@ -1,7 +1,9 @@
+import { primeAudioElement } from '@/lib/victoryMusic';
 import {
     createContext,
     useCallback,
     useContext,
+    useEffect,
     useMemo,
     useRef,
     useState,
@@ -42,6 +44,9 @@ export default function MusicProvider({ children }: MusicProviderProps) {
     const isPlayingRef = useRef(false);
     // Whether a victory screen is currently mounted (victory is the active track).
     const victoryActiveRef = useRef(false);
+    // Music toggle state right before a victory screen took over, so we can
+    // restore it once the victory screen unmounts.
+    const wasOnBeforeVictoryRef = useRef(false);
 
     const setPlaying = useCallback((value: boolean) => {
         isPlayingRef.current = value;
@@ -79,15 +84,18 @@ export default function MusicProvider({ children }: MusicProviderProps) {
             if (active) {
                 if (victoryActiveRef.current) return;
                 victoryActiveRef.current = true;
+                wasOnBeforeVictoryRef.current = isPlayingRef.current;
 
-                // Swap tracks: pause the backsound, and start the victory theme
-                // only if music is currently on (respects the toggle state).
+                // Swap tracks: pause the backsound. The victory theme is the
+                // payoff of the whole game, so it always plays — even when the
+                // music toggle is off (no need to click the music button).
                 backsound?.pause();
                 if (victory) {
+                    victory.muted = false;
+                    victory.volume = 0.2;
                     victory.currentTime = 0;
-                    if (isPlayingRef.current) {
-                        victory.play().catch(() => setPlaying(false));
-                    }
+                    setPlaying(true);
+                    victory.play().catch(() => setPlaying(false));
                 }
             } else {
                 if (!victoryActiveRef.current) return;
@@ -97,9 +105,9 @@ export default function MusicProvider({ children }: MusicProviderProps) {
                     victory.pause();
                     victory.currentTime = 0;
                 }
-                // Hand control back to the backsound, resuming it only if music
-                // is on right now.
-                if (isPlayingRef.current) {
+                // Restore the user's previous music state.
+                setPlaying(wasOnBeforeVictoryRef.current);
+                if (wasOnBeforeVictoryRef.current) {
                     backsound?.play().catch(() => setPlaying(false));
                 }
             }
@@ -111,6 +119,19 @@ export default function MusicProvider({ children }: MusicProviderProps) {
         () => ({ isPlaying, toggle, setVictory }),
         [isPlaying, toggle, setVictory],
     );
+
+    // The first real user gesture (click/tap/keystroke) unlocks the victory
+    // audio element so it can play later without a direct gesture.
+    useEffect(() => {
+        const events = ['pointerdown', 'keydown', 'touchstart'] as const;
+        const prime = () => {
+            if (victoryRef.current) primeAudioElement(victoryRef.current);
+        };
+        events.forEach((event) => window.addEventListener(event, prime));
+        return () => {
+            events.forEach((event) => window.removeEventListener(event, prime));
+        };
+    }, []);
 
     return (
         <MusicContext.Provider value={value}>
