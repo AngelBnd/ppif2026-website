@@ -43,8 +43,11 @@ Route::get('/games', function () {
     return Inertia::render('GameHub/GameHubPage');
 });
 
+// Temporarily moved off the well-known /games/story path — some students
+// already discovered and shared that URL before the reveal. Rename back (and
+// update the two router.visit() call sites below) once ready to go public.
 // Must be registered before the /games/{gameSlug} wildcard below.
-Route::get('/games/story', function () {
+Route::get('/games/story-8x2k4', function () {
     return Inertia::render('GameHub/StoryPage');
 });
 

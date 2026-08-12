@@ -14,7 +14,7 @@ type GameHubScreen = 'join' | 'games' | 'errorGimmick';
 export default function GameHubPage() {
     const { toggle: toggleMusic, isPlaying } = useMusic();
     const musicIconRef = useRef<HTMLSpanElement>(null);
-    // Story now lives at /games/story, so the hub starts at the join step
+    // Story now lives at /games/story-8x2k4, so the hub starts at the join step
     // (or straight to the game list when the team is already known).
     const [screen, setScreen] = useState<GameHubScreen>(() => {
         const teamId = sessionStorage.getItem('teamId');
@@ -52,7 +52,7 @@ export default function GameHubPage() {
 
     const handleBack = () => {
         if (screen === 'join') {
-            router.visit('/games/story');
+            router.visit('/games/story-8x2k4');
             return;
         }
 

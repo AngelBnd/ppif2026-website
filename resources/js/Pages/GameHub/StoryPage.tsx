@@ -3,7 +3,7 @@ import Button from '@/Components/global/Button';
 import { Head, router } from '@inertiajs/react';
 import GameHubStoryline from './GameHubStoryline';
 
-// The story lives on its own URL (/games/story) so it's always shown as the
+// The story lives on its own URL (/games/story-8x2k4) so it's always shown as the
 // entry to the games flow — even when a teamId is already in sessionStorage.
 export default function StoryPage() {
     return (

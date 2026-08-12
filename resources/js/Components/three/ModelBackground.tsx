@@ -498,7 +498,7 @@ export default function ModelBackground({
                     z: center.z,
                     duration: 0.85,
                     ease: 'power2.in',
-                    onComplete: () => router.visit('/games/story'),
+                    onComplete: () => router.visit('/games/story-8x2k4'),
                 });
             }
         };
