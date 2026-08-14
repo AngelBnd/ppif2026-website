@@ -442,7 +442,7 @@ export default function ModelBackground({
         // Story reveal toggle: flip to true (and rebuild/redeploy) once the
         // storyline is ready to be shown publicly. codie2 stays visible either
         // way — this only gates the click-to-story interaction.
-        const STORY_UNLOCKED = false;
+        const STORY_UNLOCKED = true;
 
         // codie2 is only interactive on the /home page.
         const onHomePage = () =>
@@ -498,7 +498,7 @@ export default function ModelBackground({
                     z: center.z,
                     duration: 0.85,
                     ease: 'power2.in',
-                    onComplete: () => router.visit('/games/story-8x2k4'),
+                    onComplete: () => router.visit('/games/story'),
                 });
             }
         };
