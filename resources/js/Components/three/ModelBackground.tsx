@@ -439,8 +439,14 @@ export default function ModelBackground({
             return raycaster.intersectObject(codie2Object, true).length > 0;
         };
 
+        // Story reveal toggle: flip to true (and rebuild/redeploy) once the
+        // storyline is ready to be shown publicly. codie2 stays visible either
+        // way — this only gates the click-to-story interaction.
+        const STORY_UNLOCKED = true;
+
         // codie2 is only interactive on the /home page.
-        const onHomePage = () => window.location.pathname === '/home';
+        const onHomePage = () =>
+            STORY_UNLOCKED && window.location.pathname === '/home';
 
         const handlePointerMove = (e: PointerEvent) => {
             pointerRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;

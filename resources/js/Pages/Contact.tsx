@@ -498,7 +498,7 @@ export default function Contact() {
                                             data-icon
                                             data-click-sound
                                             data-href="https://chat.whatsapp.com/GZf6ECqpxci4f2POyrp2vs?mode=gi_t"
-                                            className="relative flex shrink-0 items-center"
+                                            className="relative flex shrink-0 cursor-pointer items-center"
                                         >
                                             <img
                                                 data-hover-bg
@@ -543,8 +543,8 @@ export default function Contact() {
                                         <div
                                             data-icon
                                             data-click-sound
-                                            // data-href="https://discord.gg/ppif"
-                                            className="relative flex shrink-0 items-center"
+                                            data-href="https://discord.gg/bMkNMAVVe"
+                                            className="relative flex shrink-0 cursor-pointer items-center"
                                             style={{
                                                 left: `calc(var(--vu)*-2.4)`,
                                             }}
@@ -565,7 +565,7 @@ export default function Contact() {
 
                                             <img
                                                 src={Discord}
-                                                className="relative h-auto shrink-0 opacity-50"
+                                                className="relative h-auto shrink-0"
                                                 style={{
                                                     width: `calc(var(--vu)*13.021)`,
                                                 }}
@@ -580,7 +580,7 @@ export default function Contact() {
 
                                             <img
                                                 src={DiscordText}
-                                                className="relative h-auto shrink-0 opacity-50"
+                                                className="relative h-auto shrink-0"
                                                 style={{
                                                     width: `calc(var(--vu)*14)`,
                                                     marginTop: `calc(var(--vu)*1.5)`,
