@@ -26,63 +26,63 @@ interface CarouselItem {
 const DATA: CarouselItem[] = [
     {
         id: 1,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01447-152.webp',
     },
     {
         id: 2,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01595-187.webp',
     },
     {
         id: 3,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01602-189.webp',
     },
     {
         id: 4,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti meihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01617-196.webp',
     },
     {
         id: 5,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC02372.webp',
     },
     {
         id: 6,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC02565.webp',
     },
     {
         id: 7,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC03344.webp',
     },
     {
         id: 8,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC03357.webp',
     },
     {
         id: 9,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC03365.webp',
     },
     {
         id: 10,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC00932-50.webp',
     },
 ];
 
@@ -99,9 +99,6 @@ interface SlotConfig {
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
 export function generateBaseSlots(
-
-
-
     totalItems: number,
     device: DeviceType,
 ): Record<number, SlotConfig> {
@@ -113,7 +110,15 @@ export function generateBaseSlots(
         if (device === 'mobile') {
             // 1. MOBILE (< 640px)
             if (offset === 0) {
-                slots[0] = { x: 0, y: 0, scale: 0.75, rotate: -3, opacity: 1, grayscale: 0, zIndex: 20 };
+                slots[0] = {
+                    x: 0,
+                    y: 0,
+                    scale: 0.75,
+                    rotate: -3,
+                    opacity: 1,
+                    grayscale: 0,
+                    zIndex: 20,
+                };
             } else if (offset < 0) {
                 const abs = Math.abs(offset);
                 slots[offset] = {
@@ -139,7 +144,15 @@ export function generateBaseSlots(
         } else if (device === 'tablet') {
             // 2. TABLET (640px - 1023px)
             if (offset === 0) {
-                slots[0] = { x: 0, y: 0, scale: 0.88, rotate: -3, opacity: 1, grayscale: 0, zIndex: 20 };
+                slots[0] = {
+                    x: 0,
+                    y: 0,
+                    scale: 0.88,
+                    rotate: -3,
+                    opacity: 1,
+                    grayscale: 0,
+                    zIndex: 20,
+                };
             } else if (offset < 0) {
                 const abs = Math.abs(offset);
                 slots[offset] = {
@@ -165,7 +178,15 @@ export function generateBaseSlots(
         } else {
             // 3. DESKTOP (>= 1024px)
             if (offset === 0) {
-                slots[0] = { x: 0, y: 0, scale: 0.85, rotate: -3, opacity: 1, grayscale: 0, zIndex: 20 };
+                slots[0] = {
+                    x: 0,
+                    y: 0,
+                    scale: 0.85,
+                    rotate: -3,
+                    opacity: 1,
+                    grayscale: 0,
+                    zIndex: 20,
+                };
             } else if (offset < 0) {
                 const abs = Math.abs(offset);
                 slots[offset] = {
@@ -227,7 +248,7 @@ export function useDynamicSlots(totalItems: number) {
                         y: slot.y * scaleFactor,
                         scale: slot.scale * scaleFactor,
                     },
-                ])
+                ]),
             );
 
             setSlots(scaledSlots);
@@ -383,8 +404,10 @@ export default function DDayPage() {
 
             const img = card.querySelector('img');
 
-            const wasInRange = prevOffset >= minOffset && prevOffset <= maxOffset;
-            const willBeInRange = nextOffset >= minOffset && nextOffset <= maxOffset;
+            const wasInRange =
+                prevOffset >= minOffset && prevOffset <= maxOffset;
+            const willBeInRange =
+                nextOffset >= minOffset && nextOffset <= maxOffset;
 
             // CASE 1: UNSELECTED
             if (wasInRange && !willBeInRange) {
@@ -547,7 +570,7 @@ export default function DDayPage() {
 
                 {/* KONTEN UTAMA */}
                 <div
-                    className="relative flex w-full max-w-8xl items-center overflow-visible  -2  -red-500"
+                    className="max-w-8xl -2 -red-500 relative flex w-full items-center overflow-visible"
                     style={{
                         height: 'clamp(247.5px, 80.1vh, 550px)',
                     }}
@@ -557,7 +580,7 @@ export default function DDayPage() {
                         ref={(el) => {
                             if (el) leftElementsRef.current[1] = el;
                         }}
-                        className="relative w-1/2  -2  -blue-500 opacity-0"
+                        className="-2 -blue-500 relative w-1/2 opacity-0"
                         style={{
                             height: 'clamp(547px, 60vh, 1000px)',
                             top: 'clamp(0px, 9vh, -100px)',
@@ -565,12 +588,19 @@ export default function DDayPage() {
                     >
                         {/* KARTU STACK CAROUSEL */}
                         {DATA.map((item) => {
-                            const offset = getOffset(item.id - 1, currentIndex, total);
-                            const inRange = offset >= minOffset && offset <= maxOffset;
+                            const offset = getOffset(
+                                item.id - 1,
+                                currentIndex,
+                                total,
+                            );
+                            const inRange =
+                                offset >= minOffset && offset <= maxOffset;
                             const target = inRange ? SLOTS[offset] : null;
                             const isActive = offset === 0;
 
-                            const currentViewBox = isActive ? '0 0 821 569' : '0 0 296 199';
+                            const currentViewBox = isActive
+                                ? '0 0 821 569'
+                                : '0 0 296 199';
 
                             const PATH_LUBANG_AKTIF =
                                 'M60.2224 519.85L757.175 497.243L747.807 48.1365L44.3004 147.913L60.2224 519.85Z';
@@ -621,7 +651,11 @@ export default function DDayPage() {
                                             <defs>
                                                 <clipPath id={clipPathId}>
                                                     <path
-                                                        d={isActive ? PATH_LUBANG_AKTIF : PATH_LUBANG_NON_AKTIF}
+                                                        d={
+                                                            isActive
+                                                                ? PATH_LUBANG_AKTIF
+                                                                : PATH_LUBANG_NON_AKTIF
+                                                        }
                                                     />
                                                 </clipPath>
                                             </defs>
@@ -636,7 +670,8 @@ export default function DDayPage() {
                                                     filter: isActive
                                                         ? 'grayscale(0) contrast(1.1) brightness(1)'
                                                         : 'grayscale(1) contrast(1.1) brightness(0.8)',
-                                                    transition: 'filter 0.3s ease-in-out',
+                                                    transition:
+                                                        'filter 0.3s ease-in-out',
                                                 }}
                                             />
 
@@ -670,21 +705,18 @@ export default function DDayPage() {
                         })}
 
                         {/* NAVIGASI PREV & NEXT */}
-                        <div className="pointer-events-none absolute inset-0 z-50 overflow-visible  -2  -green-500">
+                        <div className="-2 -green-500 pointer-events-none absolute inset-0 z-50 overflow-visible">
                             {/* BUTTON PREV */}
                             <button
                                 type="button"
                                 onClick={handlePrev}
-                                className="group pointer-events-auto absolute flex items-center justify-center overflow-visible transition-transform active:scale-95  -2  -blue-500
-                                    /* 📱 Mobile (< 640px) */
-                                    top-[37%] left-[70%] h-[40px] w-[60px]
-                                    /* 📲 Tablet (640px - 1023px) */
-                                    md:top-[35%] md:left-[68%] md:h-[65px] md:w-[100px]
-                                    /* 🖥️ Desktop (>= 1024px) */
-                                    lg:top-[12%] lg:left-[65%] lg:h-[90px] lg:w-[160px]"
+                                className="-2 -blue-500 /* 📱 Mobile (< 640px) */ /* 📲 Tablet (640px - 1023px) */ /* 🖥️ Desktop (>= 1024px) */ group pointer-events-auto absolute left-[70%] top-[37%] flex h-[40px] w-[60px] items-center justify-center overflow-visible transition-transform active:scale-95 md:left-[68%] md:top-[35%] md:h-[65px] md:w-[100px] lg:left-[65%] lg:top-[12%] lg:h-[90px] lg:w-[160px]"
                             >
-                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105  -2  -yellow-500">
-                                    <PrevButton width={'100%'} height={'100%'} />
+                                <div className="-2 -yellow-500 pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                    <PrevButton
+                                        width={'100%'}
+                                        height={'100%'}
+                                    />
                                 </div>
                             </button>
 
@@ -692,20 +724,16 @@ export default function DDayPage() {
                             <button
                                 type="button"
                                 onClick={handleNext}
-                                className="group pointer-events-auto absolute flex items-center justify-center overflow-visible transition-transform active:scale-95  -2  -blue-500
-                                    /* 📱 Mobile (< 640px) */
-                                    top-[58%] left-[20%] h-[40px] w-[60px]
-                                    /* 📲 Tablet (640px - 1023px) */
-                                    md:top-[60%] md:left-[8%] md:h-[65px] md:w-[100px]
-                                    /* 🖥️ Desktop (>= 1024px) */
-                                    lg:top-[75%] lg:left-[10%] lg:h-[90px] lg:w-[160px]"
+                                className="-2 -blue-500 /* 📱 Mobile (< 640px) */ /* 📲 Tablet (640px - 1023px) */ /* 🖥️ Desktop (>= 1024px) */ group pointer-events-auto absolute left-[20%] top-[58%] flex h-[40px] w-[60px] items-center justify-center overflow-visible transition-transform active:scale-95 md:left-[8%] md:top-[60%] md:h-[65px] md:w-[100px] lg:left-[10%] lg:top-[75%] lg:h-[90px] lg:w-[160px]"
                             >
-                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105  -2  -yellow-500">
-                                    <NextButton width={'100%'} height={'100%'} />
+                                <div className="-2 -yellow-500 pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                    <NextButton
+                                        width={'100%'}
+                                        height={'100%'}
+                                    />
                                 </div>
                             </button>
                         </div>
-
                     </div>
 
                     {/* 2. CONTAINER BANNER INFO */}
@@ -713,27 +741,38 @@ export default function DDayPage() {
                         ref={(el) => {
                             if (el) rightElementsRef.current[0] = el;
                         }}
-                        className="absolute z-30  -2  -blue-500 opacity-0"
+                        className="-2 -blue-500 absolute z-30 opacity-0"
                         style={{
                             aspectRatio: '270 / 180',
-                            width: 'clamp(240px, 54vw, 1080px)',
+                            // Height scales with viewport height, same as the
+                            // KONTEN UTAMA container it's centered in — not
+                            // vw, which let this balloon taller than the
+                            // container (and the viewport itself) on wide,
+                            // short screens, pushing all its text/button
+                            // content toward the bottom of the screen.
+                            height: 'clamp(232px, 75vh, 517px)',
                             containerType: 'inline-size',
                             right: '5%',
                             top: '50%',
                             transform: 'translateY(-50%)',
                         }}
                     >
-                        <PhotoInfoBanner width={'100%'} height={'100%'} className=" -2" />
+                        <PhotoInfoBanner
+                            width={'100%'}
+                            height={'100%'}
+                            className="-2"
+                        />
 
                         <div
-                            className="absolute z-30 w-fit select-text  -2  -blue-500"
+                            className="-2 -blue-500 absolute z-30 w-fit select-text"
                             style={{
                                 top: '54%',
                                 left: '4%',
                                 width: '43%',
                                 height: '5%',
                                 transformOrigin: 'left center',
-                                transform: 'perspective(400px) rotateZ(-17deg) rotateY(-18deg)',
+                                transform:
+                                    'perspective(400px) rotateZ(-17deg) rotateY(-18deg)',
                                 transformStyle: 'preserve-3d',
                             }}
                         >
@@ -753,14 +792,15 @@ export default function DDayPage() {
                         </div>
 
                         <div
-                            className="absolute z-30 overflow-hidden select-text  -2  -yellow-500"
+                            className="-2 -yellow-500 absolute z-30 select-text overflow-hidden"
                             style={{
                                 top: '61%',
                                 left: '8%',
                                 width: '49.5%',
                                 height: '17%',
                                 transformOrigin: 'left center',
-                                transform: 'perspective(400px) rotateZ(-11deg) rotateY(-18deg)',
+                                transform:
+                                    'perspective(400px) rotateZ(-11deg) rotateY(-18deg)',
                                 transformStyle: 'preserve-3d',
                             }}
                         >
@@ -785,22 +825,22 @@ export default function DDayPage() {
                                 setShouldRenderView(true);
                                 setIsViewOpen(true);
                             }}
-                            className="group absolute z-30 items-center justify-center overflow-visible transition-transform active:scale-95  -2  -yellow-500"
+                            className="-2 -yellow-500 group absolute z-30 items-center justify-center overflow-visible transition-transform active:scale-95"
                             style={{
                                 top: '64%',
                                 right: '8%',
                                 width: '23%',
                                 height: '11%',
                                 transformOrigin: 'left center',
-                                transform: 'perspective(400px) rotateZ(-6deg) rotateY(-30deg)',
+                                transform:
+                                    'perspective(400px) rotateZ(-6deg) rotateY(-30deg)',
                                 transformStyle: 'preserve-3d',
                             }}
                         >
-                            <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105  -2  -yellow-500">
+                            <div className="-2 -yellow-500 pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
                                 <ViewButton width={'100%'} height={'100%'} />
                             </div>
                         </button>
-
                     </div>
 
                     {/* 3. VIEW CARD MODAL */}
@@ -813,8 +853,10 @@ export default function DDayPage() {
                         >
                             {/* BUTTON BACK */}
                             <div
-                                className="group absolute bottom-6 right-6 z-35 overflow-visible transition-transform active:scale-95"
-                                style={{ width: 'clamp(110.25px, 27.2vh, 245px)' }}
+                                className="z-35 group absolute bottom-6 right-6 overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    width: 'clamp(110.25px, 27.2vh, 245px)',
+                                }}
                             >
                                 <Button
                                     Icon={ViewBackButton}
@@ -862,7 +904,6 @@ export default function DDayPage() {
                             </div>
                         </div>
                     )}
-
                 </div>
 
                 {/* BACK BUTTON */}
@@ -890,7 +931,6 @@ export default function DDayPage() {
                         </div>
                     </Link>
                 </div>
-
             </div>
         </>
     );

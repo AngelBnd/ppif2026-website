@@ -11,7 +11,6 @@ import BriefingDayButton from '@/assets/archive/BriefingDayButton.svg?react';
 import DDayButton from '@/assets/archive/DDayButton.svg?react';
 import GalleryScroll from '@/Components/about/GalleryScroll';
 import GlitchShape from '@/Components/global/GlitchShape';
-import ArchiveWaitInfo from './ArchiveWaitInfo';
 
 export default function ArchivePage() {
     const [showOverlay, setShowOverlay] = useState(true);
@@ -69,7 +68,18 @@ export default function ArchivePage() {
         };
     }, []);
 
-    const dummyPhotos = ['/pngs/archive/archivePlaceHolder.svg'];
+    const dummyPhotos = [
+        '/pngs/archive/dday/DSC02565.webp',
+        '/pngs/archive/dday/DSC03365.webp',
+        '/pngs/archive/briefing/Screenshot (786).webp',
+        '/pngs/archive/briefing/Screenshot (739).webp',
+        '/pngs/archive/dday/DSC02372.webp',
+        '/pngs/archive/dday/DSC01595-187.webp',
+        '/pngs/archive/dday/DSC01617-196.webp',
+        '/pngs/archive/briefing/Screenshot (769).webp',
+        '/pngs/archive/briefing/Screenshot (745).webp',
+        '/pngs/archive/briefing/Screenshot (774).webp',
+    ];
 
     return (
         <>
@@ -145,9 +155,6 @@ export default function ArchivePage() {
             `}</style>
 
             {/* Render Overlay Info */}
-            {showOverlay && (
-                <ArchiveWaitInfo onClose={() => setShowOverlay(false)} />
-            )}
 
             <div
                 className="relative flex min-h-screen select-none overflow-hidden bg-transparent text-white"
