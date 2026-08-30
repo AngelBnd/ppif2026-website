@@ -6,8 +6,6 @@ import gsap from 'gsap';
 
 // assets
 import Button from '@/Components/global/Button';
-import FrameSelected from '@/assets/archive/FrameSelected.svg?react';
-import FrameUnselected from '@/assets/archive/FrameUnselected.svg?react';
 import NextButton from '@/assets/archive/NextButton.svg?react';
 import PhotoInfoBanner from '@/assets/archive/PhotoInfoBanner.svg?react';
 import PrevButton from '@/assets/archive/PrevButton.svg?react';
@@ -25,131 +23,247 @@ interface CarouselItem {
     image: string;
 }
 
-const DUMMY_DATA: CarouselItem[] = [
+const DATA: CarouselItem[] = [
     {
         id: 1,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01447-152.webp',
     },
     {
         id: 2,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01595-187.webp',
     },
     {
         id: 3,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01602-189.webp',
     },
     {
         id: 4,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC01617-196.webp',
     },
     {
         id: 5,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC02372.webp',
     },
     {
         id: 6,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC02565.webp',
     },
     {
         id: 7,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC03344.webp',
     },
     {
         id: 8,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC03357.webp',
     },
     {
         id: 9,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC03365.webp',
     },
     {
         id: 10,
-        title: 'Kembali Lagi Nanti!',
-        desc: 'Silahkan kembali lagi nanti untuk melihat foto-fotonya!!',
-        image: '/pngs/archive/archivePlaceHolder.svg',
+        title: 'D-Day',
+        desc: 'Dokumentasi kegiatan D-Day PPIF 2026.',
+        image: '/pngs/archive/dday/DSC00932-50.webp',
     },
 ];
 
-const SLOTS: Record<
-    number,
-    {
-        x: number;
-        y: number;
-        scale: number;
-        rotate: number;
-        opacity: number;
-        grayscale: number;
-        zIndex: number;
-    }
-> = {
-    [-2]: {
-        x: 100,
-        y: -300,
-        scale: 0.45,
-        rotate: -6,
-        opacity: 1,
-        grayscale: 1,
-        zIndex: 10,
-    },
-    [-1]: {
-        x: 30,
-        y: -200,
-        scale: 0.55,
-        rotate: -4,
-        opacity: 1,
-        grayscale: 1,
-        zIndex: 12,
-    },
-    [0]: {
-        x: 0,
-        y: 0,
-        scale: 1,
-        rotate: -3,
-        opacity: 1,
-        grayscale: 0,
-        zIndex: 15,
-    },
-    [1]: {
-        x: -160,
-        y: 200,
-        scale: 0.5,
-        rotate: 6,
-        opacity: 1,
-        grayscale: 1,
-        zIndex: 20,
-    },
-    [2]: {
-        x: -260,
-        y: 300,
-        scale: 0.5,
-        rotate: 6,
-        opacity: 1,
-        grayscale: 1,
-        zIndex: 25,
-    },
-};
-const MIN_OFFSET = -2;
-const MAX_OFFSET = 2;
+interface SlotConfig {
+    x: number;
+    y: number;
+    scale: number;
+    rotate: number;
+    opacity: number;
+    grayscale: number;
+    zIndex: number;
+}
 
-function getOffset(index: number, currentIndex: number, total: number) {
+export type DeviceType = 'mobile' | 'tablet' | 'desktop';
+
+export function generateBaseSlots(
+    totalItems: number,
+    device: DeviceType,
+): Record<number, SlotConfig> {
+    const slots: Record<number, SlotConfig> = {};
+    const maxOffset = Math.floor(totalItems / 2);
+    const minOffset = -Math.floor((totalItems - 1) / 2);
+
+    for (let offset = minOffset; offset <= maxOffset; offset++) {
+        if (device === 'mobile') {
+            // 1. MOBILE (< 640px)
+            if (offset === 0) {
+                slots[0] = {
+                    x: 0,
+                    y: 0,
+                    scale: 0.75,
+                    rotate: -3,
+                    opacity: 1,
+                    grayscale: 0,
+                    zIndex: 20,
+                };
+            } else if (offset < 0) {
+                const abs = Math.abs(offset);
+                slots[offset] = {
+                    x: 35 - (abs - 1) * 15,
+                    y: -70 - (abs - 1) * 35,
+                    scale: Math.max(0.45 - abs * 0.05, 0.2),
+                    rotate: -4 - abs * 2,
+                    opacity: abs > 2 ? 0 : 1,
+                    grayscale: 1,
+                    zIndex: 10 - abs,
+                };
+            } else {
+                slots[offset] = {
+                    x: -50 - (offset - 1) * 15,
+                    y: 70 + (offset - 1) * 35,
+                    scale: Math.max(0.4 - offset * 0.05, 0.2),
+                    rotate: 6 + offset * 2,
+                    opacity: offset > 2 ? 0 : 1,
+                    grayscale: 1,
+                    zIndex: 30 + offset,
+                };
+            }
+        } else if (device === 'tablet') {
+            // 2. TABLET (640px - 1023px)
+            if (offset === 0) {
+                slots[0] = {
+                    x: 0,
+                    y: 0,
+                    scale: 0.88,
+                    rotate: -3,
+                    opacity: 1,
+                    grayscale: 0,
+                    zIndex: 20,
+                };
+            } else if (offset < 0) {
+                const abs = Math.abs(offset);
+                slots[offset] = {
+                    x: 65 - (abs - 1) * 25,
+                    y: -120 - (abs - 1) * 50,
+                    scale: Math.max(0.52 - abs * 0.06, 0.2),
+                    rotate: -4 - abs * 2,
+                    opacity: abs > 2 ? 0 : 1,
+                    grayscale: 1,
+                    zIndex: 10 - abs,
+                };
+            } else {
+                slots[offset] = {
+                    x: -95 - (offset - 1) * 30,
+                    y: 110 + (offset - 1) * 50,
+                    scale: Math.max(0.48 - offset * 0.06, 0.2),
+                    rotate: 6 + offset * 2,
+                    opacity: offset > 2 ? 0 : 1,
+                    grayscale: 1,
+                    zIndex: 30 + offset,
+                };
+            }
+        } else {
+            // 3. DESKTOP (>= 1024px)
+            if (offset === 0) {
+                slots[0] = {
+                    x: 0,
+                    y: 0,
+                    scale: 0.85,
+                    rotate: -3,
+                    opacity: 1,
+                    grayscale: 0,
+                    zIndex: 20,
+                };
+            } else if (offset < 0) {
+                const abs = Math.abs(offset);
+                slots[offset] = {
+                    x: 100 - (abs - 1) * 40,
+                    y: -180 - (abs - 1) * 70,
+                    scale: Math.max(0.6 - abs * 0.08, 0.2),
+                    rotate: -4 - abs * 2,
+                    opacity: abs > 3 ? 0 : 1,
+                    grayscale: 1,
+                    zIndex: 10 - abs,
+                };
+            } else {
+                slots[offset] = {
+                    x: -140 - (offset - 1) * 50,
+                    y: 290 + (offset - 1) * 70,
+                    scale: Math.max(0.55 - offset * 0.08, 0.2),
+                    rotate: 6 + offset * 2,
+                    opacity: offset > 3 ? 0 : 1,
+                    grayscale: 1,
+                    zIndex: 30 + offset,
+                };
+            }
+        }
+    }
+
+    return slots;
+}
+
+// Dynamic Responsive
+export function useDynamicSlots(totalItems: number) {
+    const [slots, setSlots] = useState<Record<number, SlotConfig>>({});
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+
+            let device: DeviceType = 'desktop';
+            let baseWidth = 1280;
+
+            if (width < 640) {
+                device = 'mobile';
+                baseWidth = 375;
+            } else if (width < 1024) {
+                device = 'tablet';
+                baseWidth = 768;
+            }
+
+            const currentSlots = generateBaseSlots(totalItems, device);
+
+            const GLOBAL_ZOOM = 0.78; // Global Size Carrosel
+            const scaleFactor = (width / baseWidth) * GLOBAL_ZOOM;
+
+            const scaledSlots = Object.fromEntries(
+                Object.entries(currentSlots).map(([key, slot]) => [
+                    key,
+                    {
+                        ...slot,
+                        x: slot.x * scaleFactor,
+                        y: slot.y * scaleFactor,
+                        scale: slot.scale * scaleFactor,
+                    },
+                ]),
+            );
+
+            setSlots(scaledSlots);
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [totalItems]);
+
+    return slots;
+}
+
+export function getOffset(index: number, currentIndex: number, total: number) {
+    if (total === 0) return 0;
     let diff = index - currentIndex;
     if (diff > total / 2) diff -= total;
     if (diff < -total / 2) diff += total;
@@ -157,6 +271,12 @@ function getOffset(index: number, currentIndex: number, total: number) {
 }
 
 export default function DDayPage() {
+    const total = DATA.length;
+    const SLOTS = useDynamicSlots(total);
+
+    const minOffset = -Math.floor((total - 1) / 2);
+    const maxOffset = Math.floor(total / 2);
+
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
@@ -172,8 +292,6 @@ export default function DDayPage() {
 
     const activeRedBitRef = useRef<HTMLDivElement | null>(null);
     const activeBlueBitRef = useRef<HTMLDivElement | null>(null);
-
-    const total = DUMMY_DATA.length;
 
     const { contextSafe } = useGSAP({ scope: containerRef });
 
@@ -213,7 +331,7 @@ export default function DDayPage() {
         { scope: containerRef },
     );
 
-    // GSAP View Button
+    // GSAP View Button Modal
     useGSAP(
         () => {
             if (isViewOpen && shouldRenderView) {
@@ -275,7 +393,7 @@ export default function DDayPage() {
         if (isAnimating) return;
         setIsAnimating(true);
 
-        DUMMY_DATA.forEach((item) => {
+        DATA.forEach((item) => {
             const prevOffset = getOffset(item.id - 1, currentIndex, total);
             const nextOffset = getOffset(item.id - 1, nextIndex, total);
 
@@ -287,11 +405,11 @@ export default function DDayPage() {
             const img = card.querySelector('img');
 
             const wasInRange =
-                prevOffset >= MIN_OFFSET && prevOffset <= MAX_OFFSET;
+                prevOffset >= minOffset && prevOffset <= maxOffset;
             const willBeInRange =
-                nextOffset >= MIN_OFFSET && nextOffset <= MAX_OFFSET;
+                nextOffset >= minOffset && nextOffset <= maxOffset;
 
-            // CASE 1: CARD UNSELECTED
+            // CASE 1: UNSELECTED
             if (wasInRange && !willBeInRange) {
                 gsap.to(card, {
                     x: 200,
@@ -305,9 +423,11 @@ export default function DDayPage() {
                 return;
             }
 
-            // CASE 2: CARD SELECTED
+            // CASE 2: SELECTED
             if (!wasInRange && willBeInRange) {
                 const target = SLOTS[nextOffset];
+                if (!target) return;
+
                 gsap.set(card, {
                     x: -400,
                     y: 400,
@@ -336,6 +456,8 @@ export default function DDayPage() {
             if (!wasInRange && !willBeInRange) return;
 
             const target = SLOTS[nextOffset];
+            if (!target) return;
+
             gsap.to(card, {
                 x: target.x,
                 y: target.y,
@@ -367,6 +489,7 @@ export default function DDayPage() {
         if (!isAnimating) animateToIndex((currentIndex - 1 + total) % total);
     };
 
+    // Animasi Red & Blue Bits saat beralih kartu
     useGSAP(
         () => {
             const redBit = activeRedBitRef.current;
@@ -376,47 +499,21 @@ export default function DDayPage() {
 
             gsap.killTweensOf([redBit, blueBit]);
 
-            const timeline = gsap.timeline({
-                delay: 0.3,
-            });
+            const timeline = gsap.timeline({ delay: 0.3 });
 
-            // Red rotates inward from the right
             timeline.fromTo(
                 redBit,
-                {
-                    rotate: 15,
-                    autoAlpha: 0,
-                    transformOrigin: 'center center',
-                },
-                {
-                    rotate: 0,
-                    autoAlpha: 1,
-                    duration: 0.35,
-                    ease: 'power3.out',
-                },
+                { rotate: 15, autoAlpha: 0, transformOrigin: 'center center' },
+                { rotate: 0, autoAlpha: 1, duration: 0.35, ease: 'power3.out' },
                 0,
             );
 
-            // Blue rotates inward from the left
             timeline.fromTo(
                 blueBit,
-                {
-                    rotate: -15,
-                    autoAlpha: 0,
-                    transformOrigin: 'center center',
-                },
-                {
-                    rotate: 0,
-                    autoAlpha: 1,
-                    duration: 0.35,
-                    ease: 'power3.out',
-                },
+                { rotate: -15, autoAlpha: 0, transformOrigin: 'center center' },
+                { rotate: 0, autoAlpha: 1, duration: 0.35, ease: 'power3.out' },
                 0,
             );
-
-            return () => {
-                timeline.kill();
-            };
         },
         {
             scope: containerRef,
@@ -432,33 +529,12 @@ export default function DDayPage() {
             }
         };
         window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
     return (
         <>
-            <Head title="Archive/DDay" />
-
-            {/* FRAME MASK */}
-            <svg width="0" height="0" className="pointer-events-none absolute">
-                <defs>
-                    {/* MASKING KONDISI NON-AKTIF */}
-                    <clipPath
-                        id="cropNonAktif"
-                        clipPathUnits="objectBoundingBox"
-                    >
-                        <path d="M0.049,0.214 L0.92,0.163 L0.92,0.9 L0.049,0.895 Z" />
-                    </clipPath>
-
-                    {/* MASKING KONDISI AKTIF */}
-                    <clipPath id="cropAktif" clipPathUnits="objectBoundingBox">
-                        <path d="M0.027,0.28 L0.937,0.092 L0.923,0.861 L0.081,0.904 Z" />
-                    </clipPath>
-                </defs>
-            </svg>
+            <Head title="Archive/Dday" />
 
             <style>{`
                 @font-face {
@@ -466,14 +542,14 @@ export default function DDayPage() {
                     src: url('/fonts/Arsenal-Bold.woff2') format('woff2');
                     font-weight: bold;
                     font-style: normal;
-    font-display: swap;
+                    font-display: swap;
                 }
                 @font-face {
                     font-family: 'NotoSans';
                     src: url('/fonts/NotoSans-Bold.woff2') format('woff2');
                     font-weight: bold;
                     font-style: normal;
-    font-display: swap;
+                    font-display: swap;
                 }
             `}</style>
 
@@ -492,37 +568,46 @@ export default function DDayPage() {
                     <Shape1 className="h-full w-full scale-110 transform object-fill" />
                 </div>
 
+                {/* KONTEN UTAMA */}
                 <div
-                    className="relative -left-16 z-10 flex w-full max-w-5xl items-center justify-between"
+                    className="max-w-8xl -2 -red-500 relative flex w-full items-center overflow-visible"
                     style={{
                         height: 'clamp(247.5px, 80.1vh, 550px)',
-                        paddingLeft: 'clamp(1.5rem, 5.9vh, 3rem)',
-                        paddingRight: 'clamp(1.5rem, 5.9vh, 3rem)',
                     }}
                 >
-                    {/* CAROUSEL KARTU STACK */}
+                    {/* 1. CONTAINER CAROUSEL & NAVIGASI */}
                     <div
                         ref={(el) => {
                             if (el) leftElementsRef.current[1] = el;
                         }}
-                        className="relative opacity-0"
+                        className="-2 -blue-500 relative w-1/2 opacity-0"
                         style={{
-                            height: 'clamp(200px, 60vh, 1000px)',
-                            width: 'clamp(100px, 140vh, 1900px)',
-                            left: 'clamp(-70px, calc(-90vh + 100px), -100px)',
-                            top: 'clamp(-9px, 9vh, -100px)',
+                            height: 'clamp(547px, 60vh, 1000px)',
+                            top: 'clamp(0px, 9vh, -100px)',
                         }}
                     >
-                        {DUMMY_DATA.map((item) => {
+                        {/* KARTU STACK CAROUSEL */}
+                        {DATA.map((item) => {
                             const offset = getOffset(
                                 item.id - 1,
                                 currentIndex,
                                 total,
                             );
                             const inRange =
-                                offset >= MIN_OFFSET && offset <= MAX_OFFSET;
+                                offset >= minOffset && offset <= maxOffset;
                             const target = inRange ? SLOTS[offset] : null;
                             const isActive = offset === 0;
+
+                            const currentViewBox = isActive
+                                ? '0 0 821 569'
+                                : '0 0 296 199';
+
+                            const PATH_LUBANG_AKTIF =
+                                'M60.2224 519.85L757.175 497.243L747.807 48.1365L44.3004 147.913L60.2224 519.85Z';
+                            const PATH_LUBANG_NON_AKTIF =
+                                'M14.5835 180.407L272.424 183.327L272.195 32.5401L14.7167 42.7449L14.5835 180.407Z';
+
+                            const clipPathId = `clip-frame-${item.id}-${isActive ? 'active' : 'inactive'}`;
 
                             return (
                                 <div
@@ -537,169 +622,97 @@ export default function DDayPage() {
                                     }}
                                     className="card-item pointer-events-none absolute left-0 top-0 flex h-full w-full origin-center items-center justify-center"
                                 >
-                                    <div className="absolute flex h-[100%] w-[100%] items-center justify-center">
-                                        <div
-                                            className="relative z-10 h-full w-full bg-zinc-800 transition-all duration-300 ease-in-out"
-                                            style={{
-                                                clipPath: isActive
-                                                    ? 'url(#cropAktif)'
-                                                    : 'url(#cropNonAktif)',
-                                            }}
+                                    <div className="relative flex h-full w-full items-center justify-center">
+                                        {/* ACTIVE COLORED BITS */}
+                                        {isActive && (
+                                            <div className="pointer-events-none absolute inset-0 z-0">
+                                                <div
+                                                    ref={activeBlueBitRef}
+                                                    className="absolute right-2 top-[2%] h-full w-[99%]"
+                                                >
+                                                    <ActiveBitBlue className="h-full w-full object-contain opacity-90" />
+                                                </div>
+
+                                                <div
+                                                    ref={activeRedBitRef}
+                                                    className="absolute h-full w-[96%]"
+                                                >
+                                                    <ActiveBitRed className="h-full w-full object-contain" />
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* SVG UTAMA FRAME & FOTO */}
+                                        <svg
+                                            viewBox={currentViewBox}
+                                            className="relative z-10 h-full w-full overflow-visible"
+                                            preserveAspectRatio="xMidYMid meet"
                                         >
-                                            <img
-                                                src={item.image}
-                                                alt={item.title}
+                                            <defs>
+                                                <clipPath id={clipPathId}>
+                                                    <path
+                                                        d={
+                                                            isActive
+                                                                ? PATH_LUBANG_AKTIF
+                                                                : PATH_LUBANG_NON_AKTIF
+                                                        }
+                                                    />
+                                                </clipPath>
+                                            </defs>
+
+                                            <image
+                                                href={item.image}
+                                                width="100%"
+                                                height="100%"
+                                                preserveAspectRatio="xMidYMid slice"
+                                                clipPath={`url(#${clipPathId})`}
                                                 style={{
                                                     filter: isActive
                                                         ? 'grayscale(0) contrast(1.1) brightness(1)'
                                                         : 'grayscale(1) contrast(1.1) brightness(0.8)',
+                                                    transition:
+                                                        'filter 0.3s ease-in-out',
                                                 }}
-                                                className="h-full w-full object-cover"
                                             />
-                                        </div>
 
-                                        {!isActive && (
-                                            <div className="pointer-events-none absolute inset-0 z-10 flex h-full w-full items-center justify-center">
-                                                <FrameUnselected
-                                                    width={'100%'}
-                                                    height={'100%'}
-                                                />
-                                            </div>
-                                        )}
-
-                                        {isActive && (
-                                            <>
-                                                {/* Active colored bits behind the photo/frame */}
-                                                <div className="pointer-events-none absolute inset-0 z-0">
-                                                    <div
-                                                        ref={activeBlueBitRef}
-                                                        className="absolute right-2 top-[2%] h-full w-[99%]"
-                                                    >
-                                                        <ActiveBitBlue className="h-full w-full object-contain opacity-90" />
-                                                    </div>
-
-                                                    <div
-                                                        ref={activeRedBitRef}
-                                                        className="absolute h-full w-[96%]"
-                                                    >
-                                                        <ActiveBitRed className="h-full w-full object-contain" />
-                                                    </div>
-                                                </div>
-
-                                                {/* Selected frame */}
-                                                <div className="pointer-events-none absolute inset-0 z-20 flex h-full w-full items-center justify-center">
-                                                    <FrameSelected
-                                                        width="100%"
-                                                        height="100%"
+                                            {isActive ? (
+                                                <>
+                                                    <path
+                                                        d="M794.377 521.938L33.7954 547.268L15.4585 118.918L773.036 23.3983L794.377 521.938ZM60.2231 519.85L757.175 497.243L747.808 48.1366L44.3011 147.913L60.2231 519.85Z"
+                                                        fill="#F0F2F5"
                                                     />
-                                                </div>
-                                            </>
-                                        )}
+                                                    <path
+                                                        d="M779.72 517.308L45.146 536.104L27.7988 130.876L762.361 35.0272L779.72 517.308ZM60.2224 519.85L757.175 497.243L747.807 48.1365L44.3004 147.913L60.2224 519.85Z"
+                                                        fill="black"
+                                                    />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <path
+                                                        d="M285.769 193.052L4.37753 190.109L4.53448 27.9327L286.945 18.076L285.769 193.052ZM14.5841 180.407L272.425 183.327L275.5 28.5L14.7174 42.7446L14.5841 180.407Z"
+                                                        fill="#F0F2F5"
+                                                    />
+                                                    <path
+                                                        d="M280.429 191.104L8.75092 186.168L8.89961 32.5372L280.339 23.0634L280.429 191.104ZM14.5835 180.407L272.424 183.327L272.195 32.5401L14.7167 42.7449L14.5835 180.407Z"
+                                                        fill="black"
+                                                    />
+                                                </>
+                                            )}
+                                        </svg>
                                     </div>
                                 </div>
                             );
                         })}
-                    </div>
 
-                    {/* BANNER INFO & NAVIGASI */}
-                    <div
-                        ref={(el) => {
-                            if (el) rightElementsRef.current[0] = el;
-                        }}
-                        className="relative left-8 z-20 flex flex-col opacity-0"
-                        style={{
-                            width: 'clamp(189px, 120.7vh, 600px)',
-                            gap: 'clamp(0.75rem, 2.95vh, 1.5rem)',
-                        }}
-                    >
-                        <div
-                            className="group relative flex w-full items-center text-white"
-                            style={{
-                                minHeight: 'clamp(63px, 20vh, 200px)',
-                                padding: 'clamp(1.5rem, 5.9vh, 3rem)',
-                            }}
-                        >
-                            <div
-                                className="pointer-events-none absolute z-0 origin-bottom-left transform"
-                                style={{
-                                    bottom: '-160%',
-                                    left: '-99%',
-                                    transform: 'scale(3)',
-                                    width: 'clamp(200px, 38vh, 400px)',
-                                    height: 'clamp(70px, 20vh, 400px)',
-                                }}
-                            >
-                                <PhotoInfoBanner
-                                    width={'100%'}
-                                    height={'100%'}
-                                />
-                            </div>
-
-                            <div className="bg absolute -bottom-[22%] -left-[90%] z-30 w-full -rotate-[17deg] transform select-text pl-4">
-                                <h2
-                                    className="mb-2 font-black uppercase italic tracking-wider text-black"
-                                    style={{
-                                        fontFamily: "'NotoSans', sans-serif",
-                                        fontSize:
-                                            'clamp(1.1rem, 4.8vh, 1.5rem)',
-                                    }}
-                                >
-                                    {DUMMY_DATA[currentIndex].title}
-                                </h2>
-                            </div>
-
-                            <div className="absolute -bottom-[70%] -left-[80%] z-30 w-full -rotate-[13deg] transform select-text pl-4">
-                                <p
-                                    className="max-w-[90%] leading-relaxed tracking-tight text-white"
-                                    style={{
-                                        fontFamily: "'Arsenal', sans-serif",
-                                        fontSize:
-                                            'clamp(0.6rem, 2.6vh, 0.875rem)',
-                                    }}
-                                >
-                                    {DUMMY_DATA[currentIndex].desc}
-                                </p>
-                            </div>
-
-                            {/* BUTTON VIEW PHOTO */}
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setShouldRenderView(true);
-                                    setIsViewOpen(true);
-                                }}
-                                className="group absolute -rotate-[3deg] items-center justify-center overflow-visible transition-transform active:scale-95"
-                                style={{
-                                    display: 'flex',
-                                    bottom: 'clamp(-175px, -19.4vh, -78.75px)',
-                                    left: 'clamp(148.5px, 40vh, 340px)',
-                                    height: 'clamp(38.25px, 9.4vh, 85px)',
-                                    width: 'clamp(72px, 17.8vh, 160px)',
-                                }}
-                            >
-                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
-                                    <ViewButton
-                                        width={'100%'}
-                                        height={'100%'}
-                                    />
-                                </div>
-                            </button>
-                        </div>
-
-                        {/* NAVIGATION BUTTONS */}
-                        <div className="relative flex items-center gap-6 pl-4">
+                        {/* NAVIGASI PREV & NEXT */}
+                        <div className="-2 -green-500 pointer-events-none absolute inset-0 z-50 overflow-visible">
+                            {/* BUTTON PREV */}
                             <button
                                 type="button"
                                 onClick={handlePrev}
-                                className="group absolute flex items-center justify-center overflow-visible transition-transform active:scale-95"
-                                style={{
-                                    bottom: 'clamp(100px, 25.2vh, 210px)',
-                                    left: 'clamp(-450px, -50vh, -202.5px)',
-                                    height: 'clamp(67.5px, 16.7vh, 150px)',
-                                    width: 'clamp(81px, 30vh, 180px)',
-                                }}
+                                className="-2 -blue-500 /* 📱 Mobile (< 640px) */ /* 📲 Tablet (640px - 1023px) */ /* 🖥️ Desktop (>= 1024px) */ group pointer-events-auto absolute left-[70%] top-[37%] flex h-[40px] w-[60px] items-center justify-center overflow-visible transition-transform active:scale-95 md:left-[68%] md:top-[35%] md:h-[65px] md:w-[100px] lg:left-[65%] lg:top-[12%] lg:h-[90px] lg:w-[160px]"
                             >
-                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                <div className="-2 -yellow-500 pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
                                     <PrevButton
                                         width={'100%'}
                                         height={'100%'}
@@ -707,18 +720,13 @@ export default function DDayPage() {
                                 </div>
                             </button>
 
+                            {/* BUTTON NEXT */}
                             <button
                                 type="button"
                                 onClick={handleNext}
-                                className="group absolute flex items-center justify-center overflow-visible transition-transform active:scale-95"
-                                style={{
-                                    bottom: 'clamp(-190.5px, -18.4vh, -30px)',
-                                    left: 'clamp(-700px, -75.2vh, -292.5px)',
-                                    height: 'clamp(67.5px, 16.7vh, 150px)',
-                                    width: 'clamp(81px, 30vh, 180px)',
-                                }}
+                                className="-2 -blue-500 /* 📱 Mobile (< 640px) */ /* 📲 Tablet (640px - 1023px) */ /* 🖥️ Desktop (>= 1024px) */ group pointer-events-auto absolute left-[20%] top-[58%] flex h-[40px] w-[60px] items-center justify-center overflow-visible transition-transform active:scale-95 md:left-[8%] md:top-[60%] md:h-[65px] md:w-[100px] lg:left-[10%] lg:top-[75%] lg:h-[90px] lg:w-[160px]"
                             >
-                                <div className="pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                <div className="-2 -yellow-500 pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
                                     <NextButton
                                         width={'100%'}
                                         height={'100%'}
@@ -727,6 +735,175 @@ export default function DDayPage() {
                             </button>
                         </div>
                     </div>
+
+                    {/* 2. CONTAINER BANNER INFO */}
+                    <div
+                        ref={(el) => {
+                            if (el) rightElementsRef.current[0] = el;
+                        }}
+                        className="-2 -blue-500 absolute z-30 opacity-0"
+                        style={{
+                            aspectRatio: '270 / 180',
+                            // Height scales with viewport height, same as the
+                            // KONTEN UTAMA container it's centered in — not
+                            // vw, which let this balloon taller than the
+                            // container (and the viewport itself) on wide,
+                            // short screens, pushing all its text/button
+                            // content toward the bottom of the screen.
+                            height: 'clamp(232px, 75vh, 517px)',
+                            containerType: 'inline-size',
+                            right: '5%',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                        }}
+                    >
+                        <PhotoInfoBanner
+                            width={'100%'}
+                            height={'100%'}
+                            className="-2"
+                        />
+
+                        <div
+                            className="-2 -blue-500 absolute z-30 w-fit select-text"
+                            style={{
+                                top: '54%',
+                                left: '4%',
+                                width: '43%',
+                                height: '5%',
+                                transformOrigin: 'left center',
+                                transform:
+                                    'perspective(400px) rotateZ(-17deg) rotateY(-18deg)',
+                                transformStyle: 'preserve-3d',
+                            }}
+                        >
+                            <h2
+                                className="font-black uppercase italic tracking-wider text-black"
+                                style={{
+                                    fontFamily: "'NotoSans', sans-serif",
+                                    fontSize: '2.6cqi',
+                                    lineHeight: '1.2',
+                                    wordBreak: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                }}
+                            >
+                                {DATA[currentIndex]?.title}
+                            </h2>
+                        </div>
+
+                        <div
+                            className="-2 -yellow-500 absolute z-30 select-text overflow-hidden"
+                            style={{
+                                top: '61%',
+                                left: '8%',
+                                width: '49.5%',
+                                height: '17%',
+                                transformOrigin: 'left center',
+                                transform:
+                                    'perspective(400px) rotateZ(-11deg) rotateY(-18deg)',
+                                transformStyle: 'preserve-3d',
+                            }}
+                        >
+                            <p
+                                className="h-full w-full text-white"
+                                style={{
+                                    fontFamily: "'Arsenal', sans-serif",
+                                    fontSize: '2.0cqi',
+                                    lineHeight: '1.2',
+                                    wordBreak: 'break-word',
+                                    overflowWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                }}
+                            >
+                                {DATA[currentIndex]?.desc}
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setShouldRenderView(true);
+                                setIsViewOpen(true);
+                            }}
+                            className="-2 -yellow-500 group absolute z-30 items-center justify-center overflow-visible transition-transform active:scale-95"
+                            style={{
+                                top: '64%',
+                                right: '8%',
+                                width: '23%',
+                                height: '11%',
+                                transformOrigin: 'left center',
+                                transform:
+                                    'perspective(400px) rotateZ(-6deg) rotateY(-30deg)',
+                                transformStyle: 'preserve-3d',
+                            }}
+                        >
+                            <div className="-2 -yellow-500 pointer-events-none absolute inset-0 h-full w-full transition-transform duration-200 group-hover:scale-105">
+                                <ViewButton width={'100%'} height={'100%'} />
+                            </div>
+                        </button>
+                    </div>
+
+                    {/* 3. VIEW CARD MODAL */}
+                    {shouldRenderView && (
+                        <div
+                            ref={viewModalRef}
+                            data-click-sound
+                            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm transition-all"
+                            onClick={handleCloseView}
+                        >
+                            {/* BUTTON BACK */}
+                            <div
+                                className="z-35 group absolute bottom-6 right-6 overflow-visible transition-transform active:scale-95"
+                                style={{
+                                    width: 'clamp(110.25px, 27.2vh, 245px)',
+                                }}
+                            >
+                                <Button
+                                    Icon={ViewBackButton}
+                                    onClick={handleCloseView}
+                                    back
+                                    iconClassName="w-full h-full object-contain pointer-events-none group-hover:scale-105 transition-transform duration-200"
+                                    ariaLabel="Back to Gallery"
+                                />
+                            </div>
+
+                            {/* CONTAINER FRAME & FOTO */}
+                            <div
+                                ref={viewContentRef}
+                                className="relative bottom-8 flex h-auto max-h-[85vh] w-full max-w-4xl origin-center items-center justify-center p-2"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <svg
+                                    viewBox="0 0 296 199"
+                                    className="relative z-10 h-auto max-h-[85vh] w-full overflow-visible drop-shadow-2xl"
+                                    preserveAspectRatio="xMidYMid meet"
+                                >
+                                    <defs>
+                                        <clipPath id="view-photo-clip">
+                                            <path d="M14.5835 180.407L272.424 183.327L272.195 32.5401L14.7167 42.7449L14.5835 180.407Z" />
+                                        </clipPath>
+                                    </defs>
+
+                                    <image
+                                        href={DATA[currentIndex]?.image}
+                                        width="100%"
+                                        height="100%"
+                                        preserveAspectRatio="xMidYMid slice"
+                                        clipPath="url(#view-photo-clip)"
+                                    />
+
+                                    <path
+                                        d="M285.769 193.052L4.37753 190.109L4.53448 27.9327L286.945 18.076L285.769 193.052ZM14.5841 180.407L272.425 183.327L275.5 28.5L14.7174 42.7446L14.5841 180.407Z"
+                                        fill="#F0F2F5"
+                                    />
+                                    <path
+                                        d="M280.429 191.104L8.75092 186.168L8.89961 32.5372L280.339 23.0634L280.429 191.104ZM14.5835 180.407L272.424 183.327L272.195 32.5401L14.7167 42.7449L14.5835 180.407Z"
+                                        fill="black"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* BACK BUTTON */}
@@ -734,7 +911,7 @@ export default function DDayPage() {
                     ref={(el) => {
                         if (el) rightElementsRef.current[1] = el;
                     }}
-                    className="absolute bottom-6 right-6 z-20 opacity-0"
+                    className="absolute bottom-6 right-6 z-40 opacity-0"
                 >
                     <Link
                         href="/archive"
@@ -754,42 +931,6 @@ export default function DDayPage() {
                         </div>
                     </Link>
                 </div>
-                {/* VIEW CARD */}
-                {shouldRenderView && (
-                    <div
-                        ref={viewModalRef}
-                        data-click-sound
-                        className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm transition-all"
-                        onClick={handleCloseView}
-                    >
-                        {/* BACK VIEW BUTTON */}
-                        <div
-                            className="group absolute bottom-6 right-6 z-10 overflow-visible transition-transform active:scale-95"
-                            style={{ width: 'clamp(110.25px, 27.2vh, 245px)' }}
-                        >
-                            <Button
-                                Icon={ViewBackButton}
-                                onClick={handleCloseView}
-                                back
-                                iconClassName="w-full h-full object-contain pointer-events-none group-hover:scale-105 transition-transform duration-200"
-                                ariaLabel="Back to Gallery"
-                            />
-                        </div>
-
-                        {/* PHOTO CONTAINER */}
-                        <div
-                            ref={viewContentRef}
-                            className="relative bottom-8 flex h-auto max-h-[90vh] w-full max-w-4xl origin-center items-center justify-center border-[6px] border-white bg-zinc-950 p-2"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <img
-                                src={DUMMY_DATA[currentIndex].image}
-                                alt={DUMMY_DATA[currentIndex].title}
-                                className="h-auto max-h-[85vh] w-full select-none object-contain"
-                            />
-                        </div>
-                    </div>
-                )}
             </div>
         </>
     );
